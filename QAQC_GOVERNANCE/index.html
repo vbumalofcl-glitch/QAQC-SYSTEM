@@ -1,0 +1,1866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QA/QC Governance & Reference Framework | FCLaranang Dev Corp</title>
+  <link rel="icon" type="image/png" href="../fcldc.png">
+  <link rel="stylesheet" href="../shared/css/corporate-green.css">
+  <style>
+    /* ==========================================================================
+       Fit-To-Screen Governance Cockpit Layout
+       ========================================================================== */
+    html, body {
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: radial-gradient(circle at 50% 0%, #064e3b10 0%, #f8fafc 65%);
+    }
+
+    .corp-header {
+      height: 48px;
+      padding: 0 1.25rem;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--emerald-950), var(--emerald-900));
+      border-bottom: 2px solid var(--emerald-600);
+      display: flex;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .gov-command-ribbon {
+      height: 44px;
+      flex-shrink: 0;
+      background: var(--white);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .gov-ribbon-left {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .gov-ribbon-eyebrow {
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--emerald-700);
+      background: var(--emerald-50);
+      border: 1px solid var(--emerald-200);
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+    }
+
+    .gov-ribbon-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--slate-900);
+      margin: 0;
+    }
+
+    .gov-chips {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+
+    .gov-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--slate-700);
+      background: var(--slate-50);
+      border: 1px solid var(--border-color);
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+    }
+
+    .gov-chip strong {
+      color: var(--emerald-700);
+      font-weight: 800;
+    }
+
+    .gov-tabs-container {
+      margin: 0;
+      border-radius: 0;
+      background: var(--slate-900);
+      border-bottom: 2px solid var(--emerald-600);
+      flex-shrink: 0;
+      padding: 0 0.5rem;
+    }
+
+    .gov-nav-tabs {
+      display: flex;
+      gap: 0.25rem;
+      padding: 0.25rem 0.5rem 0;
+      margin-bottom: 0;
+      background: transparent;
+      border-bottom: none;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    .gov-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 0.85rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--slate-300);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      border-radius: 6px 6px 0 0;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .gov-tab-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--white);
+    }
+
+    .gov-tab-btn.active {
+      color: var(--white);
+      background: var(--emerald-600);
+      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Main Tab Scrollable Content Viewport */
+    .gov-viewport {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      padding: 0.75rem 1.25rem;
+      max-width: 1720px;
+      width: 100%;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+
+    /* Comparison Table (QA vs QC) */
+    .compare-table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 1.25rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+    }
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+      background: var(--white);
+    }
+    .compare-table th, .compare-table td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: top;
+    }
+    .compare-table th {
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      letter-spacing: 0.5px;
+    }
+    .compare-table th.qa-col {
+      background: #064e3b;
+      color: #ffffff;
+      width: 40%;
+    }
+    .compare-table th.qc-col {
+      background: #047857;
+      color: #ffffff;
+      width: 40%;
+    }
+    .compare-table th.dim-col {
+      background: var(--slate-900);
+      color: var(--white);
+      width: 20%;
+    }
+
+    /* 3-Phase Process Grid */
+    .phase-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      margin: 0.75rem 0 1.25rem;
+    }
+    .phase-card {
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+    .phase-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+    }
+    .phase-card.p1::before { background: var(--emerald-600); }
+    .phase-card.p2::before { background: #3b82f6; }
+    .phase-card.p3::before { background: #f59e0b; }
+
+    .phase-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+    }
+    .phase-card.p1 .phase-badge { background: var(--emerald-50); color: var(--emerald-800); }
+    .phase-card.p2 .phase-badge { background: #eff6ff; color: #1d4ed8; }
+    .phase-card.p3 .phase-badge { background: #fffbeb; color: #b45309; }
+
+    .phase-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--slate-900);
+      margin-bottom: 0.35rem;
+    }
+    .phase-desc {
+      font-size: 0.8rem;
+      color: var(--slate-600);
+      line-height: 1.45;
+      margin-bottom: 0.6rem;
+    }
+    .phase-checklist {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 0.78rem;
+    }
+    .phase-checklist li {
+      padding: 0.25rem 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.4rem;
+      color: var(--slate-700);
+    }
+    .phase-checklist li svg {
+      width: 14px;
+      height: 14px;
+      color: var(--emerald-600);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* Stop-Work Protocol Hierarchy */
+    .stop-work-box {
+      background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%);
+      border: 1px solid #fecaca;
+      border-left: 4px solid #ef4444;
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      margin: 0.75rem 0 1.25rem;
+    }
+    .stop-work-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #991b1b;
+      font-weight: 800;
+      font-size: 0.98rem;
+      margin-bottom: 0.4rem;
+    }
+
+    /* Matrix Table for Responsibilities & Gates */
+    .matrix-table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 1.25rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+    }
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+      background: var(--white);
+    }
+    .matrix-table th {
+      background: var(--slate-900);
+      color: var(--white);
+      padding: 0.65rem 0.85rem;
+      font-weight: 700;
+      text-align: left;
+      font-size: 0.78rem;
+    }
+    .matrix-table td {
+      padding: 0.65rem 0.85rem;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: middle;
+    }
+
+    /* QITP Interactive Table Area */
+    .qitp-filter-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.65rem;
+      padding: 0.65rem 0.85rem;
+      background: var(--white);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+    }
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+    .styled-input {
+      padding: 0.35rem 0.65rem;
+      font-size: 0.78rem;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      outline: none;
+      background: var(--slate-50);
+      color: var(--slate-900);
+    }
+    .styled-input:focus {
+      border-color: var(--emerald-500);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    }
+    .point-legend {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.65rem;
+      padding: 0.45rem 0.85rem;
+      background: var(--slate-100);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--slate-200);
+      font-size: 0.75rem;
+    }
+    .point-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.7rem;
+    }
+    .chip-h { background: #fee2e2; color: #991b1b; border: 1px solid #f87171; }
+    .chip-w { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+    .chip-s { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+    .chip-x { background: #e0e7ff; color: #3730a3; border: 1px solid #a5b4fc; }
+
+    .qitp-table-wrap {
+      max-height: 520px;
+      overflow: auto;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+    .qitp-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.8rem;
+      background: var(--white);
+    }
+    .qitp-table th {
+      position: sticky;
+      top: 0;
+      background: var(--slate-900);
+      color: var(--white);
+      padding: 0.6rem 0.75rem;
+      text-align: left;
+      font-weight: 700;
+      z-index: 10;
+      border-bottom: 2px solid var(--emerald-500);
+      font-size: 0.76rem;
+    }
+    .qitp-table td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: top;
+    }
+    .qitp-table tr:hover td {
+      background: #f8fafc;
+    }
+    .trade-row-header {
+      background: #f1f5f9 !important;
+      font-weight: 800;
+      color: var(--emerald-950);
+      padding: 0.5rem 0.75rem !important;
+      border-top: 2px solid var(--slate-300);
+      border-bottom: 2px solid var(--slate-300);
+      font-size: 0.8rem;
+    }
+
+    /* KPI Calculators Panel */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1rem;
+      margin: 0.75rem 0 1.25rem;
+    }
+    .calc-card {
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .calc-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--slate-900);
+      margin-bottom: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .calc-input-group {
+      margin-bottom: 0.65rem;
+    }
+    .calc-input-group label {
+      display: block;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--slate-700);
+      margin-bottom: 0.25rem;
+    }
+    .calc-input-group input {
+      width: 100%;
+      padding: 0.4rem 0.65rem;
+      font-size: 0.82rem;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      outline: none;
+      background: var(--slate-50);
+      box-sizing: border-box;
+    }
+    .calc-input-group input:focus {
+      border-color: var(--emerald-500);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    }
+    .calc-result-box {
+      background: var(--emerald-50);
+      border: 1px solid var(--emerald-300);
+      border-radius: var(--radius-md);
+      padding: 0.65rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.65rem;
+    }
+
+    /* 5-Stage Quality Gatekeeper Protocol Styles */
+    .gate-doc-header {
+      background: linear-gradient(135deg, var(--emerald-900), var(--slate-900));
+      color: #fff;
+      padding: 1.25rem 1.5rem;
+      border-radius: var(--radius-lg);
+      border-left: 5px solid var(--emerald-400);
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow-md);
+    }
+    .gate-doc-header h2 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin: 0 0 0.35rem;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+    }
+    .gate-doc-header .doc-subtitle {
+      font-size: 0.88rem;
+      color: var(--emerald-200);
+      margin-bottom: 0.85rem;
+      font-weight: 500;
+    }
+    .gate-doc-meta {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+    .gate-doc-meta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      padding: 0.25rem 0.65rem;
+      border-radius: 4px;
+      letter-spacing: 0.03em;
+    }
+
+    .gate-decision-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0 1.5rem;
+    }
+    .gate-decision-card {
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.1rem;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .gate-decision-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+    }
+    .decision-card-go::before { background: #10b981; }
+    .decision-card-cond::before { background: #3b82f6; }
+    .decision-card-hold::before { background: #f59e0b; }
+    .decision-card-kill::before { background: #ef4444; }
+
+    .decision-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+    .decision-badge {
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      letter-spacing: 0.04em;
+    }
+    .decision-badge-go { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+    .decision-badge-cond { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+    .decision-badge-hold { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+    .decision-badge-kill { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+    .gate-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .gate-pill-g1 { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .gate-pill-g2 { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .gate-pill-g3 { background: #f5f3ff; color: #6d28d9; border: 1px solid #ddd6fe; }
+    .gate-pill-g4 { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+    .gate-pill-g5 { background: #fdf2f8; color: #be185d; border: 1px solid #fbcfe8; }
+
+    .gate-detail-card {
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .gate-detail-header {
+      background: var(--slate-50);
+      padding: 0.85rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .gate-detail-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--slate-900);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .gate-detail-body {
+      padding: 1.25rem;
+    }
+
+    .concept-explainer {
+      background: #f8fafc;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      margin: 0.75rem 0 1rem;
+    }
+    .concept-explainer-item {
+      margin-bottom: 0.65rem;
+      font-size: 0.84rem;
+      line-height: 1.5;
+      color: var(--slate-700);
+    }
+    .concept-explainer-item:last-child {
+      margin-bottom: 0;
+    }
+    .concept-explainer-item strong {
+      color: var(--slate-900);
+      display: block;
+      margin-bottom: 0.15rem;
+      font-size: 0.85rem;
+    }
+
+    .concrete-curing-panel {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      margin: 1rem 0;
+    }
+    .curing-sub-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 0.75rem;
+    }
+    .curing-sub-card {
+      background: var(--white);
+      border: 1px solid #dcfce7;
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+    }
+    .curing-sub-card h5 {
+      font-size: 0.85rem;
+      font-weight: 750;
+      color: var(--emerald-950);
+      margin: 0 0 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .curing-sub-card ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      font-size: 0.8rem;
+      color: var(--slate-700);
+      line-height: 1.45;
+    }
+
+    .deliverables-chip-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.75rem;
+    }
+    .deliverable-chip {
+      background: var(--slate-100);
+      border: 1px solid var(--slate-200);
+      color: var(--slate-800);
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    /* Ultra-Slim Footer */
+    .cockpit-footer {
+      background: var(--emerald-950);
+      color: var(--emerald-200);
+      font-size: 0.68rem;
+      padding: 0 1.25rem;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Corporate Header -->
+  <header class="corp-header">
+    <div class="corp-header-inner" style="max-width:1720px; width:100%; margin:0 auto; display:flex; align-items:center; justify-content:space-between;">
+      <a href="../index.html" class="brand-section" style="display:flex; align-items:center; gap:0.65rem; text-decoration:none; color:#fff;">
+        <img src="../fcldc.png" alt="FCLDC Logo" style="height:32px; width:auto; object-fit:contain; border-radius:4px; display:block;">
+        <div class="brand-info">
+          <h1 style="font-size:1.02rem; font-weight:800; margin:0; line-height:1.1; color:#fff;">FCLaranang Dev Corp <span style="color:var(--emerald-300); font-weight:500; font-size:0.85rem;">• Governance & QITP</span></h1>
+        </div>
+      </a>
+      <nav class="header-nav" style="display:flex; align-items:center; gap:0.35rem;">
+        <a href="../index.html" class="nav-link" style="color:var(--emerald-100); font-size:0.8rem; font-weight:600; padding:0.3rem 0.7rem; border-radius:4px; text-decoration:none;">Home</a>
+        <a href="index.html" class="nav-link active" style="background:var(--emerald-600); color:#fff; font-size:0.8rem; font-weight:600; padding:0.3rem 0.7rem; border-radius:4px; text-decoration:none;">Governance & QITP</a>
+        <a href="../CONST_PROCEDURES/index.html" class="nav-link" style="color:var(--emerald-100); font-size:0.8rem; font-weight:600; padding:0.3rem 0.7rem; border-radius:4px; text-decoration:none;">Procedures (OPN)</a>
+        <a href="../CAPA/index.html" class="nav-link" style="color:var(--emerald-100); font-size:0.8rem; font-weight:600; padding:0.3rem 0.7rem; border-radius:4px; text-decoration:none;">CAPA</a>
+        <a href="../PUNCHLISTING_COMMISSIONING/punchlisting_commisioning.html" class="nav-link" style="color:var(--emerald-100); font-size:0.8rem; font-weight:600; padding:0.3rem 0.7rem; border-radius:4px; text-decoration:none;">Punchlisting</a>
+        <a href="../QAQC_KPI/index.html" class="nav-link" style="color:var(--emerald-100); font-size:0.8rem; font-weight:600; padding:0.3rem 0.7rem; border-radius:4px; text-decoration:none;">QA/QC KPI</a>
+        <a href="../EXECUTIVE_REPORT/index.html" class="nav-link" style="color:var(--emerald-100); font-size:0.8rem; font-weight:600; padding:0.3rem 0.7rem; border-radius:4px; text-decoration:none;">Reports</a>
+      </nav>
+      <div class="header-status">
+        <div id="server-status-badge" class="status-badge" style="padding:0.25rem 0.6rem; font-size:0.72rem;">
+          <span class="status-indicator-dot"></span> Checking Status...
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Governance Command Ribbon -->
+  <section class="gov-command-ribbon">
+    <div class="gov-ribbon-left">
+      <span class="gov-ribbon-eyebrow">QMS Governance</span>
+      <h2 class="gov-ribbon-title">QA/QC Corporate Governance, QITP & Performance Platform</h2>
+    </div>
+
+    <div class="gov-chips">
+      <div class="gov-chip">🎯 <span>QITP Points:</span> <strong>141 Items (16 Trades)</strong></div>
+      <div class="gov-chip">🛡️ <span>Stop-Work:</span> <strong>Active Protocol</strong></div>
+      <div class="gov-chip">⚡ <span>Quality Target:</span> <strong>98.4% Pass Rate</strong></div>
+    </div>
+  </section>
+
+  <!-- Master Tabs Bar -->
+  <div class="gov-tabs-container">
+    <nav class="gov-nav-tabs" id="govTabsNav">
+      <button class="gov-tab-btn active" data-tab="tab-framework">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>1. Governance Framework & QMS</span>
+      </button>
+      <button class="gov-tab-btn" data-tab="tab-qitp">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <span>2. 141-Item QITP Master Matrix</span>
+      </button>
+      <button class="gov-tab-btn" data-tab="tab-kpi">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+        <span>3. KPI Command Center</span>
+      </button>
+      <button class="gov-tab-btn" data-tab="tab-gates">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>4. 5-Stage Quality Gatekeeper Protocol</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Main Scrollable Viewport Pane -->
+  <main class="gov-viewport">
+
+    <!-- ========================================================================= -->
+    <!-- TAB 1: GOVERNANCE FRAMEWORK & QMS -->
+    <!-- ========================================================================= -->
+    <div id="tab-framework" class="tab-content active">
+      
+      <!-- Executive Overview -->
+      <section class="section-panel">
+        <div class="section-panel-header">
+          <div class="section-panel-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            1. Executive Overview & Governance Purpose
+          </div>
+          <span class="meta-tag" style="background:var(--emerald-800); color:#fff;">ISO 9001:2015 Compliant</span>
+        </div>
+        <p style="font-size:0.95rem; color:var(--slate-700); line-height:1.65; margin-bottom:1rem;">
+          This Quality Assurance and Quality Control (QA/QC) Governance Framework establishes the organizational structure, authority hierarchy, operational inspection protocols, and reporting mechanisms required across all project phases. The objective is to deliver built assets that strictly conform to approved designs, specifications, industry standards (<strong>ISO 9001:2015, ASTM, ACI, BS/EN</strong>), and statutory safety codes while minimizing rework and lifecycle operating costs.
+        </p>
+      </section>
+
+      <!-- Core Distinction: QA vs QC Table -->
+      <section class="section-panel">
+        <div class="section-panel-header">
+          <div class="section-panel-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            2. Core Operational Separation: Quality Assurance (QA) vs. Quality Control (QC)
+          </div>
+        </div>
+        <p style="font-size:0.9rem; color:var(--slate-600); margin-bottom:1rem;">
+          A fundamental requirement of construction quality governance is maintaining a clear operational separation between Quality Assurance (preventative processes) and Quality Control (execution inspection).
+        </p>
+
+        <div class="compare-table-wrap">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th class="dim-col">Governance Dimension</th>
+                <th class="qa-col">Quality Assurance (QA) — Process Focus</th>
+                <th class="qc-col">Quality Control (QC) — Product Focus</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Primary Objective</strong></td>
+                <td>Prevent defects through systematic processes, planning, and pre-mobilization audits.</td>
+                <td>Identify and rectify physical defects during execution and component assembly.</td>
+              </tr>
+              <tr>
+                <td><strong>Operational Focus</strong></td>
+                <td>System-level: Policies, SOPs, ITP templates, qualification of vendors and batching plants.</td>
+                <td>Execution-level: On-site inspections, slump/cylinder laboratory testing, punch listing.</td>
+              </tr>
+              <tr>
+                <td><strong>Timing & Posture</strong></td>
+                <td><strong>Proactive:</strong> Pre-mobilization, procurement, method statement and shop drawing review.</td>
+                <td><strong>Active / Reactive:</strong> Real-time during fabrication, concrete pours, and installation.</td>
+              </tr>
+              <tr>
+                <td><strong>Accountability</strong></td>
+                <td>Corporate QA Director, Project QA Manager, Independent QMS Auditor.</td>
+                <td>Discipline QC Engineers (Civil/Struct/MEP), Site Inspectors, Subcontractor QC Leads.</td>
+              </tr>
+              <tr>
+                <td><strong>Primary Deliverables</strong></td>
+                <td>Project Quality Plan (PQP), Audit Reports, Risk Registers, Standard Operating Procedures (SOPs).</td>
+                <td>Inspection & Test Plans (ITPs), Test Logs, Non-Conformance Reports (NCRs), As-Built Verification.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Governance Hierarchy & Stop-Work Authority -->
+      <section class="section-panel">
+        <div class="section-panel-header">
+          <div class="section-panel-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            3. Governance Hierarchy & Reporting Independence
+          </div>
+        </div>
+
+        <div class="org-flow-grid">
+          <div class="org-card">
+            <div class="org-role">QA/QC Manager</div>
+            <div class="org-scope">Defines corporate standards, conducts third-party surveillance, and arbitrates complex quality deviations across project packages.</div>
+          </div>
+          <div class="org-card">
+            <div class="org-role">QA/QC Superintendent</div>
+            <div class="org-scope">Author of the Project Quality Plan (PQP), oversees independent testing laboratories, chairs weekly quality reviews, and exercises stop-work enforcement.</div>
+          </div>
+          <div class="org-card">
+            <div class="org-role">QC Engineers (Civil, Struct, MEP)</div>
+            <div class="org-scope">Conduct daily inspections, witness field testing, enforce ITP criteria, log non-conformances, and verify hold points.</div>
+          </div>
+          <div class="org-card" style="border-left-color:var(--slate-500);">
+            <div class="org-role">Site Construction Team (PM / Superintendents)</div>
+            <div class="org-scope">Responsible for production execution strictly within approved method statements and engineering tolerances.</div>
+          </div>
+        </div>
+
+        <!-- Stop Work Authority Callout -->
+        <div class="stop-work-banner">
+          <div class="stop-work-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><octagon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div>
+            <h4 style="font-size:1.1rem; font-weight:800; margin-bottom:0.25rem;">Unconditional Stop-Work Authority</h4>
+            <p style="font-size:0.9rem; line-height:1.5; opacity:0.95;">
+              To ensure unbiased quality enforcement, site-level QA/QC personnel maintain an <strong>independent direct reporting line</strong> to Corporate Quality Leadership. QA/QC inspectors possess full authority to halt any work activity that compromises structural integrity, safety, or contract specifications without fear of production reprisal.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Non-Conformance Management & RCA -->
+      <section class="section-panel">
+        <div class="section-panel-header">
+          <div class="section-panel-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            4. Non-Conformance Management (NCR) & Root Cause Analysis (RCA) Lifecycle
+          </div>
+        </div>
+
+        <div class="ncr-steps-grid">
+          <div class="ncr-step-box">
+            <div class="ncr-step-num">1</div>
+            <h4 style="font-size:0.95rem; font-weight:700; color:var(--slate-900); margin-bottom:0.35rem;">Identification & Tagging</h4>
+            <p style="font-size:0.85rem; color:var(--slate-600); line-height:1.5;">
+              Immediate physical red-tagging, isolation of defective work/materials, and formal NCR logging within <strong>12 hours</strong> of discovery.
+            </p>
+          </div>
+          <div class="ncr-step-box">
+            <div class="ncr-step-num">2</div>
+            <h4 style="font-size:0.95rem; font-weight:700; color:var(--slate-900); margin-bottom:0.35rem;">Root Cause Analysis</h4>
+            <p style="font-size:0.85rem; color:var(--slate-600); line-height:1.5;">
+              Multi-disciplinary assessment utilizing <strong>5-Whys</strong> or <strong>Fishbone</strong> diagrams to pinpoint root systemic cause (operator, material, design, machine).
+            </p>
+          </div>
+          <div class="ncr-step-box">
+            <div class="ncr-step-num">3</div>
+            <h4 style="font-size:0.95rem; font-weight:700; color:var(--slate-900); margin-bottom:0.35rem;">Disposition Category</h4>
+            <p style="font-size:0.85rem; color:var(--slate-600); line-height:1.5;">
+              Formally categorized under: (a) Rework to spec, (b) Repair via EOR procedure, (c) Scrap/Reject, or (d) Concession/Use-As-Is.
+            </p>
+          </div>
+          <div class="ncr-step-box">
+            <div class="ncr-step-num">4</div>
+            <h4 style="font-size:0.95rem; font-weight:700; color:var(--slate-900); margin-bottom:0.35rem;">Verification & Closeout</h4>
+            <p style="font-size:0.85rem; color:var(--slate-600); line-height:1.5;">
+              Re-inspection, destructive/non-destructive testing, and formal closure signoff prior to releasing subsequent downstream hold points.
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 2: INTERACTIVE QITP MASTER MATRIX -->
+    <!-- ========================================================================= -->
+    <div id="tab-qitp" class="tab-content">
+      
+
+      <!-- Point Type Legend -->
+      <div class="point-legend-bar">
+        <span><strong>Inspection Point Legend:</strong></span>
+        <span class="point-chip chip-h">H = Hold Point (Mandatory Presence & Signoff)</span>
+        <span class="point-chip chip-w">W = Witness Point (Notification Required)</span>
+        <span class="point-chip chip-s">S = Surveillance / Monitoring</span>
+        <span class="point-chip chip-x">X = Performer Self-Inspection</span>
+        <span class="point-chip" style="background:#f1f5f9; color:#475569;">HC = Consultant</span>
+        <span class="point-chip" style="background:#f1f5f9; color:#475569;">HA = Authority</span>
+      </div>
+
+      <!-- Filters Bar -->
+      <div class="search-filter-bar" style="margin-bottom:1rem;">
+        <div class="search-input-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="qitpLiveSearch" placeholder="Search across 141 inspection criteria, slump test, rebar, elevator, forms...">
+        </div>
+        <div>
+          <select id="qitpTradeFilter" class="field" style="padding:0.75rem 1rem; border-radius:var(--radius-md); border:1px solid var(--border-color); font-size:0.9rem; font-weight:600;">
+            <option value="">All 16 Trade Packages (141 Items)</option>
+          </select>
+        </div>
+        <div>
+          <select id="qitpPointFilter" class="field" style="padding:0.75rem 1rem; border-radius:var(--radius-md); border:1px solid var(--border-color); font-size:0.9rem; font-weight:600;">
+            <option value="">All Point Types</option>
+            <option value="H">Hold Points (H) Only</option>
+            <option value="W">Witness Points (W) Only</option>
+            <option value="S">Surveillance (S) Only</option>
+          </select>
+        </div>
+        <button class="btn-download-fallback" style="padding:0.75rem 1rem; font-weight:600; cursor:pointer;" onclick="exportQitpToCsv()">
+          Export QITP (CSV)
+        </button>
+      </div>
+
+      <!-- Result Counter -->
+      <div style="font-size:0.85rem; color:var(--slate-500); margin-bottom:0.75rem; display:flex; justify-content:space-between;">
+        <span id="qitpCounter">Showing 141 of 141 inspection test items</span>
+        <span>Hold Points (H): <strong>38</strong> | Witness (W): <strong>24</strong></span>
+      </div>
+
+      <!-- Interactive QITP Table -->
+      <div class="qitp-table-wrap">
+        <table class="qitp-table" id="qitpMasterTable">
+          <thead>
+            <tr>
+              <th style="width: 45px;">#</th>
+              <th style="width: 140px;">Trade Package</th>
+              <th style="width: 220px;">Work Description</th>
+              <th style="width: 220px;">Characteristics to Check</th>
+              <th style="width: 180px;">Inspection / Test Procedure</th>
+              <th style="width: 220px;">Acceptance Criteria</th>
+              <th style="width: 120px;">Frequency</th>
+              <th style="width: 150px;">Records / Forms</th>
+              <th style="width: 160px;">QA Reference</th>
+              <th style="width: 50px; text-align:center;">Sub</th>
+              <th style="width: 50px; text-align:center;">Gen</th>
+              <th style="width: 50px; text-align:center;">Cons</th>
+            </tr>
+          </thead>
+          <tbody id="qitpTableBody">
+            <!-- Dynamically populated from QITP_DATABASE -->
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 3: EXECUTIVE QA/QC KPI COMMAND CENTER -->
+    <!-- ========================================================================= -->
+    <div id="tab-kpi" class="tab-content">
+      
+      <section class="section-panel">
+        <div class="section-panel-header">
+          <div class="section-panel-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            Key Performance Indicators (KPI) & Mathematical Models
+          </div>
+          <span class="meta-tag" style="background:var(--emerald-800); color:#fff;">Site Quality Health</span>
+        </div>
+        <p style="font-size:0.95rem; color:var(--slate-700); line-height:1.6; margin-bottom:1.5rem;">
+          In construction QA/QC, KPIs track whether a project is built right the first time, stays compliant with specifications, and prevents costly rework and schedule delays. Tracking these metrics enables site managers and directors to shift from reactive defect handling to proactive risk management.
+        </p>
+
+        <!-- KPI Calculator 1: First Time Pass Rate -->
+        <div class="kpi-calc-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+            <h4 style="font-size:1.1rem; font-weight:800; color:var(--slate-900);">
+              KPI #1: First-Time Pass Rate (FTQ / Inspection Pass Rate)
+            </h4>
+            <span class="meta-tag" style="background:#ecfdf5; color:#065f46; border:1px solid #6ee7b7; font-weight:700;">
+              Target Benchmark: &ge; 90 – 95%
+            </span>
+          </div>
+          <p style="font-size:0.85rem; color:var(--slate-600); margin-top:0.35rem;">
+            <strong>Formula:</strong> <code>First-Time Pass Rate (%) = (Passed Inspections / Total Inspections Conducted) × 100</code>
+          </p>
+
+          <div class="calc-row">
+            <div class="calc-input-group">
+              <label>Passed Inspections</label>
+              <input type="number" id="ftqPassed" value="482" oninput="calculateFTQ()">
+            </div>
+            <div class="calc-input-group">
+              <label>Total Inspections Conducted</label>
+              <input type="number" id="ftqTotal" value="490" oninput="calculateFTQ()">
+            </div>
+          </div>
+
+          <div class="calc-result-box">
+            <div>
+              <span style="font-size:0.82rem; font-weight:700; color:var(--emerald-900); text-transform:uppercase;">Calculated FTQ:</span>
+              <strong id="ftqResultVal" style="font-size:1.4rem; color:var(--emerald-700); margin-left:0.5rem;">98.37%</strong>
+            </div>
+            <span class="status-badge" id="ftqStatusBadge">COMPLIANT (Exceeds 95% Benchmark)</span>
+          </div>
+        </div>
+
+        <!-- KPI Calculator 2: Rework Rate -->
+        <div class="kpi-calc-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+            <h4 style="font-size:1.1rem; font-weight:800; color:var(--slate-900);">
+              KPI #2: Rework Rate (Rework Cost Percentage)
+            </h4>
+            <span class="meta-tag" style="background:#ecfdf5; color:#065f46; border:1px solid #6ee7b7; font-weight:700;">
+              Target Benchmark: &lt; 1 – 2% of Budget
+            </span>
+          </div>
+          <p style="font-size:0.85rem; color:var(--slate-600); margin-top:0.35rem;">
+            <strong>Formula:</strong> <code>Rework Rate (%) = (Total Direct Cost of Rework / Total Contract Budget) × 100</code>
+          </p>
+
+          <div class="calc-row">
+            <div class="calc-input-group">
+              <label>Total Cost of Rework ($ / ₱)</label>
+              <input type="number" id="reworkCost" value="18000" oninput="calculateRework()">
+            </div>
+            <div class="calc-input-group">
+              <label>Total Contract Budget ($ / ₱)</label>
+              <input type="number" id="totalBudget" value="10000000" oninput="calculateRework()">
+            </div>
+          </div>
+
+          <div class="calc-result-box">
+            <div>
+              <span style="font-size:0.82rem; font-weight:700; color:var(--emerald-900); text-transform:uppercase;">Calculated Rework Rate:</span>
+              <strong id="reworkResultVal" style="font-size:1.4rem; color:var(--emerald-700); margin-left:0.5rem;">0.18%</strong>
+            </div>
+            <span class="status-badge" id="reworkStatusBadge">WORLD-CLASS (&lt; 1% Threshold)</span>
+          </div>
+        </div>
+
+        <!-- KPI 3, 4, 5 Details Grid -->
+        <div class="gov-feature-grid" style="margin-top:1.5rem;">
+          <div class="gov-card">
+            <span class="gov-badge" style="background:#ecfdf5; color:#065f46; border:1px solid #6ee7b7;">KPI #3: Defect Density</span>
+            <h4 style="font-size:1.05rem; font-weight:700; margin-bottom:0.35rem;">Defects per 100 sq.m</h4>
+            <p class="gov-card-desc">
+              Measures volume of quality non-conformances per executed area. Pinpoints trade execution flaws early.
+            </p>
+            <div style="font-size:0.85rem; font-weight:700; color:var(--emerald-800);">
+              Target: &lt; 2 per 100 sq.m (Downward Trend)
+            </div>
+          </div>
+
+          <div class="gov-card">
+            <span class="gov-badge" style="background:#ecfdf5; color:#065f46; border:1px solid #6ee7b7;">KPI #4: NCR Resolution Time</span>
+            <h4 style="font-size:1.05rem; font-weight:700; margin-bottom:0.35rem;">Average Closure Speed</h4>
+            <p class="gov-card-desc">
+              Average days required from logging an NCR to completing corrective action and formal signoff.
+            </p>
+            <div style="font-size:0.85rem; font-weight:700; color:var(--emerald-800);">
+              Target: &le; 5 – 7 Business Days
+            </div>
+          </div>
+
+          <div class="gov-card">
+            <span class="gov-badge" style="background:#ecfdf5; color:#065f46; border:1px solid #6ee7b7;">KPI #5: Punch List at Handover</span>
+            <h4 style="font-size:1.05rem; font-weight:700; margin-bottom:0.35rem;">Handover Craftsmanship</h4>
+            <p class="gov-card-desc">
+              Measures outstanding deficiencies at Substantial Completion prior to client turnover.
+            </p>
+            <div style="font-size:0.85rem; font-weight:700; color:var(--emerald-800);">
+              Target: Zero Critical; Minimal Cosmetic
+            </div>
+          </div>
+        </div>
+
+        <!-- Master KPI Summary Matrix Table -->
+        <h4 style="font-size:1.1rem; font-weight:800; margin:2rem 0 1rem; color:var(--slate-900);">
+          Consolidated KPI Governance Summary Matrix
+        </h4>
+        <div class="matrix-table-wrap">
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>KPI Metric</th>
+                <th>Target Benchmark</th>
+                <th>Primary Focus Area</th>
+                <th>Operational Impact</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1</strong></td>
+                <td><strong>First-Time Pass Rate (FTQ)</strong></td>
+                <td><span class="meta-tag" style="background:#ecfdf5; color:#065f46;">&ge; 90 – 95%</span></td>
+                <td>Execution</td>
+                <td>Getting work right on first attempt; preserves project pace.</td>
+              </tr>
+              <tr>
+                <td><strong>2</strong></td>
+                <td><strong>Rework Rate</strong></td>
+                <td><span class="meta-tag" style="background:#ecfdf5; color:#065f46;">&lt; 1 – 2% of Budget</span></td>
+                <td>Financial</td>
+                <td>Directly protects gross profit margins and reduces labor waste.</td>
+              </tr>
+              <tr>
+                <td><strong>3</strong></td>
+                <td><strong>Defect Density</strong></td>
+                <td><span class="meta-tag" style="background:#ecfdf5; color:#065f46;">&lt; 2 per 100 sq.m</span></td>
+                <td>Detection</td>
+                <td>Catches trade & material flaws before turning into major failures.</td>
+              </tr>
+              <tr>
+                <td><strong>4</strong></td>
+                <td><strong>NCR Resolution Time</strong></td>
+                <td><span class="meta-tag" style="background:#ecfdf5; color:#065f46;">&le; 5 – 7 Days</span></td>
+                <td>Responsiveness</td>
+                <td>Prevents open issues from stalling downstream trade handoffs.</td>
+              </tr>
+              <tr>
+                <td><strong>5</strong></td>
+                <td><strong>Handover Punch List Count</strong></td>
+                <td><span class="meta-tag" style="background:#ecfdf5; color:#065f46;">Near-Zero / No Critical</span></td>
+                <td>Satisfaction</td>
+                <td>Ensures clean client handover and rapid retainage release.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 4: 5-STAGE PROJECT QUALITY GATEKEEPER PROTOCOL (PQGP) -->
+    <!-- ========================================================================= -->
+    <div id="tab-gates" class="tab-content">
+      
+      <!-- Document Header Banner -->
+      <div class="gate-doc-header">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:0.75rem;">
+          <div>
+            <div style="font-size:0.72rem; font-weight:800; text-transform:uppercase; letter-spacing:0.08em; color:var(--emerald-300); margin-bottom:0.25rem;">Standard Operating Procedure (SOP)</div>
+            <h2>PROJECT QUALITY GATEKEEPER PROTOCOL (PQGP)</h2>
+            <div class="doc-subtitle">Standard Operating Procedure for Commercial & Multi-Story Building Construction</div>
+          </div>
+          <div class="gate-doc-meta">
+            <span class="gate-doc-meta-badge">📄 DOC REF: SOP-QAQC-02</span>
+            <span class="gate-doc-meta-badge">🏢 APPLICABILITY: General Contracting & Project Delivery</span>
+            <span class="gate-doc-meta-badge">🛡️ GOVERNANCE: Tier-1 Hard-Gating</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 1: Protocol Mandate & Governance Architecture -->
+      <section class="section-panel">
+        <div class="section-panel-header">
+          <div class="section-panel-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            1. Protocol Mandate & Governance Architecture
+          </div>
+          <span class="meta-tag" style="background:var(--emerald-800); color:#fff;">Mandatory Governance</span>
+        </div>
+        <p style="font-size:0.92rem; color:var(--slate-700); line-height:1.65; margin-bottom:0.85rem;">
+          The <strong>5-Stage Project Quality Gatekeeper Protocol (PQGP)</strong> provides a non-negotiable governance and quality verification mechanism tailored for high-complexity building construction (commercial, residential, institutional, and mixed-use). Construction projects face substantial latent risks across structural integrity, architectural fit-out, statutory compliance, MEP integration, and commercial liability.
+        </p>
+        <p style="font-size:0.92rem; color:var(--slate-700); line-height:1.65; margin-bottom:1.25rem;">
+          This protocol operates on the principle of <strong>Hard Gating</strong>: No project stage may mobilize, procure substantial works, or execute physical site installations until the designated Gatekeeper Committee conducts a formal review and issues a verified Gate Certificate.
+        </p>
+
+        <!-- 4 Gating Decision Classifications -->
+        <h4 style="font-size:0.92rem; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; color:var(--slate-800); margin-bottom:0.6rem;">Gating Decision Classification Framework</h4>
+        <div class="gate-decision-grid">
+          <div class="gate-decision-card decision-card-go">
+            <div>
+              <div class="decision-card-header">
+                <span class="decision-badge decision-badge-go">PASSED (GO)</span>
+                <span style="font-size:1.1rem;">🟢</span>
+              </div>
+              <h5 style="font-size:0.92rem; font-weight:800; color:var(--slate-900); margin:0 0 0.4rem;">Unrestricted Phase Release</h5>
+              <p style="font-size:0.82rem; color:var(--slate-600); line-height:1.45; margin:0;">
+                Unrestricted release to subsequent phase; budget and procurement unblocked.
+              </p>
+            </div>
+            <div style="margin-top:0.75rem; font-size:0.72rem; font-weight:700; color:var(--emerald-700);">STATUS: FULL PHASE CLEARANCE</div>
+          </div>
+
+          <div class="gate-decision-card decision-card-cond">
+            <div>
+              <div class="decision-card-header">
+                <span class="decision-badge decision-badge-cond">CONDITIONAL PASS</span>
+                <span style="font-size:1.1rem;">🔵</span>
+              </div>
+              <h5 style="font-size:0.92rem; font-weight:800; color:var(--slate-900); margin:0 0 0.4rem;">Mobilization with Punch-List</h5>
+              <p style="font-size:0.82rem; color:var(--slate-600); line-height:1.45; margin:0;">
+                Phase mobilized with minor Punch-List actions resolved in &le; 14 days.
+              </p>
+            </div>
+            <div style="margin-top:0.75rem; font-size:0.72rem; font-weight:700; color:#1d4ed8;">STATUS: 14-DAY RESOLUTION WINDOW</div>
+          </div>
+
+          <div class="gate-decision-card decision-card-hold">
+            <div>
+              <div class="decision-card-header">
+                <span class="decision-badge decision-badge-hold">HOLD / REWORK</span>
+                <span style="font-size:1.1rem;">🟠</span>
+              </div>
+              <h5 style="font-size:0.92rem; font-weight:800; color:var(--slate-900); margin:0 0 0.4rem;">Substandard Deliverables</h5>
+              <p style="font-size:0.82rem; color:var(--slate-600); line-height:1.45; margin:0;">
+                Substandard deliverables. Rectification and mandatory re-audit required before re-evaluation.
+              </p>
+            </div>
+            <div style="margin-top:0.75rem; font-size:0.72rem; font-weight:700; color:#b45309;">STATUS: MANDATORY RE-AUDIT</div>
+          </div>
+
+          <div class="gate-decision-card decision-card-kill">
+            <div>
+              <div class="decision-card-header">
+                <span class="decision-badge decision-badge-kill">TERMINATE / KILL</span>
+                <span style="font-size:1.1rem;">🔴</span>
+              </div>
+              <h5 style="font-size:0.92rem; font-weight:800; color:var(--slate-900); margin:0 0 0.4rem;">Critical Non-Compliance</h5>
+              <p style="font-size:0.82rem; color:var(--slate-600); line-height:1.45; margin:0;">
+                Critical structural defect, statutory non-compliance, or commercially unviable overrun.
+              </p>
+            </div>
+            <div style="margin-top:0.75rem; font-size:0.72rem; font-weight:700; color:#b91c1c;">STATUS: IMMEDIATE WORK STOPPAGE</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Five-Stage Quality Gate Matrix -->
+      <section class="section-panel">
+        <div class="section-panel-header">
+          <div class="section-panel-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            2. Five-Stage Quality Gate Master Matrix
+          </div>
+          <span class="meta-tag" style="background:var(--slate-800); color:#fff;">Stage Matrix</span>
+        </div>
+        
+        <div class="matrix-table-wrap">
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th style="width:12%;">Gate</th>
+                <th style="width:20%;">Phase Scope</th>
+                <th style="width:20%;">Primary Gatekeepers</th>
+                <th style="width:28%;">Mandatory Deliverables</th>
+                <th style="width:20%;">Kill / Hold Triggers</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="gate-pill gate-pill-g1">Gate 1 (G1)</span></td>
+                <td><strong>Pre-Construction & Design Verification</strong></td>
+                <td>Project Manager, Principal Architect, Structural Lead</td>
+                <td>100% IFC Drawings, BIM Clash Resolution, Geotechnical Sign-Off, Full Building Permits.</td>
+                <td style="color:#b91c1c; font-weight:600;">Unresolved spatial clashes; Missing foundational permits.</td>
+              </tr>
+              <tr>
+                <td><span class="gate-pill gate-pill-g2">Gate 2 (G2)</span></td>
+                <td><strong>Substructure & Foundation Sign-Off</strong></td>
+                <td>Structural Engineer, Geotech Consultant, QA/QC Lead</td>
+                <td>Pile Load Test Reports (Static/Dynamic), Excavation As-Builts, Waterproofing Spark/Flood Tests, Rebar & Pour Log.</td>
+                <td style="color:#b91c1c; font-weight:600;">Pile settlement failure; Water ingress; Honeycombing &gt; tolerance.</td>
+              </tr>
+              <tr>
+                <td><span class="gate-pill gate-pill-g3">Gate 3 (G3)</span></td>
+                <td><strong>Superstructure & Building Envelope</strong></td>
+                <td>Structural Engineer, Project Manager, MEP Coordinator</td>
+                <td>28-day Concrete Core Strength, Post-Tensioning Elongation Logs, AAMA Field Water Test, Formwork Scan Reports.</td>
+                <td style="color:#b91c1c; font-weight:600;">Concrete strength failure; Envelope water leakage.</td>
+              </tr>
+              <tr>
+                <td><span class="gate-pill gate-pill-g4">Gate 4 (G4)</span></td>
+                <td><strong>MEP Rough-in & Fit-Out</strong></td>
+                <td>MEP Project In-Charge, QA/QC Manager</td>
+                <td>Hydrostatic Pressure Tests (1.5x working), Duct Leakage (SMACNA), Firestopping Certifications, Above-Ceiling Sign-Off.</td>
+                <td style="color:#b91c1c; font-weight:600;">Unsealed fire dampers/shafts; Hydrostatic drop; Defective acoustic ratings.</td>
+              </tr>
+              <tr>
+                <td><span class="gate-pill gate-pill-g5">Gate 5 (G5)</span></td>
+                <td><strong>Commissioning & Closeout</strong></td>
+                <td>Operation Team, QA/QC Team, Client PM</td>
+                <td>Full Building TAB Report, Integrated Life-Safety Matrix Tripping, Certificate of Occupancy (C of O), O&M Manuals.</td>
+                <td style="color:#b91c1c; font-weight:600;">Fire Alarm / Generator transfer failure; Failed AHJ inspection; Equipment Motors, Fire pumps, Domestic Pumps, STP.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 3: Detailed Stage Protocols & Execution Criteria -->
+      <section class="section-panel">
+        <div class="section-panel-header">
+          <div class="section-panel-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+            3. Detailed Stage Protocols & Execution Criteria
+          </div>
+          <span class="meta-tag" style="background:var(--emerald-800); color:#fff;">Technical Execution Criteria</span>
+        </div>
+
+        <!-- Gate 1 Detail Card -->
+        <div class="gate-detail-card">
+          <div class="gate-detail-header">
+            <div class="gate-detail-title">
+              <span class="gate-pill gate-pill-g1">GATE 1</span>
+              <span>Pre-Construction, Constructability & Design Baseline</span>
+            </div>
+            <span class="decision-badge decision-badge-go">Stage 1 Protocols</span>
+          </div>
+          <div class="gate-detail-body">
+            <ul style="margin:0 0 1rem; padding-left:1.2rem; font-size:0.88rem; color:var(--slate-800); line-height:1.6;">
+              <li><strong>BIM Coordination:</strong> Zero 'Hard Clashes' between structural load-bearing elements and gravity drainage/HVAC mains (Navisworks Clash Log certified).</li>
+            </ul>
+
+            <!-- Explainer Box for Gate 1 Concepts -->
+            <div class="concept-explainer">
+              <div class="concept-explainer-item">
+                <strong>📐 BIM Coordination:</strong>
+                The process of combining 3D digital blueprints from the architect, structural engineer, and mechanical/plumbing trades into one master computer model to make sure everything fits together.
+              </div>
+              <div class="concept-explainer-item">
+                <strong>⚡ Zero 'Hard Clashes':</strong>
+                No two physical solid objects occupy the exact same space in the computer model (for example, a large pipe isn't drawn directly through the middle of a solid steel column).
+              </div>
+              <div class="concept-explainer-item">
+                <strong>🏗️ Structural Load-Bearing Elements:</strong>
+                The critical "bones" that hold the building up and keep it standing—such as concrete columns, load-bearing walls, structural slabs, and steel beams.
+              </div>
+              <div class="concept-explainer-item">
+                <strong>🚰 Gravity Drainage / HVAC Mains:</strong>
+                The largest and most rigid utilities in a building:
+                <ul style="margin:0.25rem 0 0; padding-left:1.1rem; font-size:0.82rem; line-height:1.5;">
+                  <li><em>Gravity drainage:</em> Waste and sewer pipes that must slant downward at a strict angle so wastewater flows naturally. Because they need a constant slope, you cannot easily bend them around obstacles on-site.</li>
+                  <li><em>HVAC mains:</em> The largest central air ducts and chilled water pipes that heat, cool, and ventilate the building.</li>
+                </ul>
+              </div>
+            </div>
+
+            <ul style="margin:0; padding-left:1.2rem; font-size:0.88rem; color:var(--slate-800); line-height:1.6;">
+              <li><strong>Geotechnical Validation:</strong> Bearing capacity and soil stabilization confirmed against foundation structural design parameters.</li>
+              <li><strong>Permit Approvals:</strong> Barangay Clearance, environmental clearance, and city municipal building permits fully acquired.</li>
+              <li><strong>Quality Baseline:</strong> Project schedule, 3D Construction Methodologies, Material Submittal Schedule (MSS), and Site Safety/Excavation Shoring Plans.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Gate 2 Detail Card -->
+        <div class="gate-detail-card">
+          <div class="gate-detail-header">
+            <div class="gate-detail-title">
+              <span class="gate-pill gate-pill-g2">GATE 2</span>
+              <span>Substructure, Groundworks & Foundation Release</span>
+            </div>
+            <span class="decision-badge decision-badge-cond">Stage 2 Protocols</span>
+          </div>
+          <div class="gate-detail-body">
+            <ul style="margin:0 0 1rem; padding-left:1.2rem; font-size:0.88rem; color:var(--slate-800); line-height:1.6;">
+              <li><strong>Pile Integrity & Load Tests:</strong> Geotechnical Analysis recommended by third party (BIP Steadfast).</li>
+              <li><strong>Sub-Slab Barrier:</strong> Continuous blindside waterproofing inspection with spark testing / flood testing verified prior to slab casting.</li>
+              <li><strong>Raft Mass Concreting:</strong> Thermal monitoring log for mass concrete pours (maximum core-to-surface temperature differential &le; 20&deg;C).</li>
+            </ul>
+
+            <!-- Concrete Curing & Protection Sub-Panel -->
+            <div class="concrete-curing-panel">
+              <h4 style="font-size:0.95rem; font-weight:800; color:var(--emerald-950); margin:0 0 0.5rem; display:flex; align-items:center; gap:0.4rem;">
+                💧 Concrete Moisture Management, Physical Protection & Early Joint Cutting
+              </h4>
+
+              <div class="curing-sub-grid">
+                <div class="curing-sub-card">
+                  <h5>💧 Moisture Management (Curing)</h5>
+                  <ul>
+                    <li><strong>Start Immediately:</strong> Begin curing as soon as the concrete surface is hard enough to resist damage from the method used (usually right after the bleed water evaporates and final finishing is complete).</li>
+                    <li><strong>Wet Methods:</strong> Keep the surface constantly wet using continuous water misting/sprinkling, ponding (for flat slabs), or covering with wet burlap/hessian blankets covered by polyethylene plastic sheeting to prevent evaporation.</li>
+                    <li><strong>Chemical Curing Compounds:</strong> Spray an approved liquid membrane-forming curing compound that seals moisture inside the slab if wet curing is impractical.</li>
+                    <li><strong>Duration:</strong> Maintain moisture continuously for a minimum of 7 days (or at least 3 days for high-early-strength concrete; 14 days for slow-curing/mass pours).</li>
+                  </ul>
+                </div>
+
+                <div class="curing-sub-card">
+                  <h5>🛡️ Physical & Load Protection</h5>
+                  <ul>
+                    <li><strong>Foot Traffic:</strong> Keep all foot traffic off the slab for at least 24 to 48 hours.</li>
+                    <li><strong>Heavy Equipment & Vehicles:</strong> Prohibit construction vehicles, machinery, and concentrated material loads for at least 7 to 28 days (until verified by test cylinder breaks).</li>
+                    <li><strong>Formwork Striking Times:</strong> Do not strip side forms, vertical supports, or reshores prematurely; adhere to structural engineering schedules based on field-cured compressive strength.</li>
+                  </ul>
+                </div>
+
+                <div class="curing-sub-card">
+                  <h5>✂️ Early Contraction Joint Cutting</h5>
+                  <ul>
+                    <li>Saw-cut control/contraction joints early—typically within <strong>6 to 18 hours</strong> after pouring in warm weather (or 12 to 24 hours in cool weather)—before internal shrinkage stresses create random diagonal cracking.</li>
+                    <li>Cut joints to a depth of <strong>1/4 the slab thickness</strong>.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Summary Checklist Table -->
+              <div style="margin-top:1rem;">
+                <h5 style="font-size:0.85rem; font-weight:800; color:var(--emerald-950); margin-bottom:0.4rem;">Summary Checklist</h5>
+                <div class="matrix-table-wrap" style="margin:0;">
+                  <table class="matrix-table" style="background:#fff;">
+                    <thead>
+                      <tr>
+                        <th style="width:20%; background:var(--emerald-900);">Priority</th>
+                        <th style="width:55%; background:var(--emerald-900);">Key Action</th>
+                        <th style="width:25%; background:var(--emerald-900);">Minimum Timeframe</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><span style="font-weight:800; color:#047857;">Immediate</span></td>
+                        <td>Apply water mist, wet burlap, or curing compound</td>
+                        <td><strong>Hour 0 – Day 7</strong></td>
+                      </tr>
+                      <tr>
+                        <td><span style="font-weight:800; color:#1d4ed8;">Early</span></td>
+                        <td>Saw-cut control joints</td>
+                        <td><strong>6 – 18 Hours</strong></td>
+                      </tr>
+                      <tr>
+                        <td><span style="font-weight:800; color:#b45309;">Access</span></td>
+                        <td>Restrict all personnel foot traffic</td>
+                        <td><strong>24 – 48 Hours</strong></td>
+                      </tr>
+                      <tr>
+                        <td><span style="font-weight:800; color:#b91c1c;">Loads</span></td>
+                        <td>Keep heavy vehicles and construction materials off</td>
+                        <td><strong>7 – 28 Days</strong></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Deliverables -->
+            <div style="margin-top:0.85rem;">
+              <strong style="font-size:0.84rem; color:var(--slate-900);">Deliverables:</strong>
+              <div class="deliverables-chip-list">
+                <span class="deliverable-chip">📋 Concrete plant calibration certs</span>
+                <span class="deliverable-chip">🧪 7/28-day break logs</span>
+                <span class="deliverable-chip">🗺️ Surveyor coordinate map</span>
+                <span class="deliverable-chip">⚡ Ground resistance (&le; 5 Ohms)</span>
+                <span class="deliverable-chip">📜 Certificate from supplier</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gate 3 Detail Card -->
+        <div class="gate-detail-card">
+          <div class="gate-detail-header">
+            <div class="gate-detail-title">
+              <span class="gate-pill gate-pill-g3">GATE 3</span>
+              <span>Superstructure Framing & Building Envelope Integrity</span>
+            </div>
+            <span class="decision-badge decision-badge-cond">Stage 3 Protocols</span>
+          </div>
+          <div class="gate-detail-body">
+            <ul style="margin:0; padding-left:1.2rem; font-size:0.88rem; color:var(--slate-800); line-height:1.65;">
+              <li><strong>Framing & Tolerances:</strong> Laser scanning for slab deflection and verticality of columns/cores within ACI 117 / BS 5606 tolerances.</li>
+              <li><strong>Envelope Field Tests:</strong> AAMA 501.2 hose testing and ASTM E1105 field water penetration testing for unitized curtain wall assemblies.</li>
+              <li><strong>Roof Waterproofing:</strong> 48-hour hydrostatic flood test or electronic vector mapping (EVM) for green roofs and podium slabs.</li>
+              <li><strong>Structural Sign-Off:</strong> Concrete cylinder compressive logs (28-day), NDT steel weld testing, and facade anchor pull-out test reports.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Gate 4 Detail Card -->
+        <div class="gate-detail-card">
+          <div class="gate-detail-header">
+            <div class="gate-detail-title">
+              <span class="gate-pill gate-pill-g4">GATE 4</span>
+              <span>MEP Rough-in, Life Safety & Architectural Fit-Out</span>
+            </div>
+            <span class="decision-badge decision-badge-hold">Stage 4 Protocols</span>
+          </div>
+          <div class="gate-detail-body">
+            <ul style="margin:0; padding-left:1.2rem; font-size:0.88rem; color:var(--slate-800); line-height:1.65;">
+              <li><strong>Pressure & Containment:</strong> Hydrostatic pressure testing of chilled water, domestic water, and sprinkler piping held at 150 psi for 24h with zero loss.</li>
+              <li><strong>Firestopping Certification:</strong> 100% visual and destructive audit of UL-listed firestop penetration seals across floor/wall fire separations.</li>
+              <li><strong>First-Off Mockups:</strong> Approved benchmark mockups for drywall finishes, tiling, joinery, and sanitary fixtures establishing tolerance baselines.</li>
+              <li><strong>Above-Ceiling Sign-Off:</strong> Formal multi-disciplinary sign-off (HVAC, Electrical, Plumbing, Fire Alarm) prior to closing drywall ceilings.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Gate 5 Detail Card -->
+        <div class="gate-detail-card">
+          <div class="gate-detail-header">
+            <div class="gate-detail-title">
+              <span class="gate-pill gate-pill-g5">GATE 5</span>
+              <span>Integrated Commissioning, Handover & Practical Completion</span>
+            </div>
+            <span class="decision-badge decision-badge-go">Stage 5 Protocols</span>
+          </div>
+          <div class="gate-detail-body">
+            <ul style="margin:0; padding-left:1.2rem; font-size:0.88rem; color:var(--slate-800); line-height:1.65;">
+              <li><strong>Black Building Test:</strong> Total main utility power disconnection to prove emergency generator start, ATS transfer, and life-safety operation &le; 10s.</li>
+              <li><strong>HVAC TAB Balancing:</strong> Airflow balance report, chilled water flow balancing, thermal comfort audit, and IAQ verification.</li>
+              <li><strong>Statutory Sign-Off:</strong> Civil Defense smoke extraction, stair pressurization, and emergency voice alarm communication (EVAC) sign-off.</li>
+              <li><strong>Closeout Assets:</strong> Final Certificate of Occupancy (C of O), As-Built BIM LOD 500 / COBie data, and O&M warranty dossiers.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Non-Conformance (NCR) & Escalation Hierarchy -->
+      <section class="section-panel">
+        <div class="section-panel-header">
+          <div class="section-panel-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            4. Non-Conformance (NCR) & Escalation Hierarchy
+          </div>
+          <span class="meta-tag" style="background:#ef4444; color:#fff;">Escalation Framework</span>
+        </div>
+
+        <div class="matrix-table-wrap">
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th style="width:20%;">Severity Class</th>
+                <th style="width:40%;">Definition & Construction Examples</th>
+                <th style="width:20%;">Resolution Window</th>
+                <th style="width:20%;">Gating Impact</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="decision-badge decision-badge-kill">Category 1 (Critical)</span></td>
+                <td>Structural deficiency, fire-life-safety non-compliance, failed load test, foundation compromise.</td>
+                <td><strong>Immediate Stop-Work; Plan in 48h</strong></td>
+                <td style="color:#b91c1c; font-weight:800;">Immediate Hard Stop / Gate Denied</td>
+              </tr>
+              <tr>
+                <td><span class="decision-badge decision-badge-hold">Category 2 (Major)</span></td>
+                <td>Waterproofing failure, MEP pressure loss, unapproved material substitution, out-of-tolerance facade.</td>
+                <td><strong>7 Business Days</strong></td>
+                <td style="color:#c2410c; font-weight:700;">No Gate Clearance until rectified</td>
+              </tr>
+              <tr>
+                <td><span class="decision-badge decision-badge-cond">Category 3 (Minor)</span></td>
+                <td>Surface finish imperfections, paint blemishes, missing labels, minor alignment flaws.</td>
+                <td><strong>7 Business Days</strong></td>
+                <td style="color:#1d4ed8; font-weight:600;">Conditional Pass permitted (Snag list)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 5: Quality Gate Approval & Certification Workflow -->
+      <section class="section-panel">
+        <div class="section-panel-header">
+          <div class="section-panel-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            5. Quality Gate Approval & Certification Workflow
+          </div>
+          <span class="meta-tag" style="background:var(--emerald-800); color:#fff;">Committee Protocol</span>
+        </div>
+
+        <p style="font-size:0.92rem; color:var(--slate-700); line-height:1.65; margin-bottom:1.25rem;">
+          A <strong>Gate Review Meeting</strong> is convened at least <strong>15 working days</strong> prior to target phase completion. The Project Quality Manager presents the <em>Gate Review Dossier</em> containing all ITP inspection records, lab test reports, as-built redlines, and third-party certifications. Sign-off requires unanimous assent from the voting committee:
+        </p>
+
+        <div class="matrix-table-wrap">
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th style="width:25%;">Stakeholder Role</th>
+                <th style="width:40%;">Mandate & Review Responsibility</th>
+                <th style="width:18%;">Authority Type</th>
+                <th style="width:17%;">Sign-Off / Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Client Representative / PM</strong></td>
+                <td>Commercial alignment, schedule viability, and operational acceptance.</td>
+                <td><span class="gov-badge" style="background:#e0f2fe; color:#0369a1; font-weight:700;">Voting Chair</span></td>
+                <td><span class="point-chip" style="background:#ecfdf5; color:#047857; border:1px solid #a7f3d0;">[ ✓ ] Approved</span></td>
+              </tr>
+              <tr>
+                <td><strong>Principal Structural / MEP Consultant</strong></td>
+                <td>Technical specification compliance, code adherence, and design intent.</td>
+                <td><span class="gov-badge" style="background:#f1f5f9; color:#334155; font-weight:700;">Technical Sign-Off</span></td>
+                <td><span class="point-chip" style="background:#ecfdf5; color:#047857; border:1px solid #a7f3d0;">[ ✓ ] Approved</span></td>
+              </tr>
+              <tr>
+                <td><strong>QA/QC Manager</strong></td>
+                <td>Subcontractor quality auditing, NCR closeout, and inspection dossier completeness.</td>
+                <td><span class="gov-badge" style="background:#ecfdf5; color:#065f46; font-weight:700;">Executing Sign-Off</span></td>
+                <td><span class="point-chip" style="background:#ecfdf5; color:#047857; border:1px solid #a7f3d0;">[ ✓ ] Approved</span></td>
+              </tr>
+              <tr>
+                <td><strong>Independent CxA / Auditor</strong></td>
+                <td>Special inspections, non-destructive testing, and building commissioning validation.</td>
+                <td><span class="gov-badge" style="background:#fef3c7; color:#92400e; font-weight:700;">Advisory & Audit</span></td>
+                <td><span class="point-chip" style="background:#ecfdf5; color:#047857; border:1px solid #a7f3d0;">[ ✓ ] Approved</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Corporate Footer -->
+  <footer class="cockpit-footer">
+    <div>
+      <strong>FCLaranang Dev Corp QA/QC System</strong> &bull; ISO 9001:2015 Compliance &bull; Governance & QITP Series
+    </div>
+    <div>
+      &copy; 2026 FCLaranang Dev Corp. All Rights Reserved.
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="../shared/js/qaqc-bridge.js"></script>
+  <script src="qitp-data.js"></script>
+  <script>
+    // Tab Navigation Logic
+    document.querySelectorAll('#govTabsNav .gov-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#govTabsNav .gov-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+        btn.classList.add('active');
+        const targetId = btn.getAttribute('data-tab');
+        const targetContent = document.getElementById(targetId);
+        if (targetContent) targetContent.classList.add('active');
+      });
+    });
+
+    // Populate QITP Database
+    function initQITP() {
+      if (!window.QITP_DATABASE || !window.QITP_DATABASE.items) return;
+
+      const data = window.QITP_DATABASE;
+      const tbody = document.getElementById('qitpTableBody');
+      const tradeFilter = document.getElementById('qitpTradeFilter');
+      if (!tbody) return;
+
+      // Extract unique trades
+      const trades = [...new Set(data.items.map(i => i.trade).filter(Boolean))];
+      trades.forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t;
+        opt.textContent = t;
+        tradeFilter.appendChild(opt);
+      });
+
+      renderQitpTable(data.items);
+    }
+
+    function renderQitpTable(items) {
+      const tbody = document.getElementById('qitpTableBody');
+      const counter = document.getElementById('qitpCounter');
+      tbody.innerHTML = '';
+
+      if (items.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="12" style="text-align:center; padding:2rem; color:var(--slate-500);">No inspection criteria matched your filter.</td></tr>';
+        if (counter) counter.textContent = 'Showing 0 items';
+        return;
+      }
+
+      let currentTrade = '';
+      items.forEach((item, index) => {
+        // Trade separator header
+        if (item.trade !== currentTrade) {
+          currentTrade = item.trade;
+          const trHeader = document.createElement('tr');
+          trHeader.innerHTML = `<td colspan="12" class="trade-row-header">📦 PACKAGE: ${currentTrade}</td>`;
+          tbody.appendChild(trHeader);
+        }
+
+        const tr = document.createElement('tr');
+        
+        let genPointClass = 'point-chip';
+        if (item.gencon === 'H') genPointClass += ' chip-h';
+        else if (item.gencon === 'W') genPointClass += ' chip-w';
+        else if (item.gencon === 'S') genPointClass += ' chip-s';
+        else if (item.gencon === 'X') genPointClass += ' chip-x';
+
+        tr.innerHTML = `
+          <td><strong>${item.item_no}</strong></td>
+          <td style="font-weight:600; color:var(--slate-700);">${item.trade}</td>
+          <td><strong>${item.description}</strong></td>
+          <td style="color:var(--slate-600);">${item.characteristics}</td>
+          <td style="color:var(--slate-600);">${item.procedure}</td>
+          <td style="color:var(--slate-800);">${item.acceptance_criteria}</td>
+          <td style="color:var(--slate-600);">${item.frequency}</td>
+          <td style="color:var(--slate-600);">${item.records}</td>
+          <td style="color:var(--slate-600);">${item.qa_reference}</td>
+          <td style="text-align:center;"><span class="point-chip chip-x">${item.subcon || 'X'}</span></td>
+          <td style="text-align:center;"><span class="${genPointClass}">${item.gencon || 'S'}</span></td>
+          <td style="text-align:center;"><span class="point-chip chip-s">${item.consultant || 'S'}</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      if (counter) {
+        counter.textContent = `Showing ${items.length} of ${window.QITP_DATABASE.total_items} inspection test items`;
+      }
+    }
+
+    function filterQITP() {
+      if (!window.QITP_DATABASE) return;
+      const query = document.getElementById('qitpLiveSearch').value.toLowerCase().trim();
+      const selectedTrade = document.getElementById('qitpTradeFilter').value;
+      const selectedPoint = document.getElementById('qitpPointFilter').value;
+
+      const filtered = window.QITP_DATABASE.items.filter(item => {
+        const matchesTrade = !selectedTrade || item.trade === selectedTrade;
+        const matchesPoint = !selectedPoint || item.gencon === selectedPoint || item.subcon === selectedPoint;
+        
+        const combinedText = `${item.trade} ${item.description} ${item.characteristics} ${item.procedure} ${item.acceptance_criteria} ${item.qa_reference} ${item.records}`.toLowerCase();
+        const matchesSearch = !query || combinedText.includes(query);
+
+        return matchesTrade && matchesPoint && matchesSearch;
+      });
+
+      renderQitpTable(filtered);
+    }
+
+    document.getElementById('qitpLiveSearch')?.addEventListener('input', filterQITP);
+    document.getElementById('qitpTradeFilter')?.addEventListener('change', filterQITP);
+    document.getElementById('qitpPointFilter')?.addEventListener('change', filterQITP);
+
+    // Export to CSV
+    function exportQitpToCsv() {
+      if (!window.QITP_DATABASE) return;
+      const items = window.QITP_DATABASE.items;
+      let csv = 'Item No,Trade,Work Description,Characteristics,Procedure,Acceptance Criteria,Frequency,Records,QA Reference,SubCon,GenCon,Consultant\n';
+
+      items.forEach(i => {
+        const row = [
+          `"${i.item_no}"`,
+          `"${i.trade}"`,
+          `"${i.description.replace(/"/g, '""')}"`,
+          `"${i.characteristics.replace(/"/g, '""')}"`,
+          `"${i.procedure.replace(/"/g, '""')}"`,
+          `"${i.acceptance_criteria.replace(/"/g, '""')}"`,
+          `"${i.frequency}"`,
+          `"${i.records}"`,
+          `"${i.qa_reference}"`,
+          `"${i.subcon}"`,
+          `"${i.gencon}"`,
+          `"${i.consultant}"`
+        ];
+        csv += row.join(',') + '\n';
+      });
+
+      const encodedUri = encodeURI('data:text/csv;charset=utf-8,' + csv);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', 'FCLDC_QITP_Master_Matrix_Plan.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      QAQCBridge.showToast('Exported complete QITP Plan to CSV', 'success');
+    }
+
+    // KPI Calculators
+    function calculateFTQ() {
+      const passed = parseFloat(document.getElementById('ftqPassed').value) || 0;
+      const total = parseFloat(document.getElementById('ftqTotal').value) || 1;
+      const rate = ((passed / total) * 100).toFixed(2);
+
+      document.getElementById('ftqResultVal').textContent = `${rate}%`;
+      const badge = document.getElementById('ftqStatusBadge');
+      if (rate >= 95) {
+        badge.className = 'status-badge';
+        badge.textContent = 'EXCELLENT (Exceeds 95% Benchmark)';
+      } else if (rate >= 90) {
+        badge.className = 'status-badge';
+        badge.textContent = 'COMPLIANT (Meets 90% Target)';
+      } else {
+        badge.className = 'status-badge offline';
+        badge.textContent = 'BELOW TARGET (Requires Corrective Action)';
+      }
+    }
+
+    function calculateRework() {
+      const rework = parseFloat(document.getElementById('reworkCost').value) || 0;
+      const budget = parseFloat(document.getElementById('totalBudget').value) || 1;
+      const rate = ((rework / budget) * 100).toFixed(2);
+
+      document.getElementById('reworkResultVal').textContent = `${rate}%`;
+      const badge = document.getElementById('reworkStatusBadge');
+      if (rate < 1.0) {
+        badge.className = 'status-badge';
+        badge.textContent = 'WORLD-CLASS (< 1% Threshold)';
+      } else if (rate <= 2.0) {
+        badge.className = 'status-badge';
+        badge.textContent = 'ACCEPTABLE (Within 2% Limit)';
+      } else {
+        badge.className = 'status-badge offline';
+        badge.textContent = 'CRITICAL (Exceeds Rework Tolerance)';
+      }
+    }
+
+    // Init on load
+    initQITP();
+  </script>
+</body>
+</html>

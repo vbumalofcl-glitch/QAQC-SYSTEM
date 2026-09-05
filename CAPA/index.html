@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CAPA Professional Dashboard & Management Subsystem</title>
+  <link rel="icon" type="image/x-icon" href="assets/capa_icon.ico">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="toast" class="toast">NC added to registry</div>
+<div class="app">
+  <div class="window-controls" aria-label="Dashboard window controls">
+    <a href="../index.html" class="icon-btn" title="Back to Executive Home" aria-label="Back to Executive Home" style="background:#065f46; color:#ffffff; text-decoration:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" width="18" height="18"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </a>
+    <button class="icon-btn" id="fitScreen" title="Fit to screen" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 3H3v5"/><path d="M3 3l7 7"/><path d="M16 3h5v5"/><path d="M21 3l-7 7"/><path d="M8 21H3v-5"/><path d="M3 21l7-7"/><path d="M16 21h5v-5"/><path d="M21 21l-7-7"/></svg></button>
+    <button class="icon-btn" id="minimizeDash" title="Minimize" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14"/></svg></button>
+    <button class="icon-btn" id="expandDash" title="Expand fullscreen" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 9V4h5"/><path d="M20 9V4h-5"/><path d="M4 15v5h5"/><path d="M20 15v5h-5"/></svg></button>
+  </div>
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow" style="display:flex; align-items:center; gap:8px;">
+        <a href="../index.html" style="text-decoration:none; color:inherit; font-weight:700; opacity:0.9;">🏠 Executive Home</a>
+        <span>/</span>
+        <span>QAQC • CAPA Tracker</span>
+      </div>
+      <div class="dashboard-title-row">
+        <img class="dashboard-title-icon" src="assets/dashboard_icon.png" alt="Dashboard icon">
+        <h1>Corrective & Preventive Action Dashboard</h1>
+      </div>
+      <p class="subtitle">Monitor non-conformance items, root causes, corrective actions, preventive actions, responsible parties, due dates, and closure status.</p>
+    </div>
+  </section>
+
+  <section class="top-meta">
+    <div class="meta-card">
+      <div class="label">Project</div>
+      <select class="field project-filter" id="projectFilter"><option value="">All Projects</option></select>
+    </div>
+    <div class="meta-card">
+      <div class="inline-meta-row">
+        <label class="label" for="clientInput">Client</label>
+        <input class="field meta-inline-input" id="clientInput" placeholder="Select project or enter client..." title="Client name for the selected project">
+      </div>
+      <div class="inline-meta-row">
+        <label class="label" for="projectLocationInput">Location of Project</label>
+        <input class="field meta-inline-input" id="projectLocationInput" placeholder="Select project or enter location..." title="Project location for the selected project">
+      </div>
+    </div>
+    <div class="meta-card clickable-card" id="openRacimCard">
+      <div class="inline-meta-row">
+        <div class="label">Matrix of Responsibility</div>
+        <div class="value">Open RACIM</div>
+      </div>
+      <div class="mini-hint">Click to view CAPA RACIM matrix</div>
+    </div>
+    <div class="meta-card">
+      <div class="label">Coverage</div>
+      <select class="field project-filter" id="coverageFilter"><option value="">All Coverage</option></select>
+    </div>
+  </section>
+
+  <section class="kpis">
+    <div class="kpi"><div class="label">Total CAPA</div><div class="num" id="kpiTotal">0</div><small>Selected scope</small></div>
+    <div class="kpi"><div class="label">Open</div><div class="num" id="kpiOpen">0</div><small>Awaiting action</small></div>
+    <div class="kpi"><div class="label">In Progress</div><div class="num" id="kpiProgress">0</div><small>Currently assigned</small></div>
+    <div class="kpi"><div class="label">Overdue</div><div class="num" id="kpiOverdue">0</div><small>Past target date</small></div>
+    <div class="kpi"><div class="label">Closed</div><div class="num" id="kpiClosed">0</div><small>Verified complete</small></div>
+  </section>
+
+  <section class="main-grid">
+    <div class="panel"><h2>CAPA by Responsible Party</h2><div id="ownerBars"></div></div>
+    <div class="panel chart-card">
+      <div class="donut" id="statusDonut"><div class="donut-center" id="statusDonutCenter">0%<br>Total</div></div>
+      <div>
+        <h2>Status Mix</h2>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-label"><span class="dot" style="background:var(--green)"></span> Closed / verified</span><span class="legend-percent" id="closedPct">0%</span></div>
+          <div class="legend-item"><span class="legend-label"><span class="dot" style="background:var(--blue)"></span> In progress</span><span class="legend-percent" id="progressPct">0%</span></div>
+          <div class="legend-item"><span class="legend-label"><span class="dot" style="background:var(--red)"></span> Open or overdue</span><span class="legend-percent" id="openOverduePct">0%</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <h2>CAPA Register</h2>
+        <button class="btn btn-primary" id="openModal" type="button">+ Add NC</button>
+        <button class="btn btn-primary" id="openCompilerBtn" type="button" style="background:#0f172a;color:#fff;border:1px solid #334155;"><i class="fas fa-file-invoice"></i> Report Compiler</button>
+        <button class="btn btn-light" id="actionLettersBtn" type="button">Action Letters</button>
+        <div id="selectedBulkBar" class="bulk-action-bar" style="display:none;">
+          <span><strong id="selectedCount">0</strong> selected</span>
+          <button class="btn btn-sm btn-primary" id="bulkPrintLetterBtn" type="button" title="Print action letter for selected CAPA items">Print selected CAPA action letter</button>
+          <button class="btn btn-sm btn-light" id="bulkCloseBtn" type="button" title="Set status to Closed for selected">Mark Closed</button>
+          <button class="btn btn-sm btn-light" id="bulkProgressBtn" type="button" title="Set status to In Progress for selected">Mark In Progress</button>
+          <button class="btn btn-sm btn-light" id="bulkOpenBtn" type="button" title="Set status to Open for selected">Mark Open</button>
+          <button class="btn btn-sm btn-outline-danger" id="bulkDeleteBtn" type="button" title="Delete selected CAPA records">Delete</button>
+          <button class="btn btn-sm btn-light" id="bulkClearBtn" type="button" title="Clear selection">✕</button>
+        </div>
+      </div>
+      <div class="toolbar-actions">
+        <input class="field" id="search" placeholder="Search CAPA...">
+        <select class="field" id="statusFilter">
+          <option value="">All Status</option><option>Open</option><option>In Progress</option><option>Overdue</option><option>Closed</option>
+        </select>
+        <button class="btn btn-primary" id="printPdf" type="button"><i class="fas fa-print"></i> Report Compiler / Print PDF</button>
+        <button class="btn btn-light" id="loadExistingFileBtn" type="button" title="Load existing CAPA project records into browser">Load Existing File</button>
+        <button class="btn btn-light" id="saveJson" type="button">Save JSON</button>
+        <button class="btn btn-light" id="loadJsonBtn" type="button">Load JSON</button>
+        <button class="btn btn-light" id="exportExcel" type="button">Export Excel (.xls)</button>
+        <button class="btn btn-light" id="importCsvBtn" type="button">Import CSV</button>
+        <button class="btn btn-light" id="exportCsv" type="button">Export CSV</button>
+        <input id="jsonFile" type="file" accept=".json,application/json" hidden>
+        <input id="csvFile" type="file" accept=".csv,text/csv" hidden>
+      </div>
+    </div>
+
+
+    <div class="print-registry-header" aria-label="CAPA Registry print PDF header">
+      <table class="registry-print-header-table">
+        <tr>
+          <td class="registry-print-logo-cell">
+            <img class="registry-print-logo" src="assets/registry_print_logo.png" alt="FCL Aranang and quality management logos">
+          </td>
+          <td class="registry-print-title-cell">
+            <div>WEEKLY INSPECTION</div>
+            <div>REPORT</div>
+          </td>
+          <td class="registry-print-meta-cell">
+            <table class="registry-print-meta-table" aria-label="Document information">
+              <tr><td>QAQC- WIR - TABLE 2</td></tr>
+              <tr><td>Rev. No. : 0</td></tr>
+              <tr><td>Eff. Date: 11/10/2025</td></tr>
+              <tr><td>Page : 1 of 1</td></tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="select-col" style="width:36px; text-align:center;"><input type="checkbox" id="selectAllCapa" title="Select all CAPA records"></th>
+            <th class="num-col" style="width:46px; text-align:center;">No.</th>
+            <th>Project Name</th><th>Client</th><th>Location of Project</th><th>Image</th><th>Non-Conformance</th><th>Corrective Action</th><th>Preventive Action</th><th>Root Cause</th><th>Responsible Party</th><th>Due Date</th><th>Coverage</th><th>Remarks</th><th>Status</th>
+            <th style="min-width:210px; text-align:center;">Action Letter</th>
+          </tr>
+        </thead>
+        <tbody id="capaRows"></tbody>
+      </table>
+      <div class="empty" id="emptyState">No CAPA items match the current filter.</div>
+    </div>
+  </section>
+
+  <section class="panel action-letters-sheet" id="actionLettersSheet">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <h2>Action Letters</h2>
+      </div>
+      <div class="toolbar-actions">
+        <input class="field" id="actionLetterSearch" placeholder="Search letters...">
+        <select class="field" id="actionLetterStatusFilter">
+          <option value="">All Status</option>
+          <option>Open</option>
+          <option>In Progress</option>
+          <option>Overdue</option>
+          <option>Closed</option>
+        </select>
+        <button class="btn btn-light" id="backToRegistry" type="button">Back to CAPA Register</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table class="action-letter-list-table">
+        <thead>
+          <tr>
+            <th>Date of Issuance</th>
+            <th>Action Letter No.</th>
+            <th>Project</th>
+            <th>Client</th>
+            <th>Location</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th style="min-width:140px; text-align:center;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="actionLetterRows"></tbody>
+      </table>
+      <div class="empty" id="actionLetterEmpty">No saved action letters yet.</div>
+    </div>
+  </section>
+</div>
+
+<div class="column-menu" id="columnMenu">
+  <div class="column-menu-title">Hide / Unhide Columns</div>
+  <div id="columnMenuList"></div>
+</div>
+
+<div class="racim-modal" id="racimModal">
+  <div class="racim-card">
+    <div class="racim-head">
+      <div>
+        <h2 style="margin:0;">CAPA RACIM Matrix</h2>
+        <div style="margin-top:4px;color:#667085;font-size:10px;">General Contractor setup only • No subcontractors</div>
+      </div>
+      <button class="btn btn-light" id="closeRacim" type="button">Close</button>
+    </div>
+
+    <div class="racim-controls">
+      <label><input type="checkbox" id="subcontractorToggle"> Subcontractor available</label>
+      <label><input type="checkbox" id="noSuperintendentToggle"> Project Superintendent not available</label>
+      <div class="racim-note">R = Responsible • A = Accountable • C = Consulted • I = Informed • M = Monitoring</div>
+    </div>
+
+    <div class="racim-definitions">
+      <div class="racim-def"><strong><span class="racim-pill r-tag">R</span> Responsible</strong><span>Performs the work or prepares the required CAPA output.</span></div>
+      <div class="racim-def"><strong><span class="racim-pill a-tag">A</span> Accountable</strong><span>Owns final correctness, approval, and closure of the activity.</span></div>
+      <div class="racim-def"><strong><span class="racim-pill c-tag">C</span> Consulted</strong><span>Provides technical input before the activity is finalized.</span></div>
+      <div class="racim-def"><strong><span class="racim-pill i-tag">I</span> Informed</strong><span>Receives updates or records after decisions/actions are made.</span></div>
+      <div class="racim-def"><strong><span class="racim-pill m-tag">M</span> Monitoring</strong><span>Tracks progress, verifies follow-up, and escalates delays or repeat issues.</span></div>
+    </div>
+
+    <div class="racim-notes">
+      <strong>Notes:</strong>
+      <ul>
+        <li>QAQC is accountable for NCR/CAPA documentation quality, root cause adequacy, verification, evidence review, and final quality closure.</li>
+        <li>PM is accountable for execution resources, schedule impact, and site implementation when the action affects construction delivery.</li>
+        <li>OM is accountable for management review, trend analysis, and organizational process improvement.</li>
+        <li>Project Engineers are responsible by discipline. Use the PE column that matches the affected work package.</li>
+        <li>When subcontractor is available, the subcontractor may become responsible for implementation, but the General Contractor remains accountable through QAQC, PM, and OM.</li>
+        <li>If the Project Superintendent is not available, the PM assumes responsibility for superintendent-led CAPA scopes while QAQC retains quality accountability.</li>
+      </ul>
+    </div>
+
+    <div class="racim-wrap">
+      <table class="racim-table">
+        <thead>
+          <tr>
+            <th>CAPA Activity</th>
+            <th>QAQC</th>
+            <th>OM</th>
+            <th>PM</th>
+            <th>Project Superintendent</th>
+            <th>Civil PE</th>
+            <th>Architectural PE</th>
+            <th>Structural PE</th>
+            <th>MEPF PE</th>
+            <th class="sub-col">Subcontractor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1. Identify Non-Conformance</td><td><span class="racim-pill a-tag">A</span></td><td><span class="racim-pill i-tag">I</span></td><td><span class="racim-pill m-tag">M</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td class="sub-col"><span class="racim-pill c-tag">C</span></td></tr>
+
+          <tr><td>2. Document NCR / CAPA Record</td><td><span class="racim-pill a-tag">A</span></td><td><span class="racim-pill i-tag">I</span></td><td><span class="racim-pill m-tag">M</span></td><td><span class="racim-pill c-tag">C</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td class="sub-col"><span class="racim-pill c-tag">C</span></td></tr>
+
+          <tr><td>3. Initial Containment / Immediate Correction</td><td><span class="racim-pill m-tag">M</span></td><td><span class="racim-pill i-tag">I</span></td><td><span class="pm-normal racim-pill a-tag">A</span><span class="pm-fallback racim-pill r-tag">R</span></td><td class="sup-cell"><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td class="sub-col"><span class="racim-pill r-tag">R</span></td></tr>
+
+          <tr><td>4. Root Cause Analysis</td><td><span class="racim-pill a-tag">A</span></td><td><span class="racim-pill i-tag">I</span></td><td><span class="racim-pill m-tag">M</span></td><td><span class="racim-pill c-tag">C</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td class="sub-col"><span class="racim-pill c-tag">C</span></td></tr>
+
+          <tr><td>5. Define Corrective Action Plan</td><td><span class="racim-pill a-tag">A</span></td><td><span class="racim-pill c-tag">C</span></td><td><span class="pm-normal racim-pill m-tag">M</span><span class="pm-fallback racim-pill r-tag">R</span></td><td class="sup-cell"><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td class="sub-col"><span class="racim-pill c-tag">C</span></td></tr>
+
+          <tr><td>6. Define Preventive Action Plan</td><td><span class="racim-pill a-tag">A</span></td><td><span class="racim-pill c-tag">C</span></td><td><span class="racim-pill m-tag">M</span></td><td><span class="racim-pill c-tag">C</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td class="sub-col"><span class="racim-pill c-tag">C</span></td></tr>
+
+          <tr><td>7. Approve CAPA Plan Before Implementation</td><td><span class="racim-pill a-tag">A</span></td><td><span class="racim-pill c-tag">C</span></td><td><span class="racim-pill r-tag">R</span></td><td class="sup-cell"><span class="racim-pill c-tag">C</span></td><td><span class="racim-pill c-tag">C</span></td><td><span class="racim-pill c-tag">C</span></td><td><span class="racim-pill c-tag">C</span></td><td><span class="racim-pill c-tag">C</span></td><td class="sub-col"><span class="racim-pill i-tag">I</span></td></tr>
+
+          <tr><td>8. Implement Corrective Action</td><td><span class="racim-pill m-tag">M</span></td><td><span class="racim-pill i-tag">I</span></td><td><span class="pm-normal racim-pill a-tag">A</span><span class="pm-fallback racim-pill r-tag">R</span></td><td class="sup-cell"><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td class="sub-col"><span class="racim-pill r-tag">R</span></td></tr>
+
+          <tr><td>9. Implement Preventive Action</td><td><span class="racim-pill m-tag">M</span></td><td><span class="racim-pill i-tag">I</span></td><td><span class="pm-normal racim-pill a-tag">A</span><span class="pm-fallback racim-pill r-tag">R</span></td><td class="sup-cell"><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td class="sub-col"><span class="racim-pill r-tag">R</span></td></tr>
+
+          <tr><td>10. Monitor Implementation Progress</td><td><span class="racim-pill a-tag">A</span></td><td><span class="racim-pill m-tag">M</span></td><td><span class="pm-normal racim-pill m-tag">M</span><span class="pm-fallback racim-pill r-tag">R</span></td><td class="sup-cell"><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill m-tag">M</span></td><td><span class="racim-pill m-tag">M</span></td><td><span class="racim-pill m-tag">M</span></td><td><span class="racim-pill m-tag">M</span></td><td class="sub-col"><span class="racim-pill i-tag">I</span></td></tr>
+
+          <tr><td>11. Verify Effectiveness / Evidence Review</td><td><span class="racim-pill a-tag">A</span></td><td><span class="racim-pill m-tag">M</span></td><td><span class="racim-pill c-tag">C</span></td><td><span class="racim-pill c-tag">C</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill r-tag">R</span></td><td class="sub-col"><span class="racim-pill c-tag">C</span></td></tr>
+
+          <tr><td>12. Update Lessons Learned / Checklist</td><td><span class="racim-pill a-tag">A</span></td><td><span class="racim-pill c-tag">C</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill c-tag">C</span></td><td><span class="racim-pill c-tag">C</span></td><td><span class="racim-pill c-tag">C</span></td><td><span class="racim-pill c-tag">C</span></td><td><span class="racim-pill c-tag">C</span></td><td class="sub-col"><span class="racim-pill i-tag">I</span></td></tr>
+
+          <tr><td>13. Final CAPA Closure</td><td><span class="racim-pill a-tag">A</span></td><td><span class="racim-pill c-tag">C</span></td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill i-tag">I</span></td><td><span class="racim-pill i-tag">I</span></td><td><span class="racim-pill i-tag">I</span></td><td><span class="racim-pill i-tag">I</span></td><td><span class="racim-pill i-tag">I</span></td><td class="sub-col"><span class="racim-pill i-tag">I</span></td></tr>
+
+          <tr><td>14. Management Review / Trend Analysis</td><td><span class="racim-pill r-tag">R</span></td><td><span class="racim-pill a-tag">A</span></td><td><span class="racim-pill c-tag">C</span></td><td><span class="racim-pill i-tag">I</span></td><td><span class="racim-pill i-tag">I</span></td><td><span class="racim-pill i-tag">I</span></td><td><span class="racim-pill i-tag">I</span></td><td><span class="racim-pill i-tag">I</span></td><td class="sub-col"><span class="racim-pill i-tag">I</span></td></tr>
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+</div>
+
+<div class="modal ai-modal" id="actionLetterModal">
+  <div class="modal-card action-letter-modal-card">
+    <div class="modal-head">
+      <h2>CAPA Action Letter - A4 Portrait</h2>
+      <div class="action-letter-head-actions">
+        <button class="btn btn-primary" id="logActionLetterBtn" type="button">Log Action Letter</button>
+        <button class="btn btn-light" id="addPageBreakBtn" type="button">Add Page Break</button>
+        <button class="btn btn-light" id="printActionLetter" type="button">Print A4 Portrait</button>
+        <button class="btn btn-outline-danger" id="deleteCurrentActionLetterBtn" type="button" style="display:none;" title="Delete this logged action letter">Delete Letter</button>
+        <button class="btn btn-light" id="closeActionLetter" type="button">Close</button>
+      </div>
+    </div>
+    <div class="action-letter-preview-wrap">
+      <div class="letter-a4-preview" id="actionLetterPrintArea">
+        <div id="actionLetterContent"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Report Compiler with Live Preview Modal -->
+<div class="modal compiler-modal" id="reportCompilerModal">
+  <div class="modal-card compiler-modal-card">
+    <div class="modal-head compiler-modal-head">
+      <div class="compiler-head-title">
+        <div class="compiler-badge">QAQC REPORT COMPILER</div>
+        <h2>Print to PDF • Report Compiler &amp; Live Preview</h2>
+      </div>
+      <div class="compiler-head-actions">
+        <button class="btn btn-light" id="compilerHeaderToggleSidebarBtn" type="button" title="Hide/Show Controls Sidebar">◀ Hide Controls</button>
+        <button class="btn btn-primary" id="compilerPrintBtn" type="button" title="Print or save as PDF">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="vertical-align:-2px;margin-right:4px;"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Print / Save PDF
+        </button>
+        <button class="btn btn-light" id="closeReportCompiler" type="button">Close</button>
+      </div>
+    </div>
+
+    <div class="compiler-layout">
+      <!-- Left Sidebar: Configuration & Filtering Options -->
+      <aside class="compiler-sidebar">
+        <div class="compiler-section">
+          <div class="compiler-section-title">1. Weekly Inspection Report Setup</div>
+          <div class="form-row-stacked">
+            <label for="compilerProjectSelect">Project</label>
+            <select class="field" id="compilerProjectSelect">
+              <option value="">All Projects</option>
+            </select>
+          </div>
+          <div class="form-row-stacked">
+            <label for="compilerPaperOrientation">Report Paper Format &amp; Orientation</label>
+            <select class="field" id="compilerPaperOrientation">
+              <option value="a4-landscape" selected>A4 Landscape (297 × 210 mm) • Recommended</option>
+              <option value="a4-portrait">A4 Portrait (210 × 297 mm)</option>
+              <option value="letter-landscape">US Letter Landscape (11 × 8.5 in)</option>
+              <option value="letter-portrait">US Letter Portrait (8.5 × 11 in)</option>
+              <option value="legal-landscape">US Legal Landscape (14 × 8.5 in)</option>
+              <option value="legal-portrait">US Legal Portrait (8.5 × 14 in)</option>
+              <option value="a3-landscape">A3 Landscape (420 × 297 mm)</option>
+              <option value="a3-portrait">A3 Portrait (297 × 420 mm)</option>
+            </select>
+          </div>
+          <div class="form-row-stacked">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+              <label for="compilerWirPagination" style="margin-bottom:0;">WIR Page Break Preview (Rows per Sheet)</label>
+              <button type="button" class="btn-link-sm" id="compilerResetWirPageBreaksBtn" title="Reset WIR page breaks to default">Reset Breaks</button>
+            </div>
+            <select class="field" id="compilerWirPagination">
+              <option value="auto" selected>Auto (Fit all on single sheet)</option>
+              <option value="3">3 rows per sheet</option>
+              <option value="4">4 rows per sheet</option>
+              <option value="5">5 rows per sheet (Recommended for Landscape)</option>
+              <option value="6">6 rows per sheet</option>
+              <option value="8">8 rows per sheet (Recommended for Portrait)</option>
+              <option value="10">10 rows per sheet</option>
+              <option value="custom">Custom (Interactive Draggable Breaks)</option>
+            </select>
+          </div>
+          <div class="form-row-stacked">
+            <label for="compilerCoverageSelect">Quick Coverage Presets</label>
+            <select class="field" id="compilerCoverageSelect">
+              <option value="">Select or customize dates below...</option>
+            </select>
+          </div>
+          <div class="compiler-date-range-row">
+            <div class="form-row-stacked" style="flex:1;">
+              <label for="compilerCoverageStart">Coverage Start Date</label>
+              <input type="date" class="field" id="compilerCoverageStart">
+            </div>
+            <div class="form-row-stacked" style="flex:1;">
+              <label for="compilerCoverageEnd">Coverage End Date</label>
+              <input type="date" class="field" id="compilerCoverageEnd">
+            </div>
+          </div>
+        </div>
+
+        <div class="compiler-section">
+          <div class="compiler-section-title">2. Status &amp; Closure Strategy</div>
+          <div class="form-row-stacked">
+            <label for="compilerStatusMode">Status Inclusion Rule</label>
+            <select class="field" id="compilerStatusMode">
+              <option value="smart-coverage" selected>Active + Resolved in Coverage (Exclude Older Closed)</option>
+              <option value="all">All Records (Include All Statuses)</option>
+              <option value="active-only">Active Only (Open, In Progress, Overdue)</option>
+              <option value="custom">Custom Status Selection</option>
+            </select>
+          </div>
+
+          <div class="compiler-rule-box" id="compilerRuleTip">
+            <div class="compiler-rule-icon">💡</div>
+            <div class="compiler-rule-text" id="compilerRuleText">
+              <strong>Coverage Closure Rule:</strong> Issues resolved/closed within the coverage date will be <strong>INCLUDED</strong> in the report. Issues closed in previous weeks will be <strong>EXCLUDED</strong>.
+            </div>
+          </div>
+
+          <div class="compiler-custom-statuses" id="compilerCustomStatuses" style="display:none;">
+            <div class="compiler-checkbox-grid">
+              <label><input type="checkbox" id="compStatOpen" checked> <span>Open</span></label>
+              <label><input type="checkbox" id="compStatProgress" checked> <span>In Progress</span></label>
+              <label><input type="checkbox" id="compStatOverdue" checked> <span>Overdue</span></label>
+              <label><input type="checkbox" id="compStatClosed" checked> <span>Closed</span></label>
+            </div>
+          </div>
+
+          <label class="compiler-check-label highlight-check">
+            <input type="checkbox" id="compilerExcludePrevClosed" checked>
+            <span>Exclude issues closed before coverage start date</span>
+          </label>
+        </div>
+
+        <div class="compiler-section">
+          <div class="compiler-section-head">
+            <div class="compiler-section-title" style="margin-bottom:0;border-bottom:none;padding-bottom:0;">3. Action Letter Integration</div>
+            <div class="compiler-col-toolbar">
+              <button type="button" class="btn-link-sm" id="compilerResetLetterColWidthsBtn" title="Reset Action Letter column widths to default">Reset Widths</button>
+            </div>
+          </div>
+          <label class="compiler-check-label highlight-check">
+            <input type="checkbox" id="compilerIncludeActionLetters" checked>
+            <strong>Include Action Letters from Coverage Date</strong>
+          </label>
+
+          <div class="compiler-subgroup" id="compilerActionLetterOptions">
+            <div class="form-row-stacked">
+              <label for="compilerLetterPaperFormat">Letter Paper Format &amp; Orientation</label>
+              <select class="field" id="compilerLetterPaperFormat">
+                <option value="a4-portrait" selected>A4 Portrait (210 × 297 mm) • Recommended</option>
+                <option value="a4-landscape">A4 Landscape (297 × 210 mm)</option>
+                <option value="letter-portrait">US Letter Portrait (8.5 × 11 in)</option>
+                <option value="letter-landscape">US Letter Landscape (11 × 8.5 in)</option>
+                <option value="legal-portrait">US Legal Portrait (8.5 × 14 in)</option>
+                <option value="legal-landscape">US Legal Landscape (14 × 8.5 in)</option>
+                <option value="a3-portrait">A3 Portrait (297 × 420 mm)</option>
+                <option value="a3-landscape">A3 Landscape (420 × 297 mm)</option>
+              </select>
+            </div>
+            <div class="form-row-stacked">
+              <label for="compilerLetterSource">Action Letter Mode</label>
+              <select class="field" id="compilerLetterSource">
+                <option value="auto" selected>Auto-compile findings into Action Letter</option>
+                <option value="saved">Include saved Action Letters for this coverage</option>
+                <option value="both">Both auto-compiled &amp; saved letters</option>
+              </select>
+            </div>
+            <label class="compiler-check-label">
+              <input type="checkbox" id="compilerLetterPageBreak" checked>
+              <span>Add Page Break before Action Letter</span>
+            </label>
+            <label class="compiler-check-label">
+              <input type="checkbox" id="compilerLetterPhotos" checked>
+              <span>Include Photo Evidence thumbnails in letter</span>
+            </label>
+            <div class="form-row-stacked">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+                <label for="compilerLetterPagination" style="margin-bottom:0;">Findings per Action Letter Page</label>
+                <button type="button" class="btn-link-sm" id="compilerResetLetterPageBreaksBtn" title="Reset Action Letter page breaks">Reset Breaks</button>
+              </div>
+              <select class="field" id="compilerLetterPagination">
+                <option value="auto" selected>Auto (All findings on one letter sheet)</option>
+                <option value="1">1 finding per page (Dedicated NC sheet)</option>
+                <option value="2">2 findings per page</option>
+                <option value="3">3 findings per page</option>
+                <option value="4">4 findings per page</option>
+                <option value="custom">Custom (Interactive Draggable Breaks)</option>
+              </select>
+            </div>
+            <div class="form-row-stacked" style="margin-top:6px;">
+              <button type="button" class="btn btn-sm btn-light" id="compilerAddPageBreakBtn" style="display:flex;align-items:center;justify-content:center;gap:6px;width:100%;font-weight:700;border:1px dashed #e30613;color:#e30613;background:#fff8f8;padding:7px 10px;border-radius:6px;cursor:pointer;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
+                + Add Page Break to Action Letter
+              </button>
+              <div style="font-size:10px;color:#64748b;margin-top:3px;line-height:1.2;">Inserts an adjustable page break with ▲ Up / ▼ Down / ✕ Remove controls anywhere in the Action Letter.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="compiler-section">
+          <div class="compiler-section-head">
+            <div class="compiler-section-title" style="margin-bottom:0;border-bottom:none;padding-bottom:0;">4. Document Header &amp; Columns</div>
+            <div class="compiler-col-toolbar">
+              <button type="button" class="btn-link-sm" id="compilerSelectAllColsBtn">Select All</button>
+              <span>•</span>
+              <button type="button" class="btn-link-sm" id="compilerDeselectAllColsBtn">Deselect All</button>
+              <span>•</span>
+              <button type="button" class="btn-link-sm" id="compilerResetColWidthsBtn" title="Reset column widths to default">Reset Widths</button>
+            </div>
+          </div>
+          <div class="compiler-fields-grid">
+            <div class="form-row-stacked">
+              <label for="compilerDocTitle">Report Title</label>
+              <input class="field" id="compilerDocTitle" value="WEEKLY INSPECTION REPORT">
+            </div>
+            <div class="form-row-stacked">
+              <label for="compilerDocCode">Doc No. / Code</label>
+              <input class="field" id="compilerDocCode" value="QAQC- WIR - TABLE 2">
+            </div>
+            <div class="form-row-stacked">
+              <label for="compilerRevNo">Revision</label>
+              <input class="field" id="compilerRevNo" value="Rev. No. : 0">
+            </div>
+            <div class="form-row-stacked">
+              <label for="compilerEffDate">Effective Date</label>
+              <input class="field" id="compilerEffDate" value="Eff. Date: 11/10/2025">
+            </div>
+          </div>
+
+          <div class="compiler-col-checks-label">Select Table Column Headers to Include in Report:</div>
+          <div class="compiler-col-checks-grid" id="compilerColChecksGrid">
+            <label><input type="checkbox" id="compColNo" checked> <span>No.</span></label>
+            <label><input type="checkbox" id="compColProject" checked> <span>Project Name</span></label>
+            <label><input type="checkbox" id="compColClient" checked> <span>Client</span></label>
+            <label><input type="checkbox" id="compColLocation" checked> <span>Location</span></label>
+            <label><input type="checkbox" id="compColImages" checked> <span>Image</span></label>
+            <label><input type="checkbox" id="compColNc" checked> <span>Non-Conformance</span></label>
+            <label><input type="checkbox" id="compColCorrective" checked> <span>Corrective Action</span></label>
+            <label><input type="checkbox" id="compColPreventive" checked> <span>Preventive Action</span></label>
+            <label><input type="checkbox" id="compColRootCause" checked> <span>Root Cause</span></label>
+            <label><input type="checkbox" id="compColOwner" checked> <span>Responsible Party</span></label>
+            <label><input type="checkbox" id="compColDueDate" checked> <span>Due Date</span></label>
+            <label><input type="checkbox" id="compColCoverage" checked> <span>Coverage</span></label>
+            <label><input type="checkbox" id="compColRemarks" checked> <span>Remarks</span></label>
+            <label><input type="checkbox" id="compColStatus" checked> <span>Status</span></label>
+          </div>
+        </div>
+
+        <div class="compiler-stats-card" id="compilerStatsCard">
+          <div class="compiler-stats-title">Report Summary</div>
+          <div class="compiler-stats-pills" id="compilerStatsPills">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right Panel: Live Document Preview -->
+      <main class="compiler-preview-area">
+        <div class="compiler-preview-toolbar">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <button type="button" class="btn btn-sm btn-light" id="compilerToggleSidebarBtn" title="Hide/Show Sidebar Controls">◀ Hide Controls</button>
+            <button type="button" class="btn btn-sm btn-light" id="compilerToolbarAddPageBreakBtn" title="Insert adjustable page break into Action Letter" style="color:#e30613;font-weight:700;border:1px dashed #e30613;background:#fff1f2;"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:3px;"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>+ Add Page Break</button>
+            <div class="compiler-preview-status" id="compilerPreviewStatus">Live Compiled Preview</div>
+          </div>
+          <div class="compiler-zoom-controls">
+            <button type="button" class="btn btn-sm btn-light zoom-btn active" data-zoom="fit" id="compilerFitWidthBtn" title="Auto-Fit document width to screen">⤢ Fit Width</button>
+            <button type="button" class="btn btn-sm btn-light zoom-btn" data-zoom="0.65">65%</button>
+            <button type="button" class="btn btn-sm btn-light zoom-btn" data-zoom="0.8">80%</button>
+            <button type="button" class="btn btn-sm btn-light zoom-btn" data-zoom="1">100%</button>
+            <button type="button" class="btn btn-sm btn-light zoom-btn" data-zoom="1.15">115%</button>
+            <button type="button" class="btn btn-sm btn-light" id="compilerRefreshBtn" title="Refresh Live Preview">↻ Refresh</button>
+          </div>
+        </div>
+
+        <div class="compiler-preview-scroll" id="compilerPreviewScroll">
+          <div class="compiler-pages-container" id="compilerPagesContainer">
+            <div id="compilerPrintArea"></div>
+          </div>
+        </div>
+
+        <!-- Custom Column Header Context Menu -->
+        <div class="compiler-col-context-menu" id="compilerColContextMenu" style="display:none;">
+          <div class="context-menu-header" id="compilerContextColHeader">Column Options</div>
+          <button type="button" class="context-menu-item" id="compilerContextHideColBtn">
+            <i class="fas fa-eye-slash"></i> <span>Hide This Column</span>
+          </button>
+          <div class="context-menu-divider"></div>
+          <div class="context-menu-section-title">Show / Hide Columns</div>
+          <div class="context-menu-col-list" id="compilerContextColList">
+            <!-- Dynamically populated -->
+          </div>
+          <div class="context-menu-divider"></div>
+          <button type="button" class="context-menu-item" id="compilerContextShowAllBtn">
+            <i class="fas fa-check-double"></i> <span>Show All Columns</span>
+          </button>
+          <button type="button" class="context-menu-item" id="compilerContextResetWidthsBtn">
+            <i class="fas fa-undo"></i> <span>Reset Column Widths</span>
+          </button>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<div class="modal ai-modal" id="aiPromptModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2>ChatGPT CAPA Prompt</h2>
+      <button class="btn btn-light" id="closeAiPrompt" type="button">Close</button>
+    </div>
+    <div style="padding:20px;display:grid;gap:12px;">
+      <p style="margin:0;color:#667085;">Copy this prompt to ChatGPT to generate suggested Root Cause, Corrective Action, and Preventive Action.</p>
+      <textarea class="field" id="aiPromptText" style="min-height:260px;width:100%;font-family:monospace;"></textarea>
+      <div style="display:flex;justify-content:flex-end;gap:10px;">
+        <button class="btn btn-light" id="copyAiPrompt" type="button">Copy Prompt</button>
+        <button class="btn btn-primary" id="openChatGPT" type="button">Open ChatGPT</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="image-preview-modal" id="imagePreview" title="Click background to close">
+  <div class="image-preview-note">Double-click image preview • click background to close</div>
+  <img id="previewImage" src="" alt="CAPA image preview">
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2>Add NC</h2>
+      <button class="btn btn-light" id="closeModal" type="button">Close</button>
+    </div>
+    <div style="padding:14px 20px 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+      <button class="btn btn-primary" id="actionLetterTopBtn" type="button">Action Letter - A4 Format</button>
+      <span style="color:#667085;font-size:10px;">Open professional CAPA action letter format</span>
+    </div>
+    <form id="projectForm">
+      <div class="form-row">
+        <label for="projectName">Project Name</label>
+        <input class="field" id="projectName" list="existingProjectsList" required placeholder="e.g., Dizon Project">
+        <datalist id="existingProjectsList"></datalist>
+      </div>
+      <div class="form-row"><label for="clientName">Client</label><input class="field" id="clientName" placeholder="e.g., Client name"></div>
+      <div class="form-row"><label for="projectLocation">Location of Project</label><input class="field" id="projectLocation" placeholder="e.g., Site / area / location"></div>
+      <div class="form-row"><label for="owner">Responsible Party</label><input class="field" id="owner" required placeholder="e.g., QAQC / PM / PE"></div>
+      <div class="nc-multi-wrap" id="ncEntriesWrap">
+        <div class="nc-entry-card" data-nc-entry="1">
+          <div class="nc-entry-head">
+            <div class="nc-entry-title">Non-Conformance 1</div>
+          </div>
+          <div class="form-row full"><label for="imageUpload">Image for CAPA Registry</label><input class="field registry-image-upload nc-image" id="imageUpload" type="file" accept="image/*"></div>
+          <div class="form-row full"><label for="nonConformance">Non-Conformance</label><textarea class="field nc-nonconformance" id="nonConformance" required placeholder="Describe the observed issue"></textarea></div>
+          <div class="form-row full"><label for="correctiveAction">Corrective Action</label><textarea class="field nc-corrective" id="correctiveAction" placeholder="Immediate correction / containment"></textarea></div>
+          <div class="form-row full"><label for="preventiveAction">Preventive Action</label><textarea class="field nc-preventive" id="preventiveAction" placeholder="Steps to prevent recurrence"></textarea></div>
+          <div class="form-row full"><label for="rootCause">Root Cause</label><textarea class="field nc-rootcause" id="rootCause" placeholder="Why did it happen?"></textarea></div>
+        </div>
+      </div>
+      <div class="add-nc-inline-row">
+        <button class="btn btn-light" type="button" id="addNewNcBtn">+ Add New NC</button>
+        <span class="mini-hint">Add another non-conformance under this same project.</span>
+      </div>
+      <div class="form-row"><label for="coverageStart">Coverage Start</label><input class="field" id="coverageStart" type="date"></div>
+      <div class="form-row"><label for="coverageEnd">Coverage End</label><input class="field" id="coverageEnd" type="date"></div>
+      <div class="form-row"><label for="dueDate">Due Date</label><input class="field" id="dueDate" type="date" required></div>
+      <div class="form-row"><label for="status">Status</label><select class="field" id="status" required><option>Open</option><option>In Progress</option><option>Overdue</option><option>Closed</option></select></div>
+      <div class="modal-actions">
+        <button class="btn btn-light" type="button" id="actionLetterBtn">Action Letter</button>
+        <button class="btn btn-light" type="button" id="aiAssistPrompt">AI Assist Prompt</button>
+        <button class="btn btn-light" type="button" id="resetForm">Reset</button>
+        <button class="btn btn-primary" type="submit">Save NC</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<div class="modal" id="editProjectModal">
+  <div class="modal-card edit-modal-card">
+    <div class="modal-head">
+      <h2>Edit CAPA / Project Contents</h2>
+      <button class="btn btn-light" id="closeEditProject" type="button">Close</button>
+    </div>
+    <form id="editProjectForm">
+      <input type="hidden" id="editIndex">
+      <div class="form-row"><label for="editProjectName">Project Name</label><input class="field" id="editProjectName" list="existingProjectsList" required></div>
+      <div class="form-row"><label for="editClientName">Client</label><input class="field" id="editClientName"></div>
+      <div class="form-row"><label for="editProjectLocation">Location of Project</label><input class="field" id="editProjectLocation"></div>
+      <div class="form-row"><label for="editOwner">Responsible Party</label><input class="field" id="editOwner" required></div>
+      <div class="form-row full">
+        <label for="editImageUpload">Image for CAPA Registry</label>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:4px;">
+          <input class="field registry-image-upload" id="editImageUpload" type="file" accept="image/*" style="flex:1;">
+          <div id="editImagePreviewWrap" style="display:none;align-items:center;gap:8px;">
+            <img id="editImagePreview" src="" alt="Image Preview" style="width:40px;height:40px;object-fit:cover;border-radius:4px;border:1px solid #cbd5e1;">
+            <button type="button" class="btn btn-light btn-sm" id="removeEditImageBtn" style="padding:4px 8px;font-size:11px;color:#ef4444;">Remove</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-row full"><label for="editNonConformance">Non-Conformance</label><textarea class="field" id="editNonConformance" required></textarea></div>
+      <div class="form-row full"><label for="editCorrectiveAction">Corrective Action</label><textarea class="field" id="editCorrectiveAction"></textarea></div>
+      <div class="form-row full"><label for="editPreventiveAction">Preventive Action</label><textarea class="field" id="editPreventiveAction"></textarea></div>
+      <div class="form-row full"><label for="editRootCause">Root Cause</label><textarea class="field" id="editRootCause"></textarea></div>
+      <div class="form-row full"><label for="editRemarks">Remarks</label><textarea class="field" id="editRemarks" placeholder="Enter remarks / notes / closure comments"></textarea></div>
+      <div class="form-row"><label for="editCoverageStart">Coverage Start</label><input class="field" id="editCoverageStart" type="date"></div>
+      <div class="form-row"><label for="editCoverageEnd">Coverage End</label><input class="field" id="editCoverageEnd" type="date"></div>
+      <div class="form-row"><label for="editDueDate">Due Date</label><input class="field" id="editDueDate" type="date" required></div>
+      <div class="form-row"><label for="editStatus">Status</label><select class="field" id="editStatus" required><option>Open</option><option>In Progress</option><option>Overdue</option><option>Closed</option></select></div>
+      <div class="modal-actions">
+        <button class="btn btn-light" type="button" id="deleteEditProject">Delete</button>
+        <button class="btn btn-primary" type="submit">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+  <script src="js/api-bridge.js"></script>
+</body>
+</html>

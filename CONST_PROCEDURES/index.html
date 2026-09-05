@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Construction Operation Procedures & Forms (PM-OPN) | FCLaranang Dev Corp QA/QC</title>
+  <link rel="icon" type="image/png" href="../fcldc.png">
+  <link rel="stylesheet" href="../shared/css/corporate-green.css">
+  <style>
+    /* ==========================================================================
+       Fit-To-Screen Procedures Cockpit Layout
+       ========================================================================== */
+    html, body {
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: radial-gradient(circle at 50% 0%, #064e3b10 0%, #f8fafc 65%);
+    }
+
+    .corp-header {
+      height: 48px;
+      padding: 0 1.25rem;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--emerald-950), var(--emerald-900));
+      border-bottom: 2px solid var(--emerald-600);
+      display: flex;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .proc-command-ribbon {
+      height: 44px;
+      flex-shrink: 0;
+      background: var(--white);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .proc-ribbon-left {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .proc-ribbon-eyebrow {
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--emerald-700);
+      background: var(--emerald-50);
+      border: 1px solid var(--emerald-200);
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+    }
+
+    .proc-ribbon-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--slate-900);
+      margin: 0;
+    }
+
+    .proc-search-wrap {
+      position: relative;
+      min-width: 260px;
+      max-width: 380px;
+      flex-grow: 1;
+    }
+
+    .proc-search-wrap svg {
+      position: absolute;
+      left: 0.65rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      color: var(--slate-400);
+    }
+
+    .proc-search-wrap input {
+      width: 100%;
+      padding: 0.3rem 0.75rem 0.3rem 2rem;
+      font-size: 0.78rem;
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      background: var(--slate-50);
+      outline: none;
+      transition: var(--transition);
+      box-sizing: border-box;
+    }
+
+    .proc-search-wrap input:focus {
+      border-color: var(--emerald-500);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    }
+
+    .tabs-container {
+      margin: 0;
+      border-radius: 0;
+      background: var(--slate-900);
+      border-bottom: 2px solid var(--emerald-600);
+      flex-shrink: 0;
+      padding: 0 0.5rem;
+    }
+
+    .tabs-nav {
+      padding: 0.25rem 0.5rem 0;
+      gap: 0.25rem;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      display: flex;
+    }
+
+    .tab-btn {
+      padding: 0.45rem 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--slate-300);
+      border-radius: 6px 6px 0 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+      transition: var(--transition);
+    }
+
+    .tab-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--white);
+    }
+
+    .tab-btn.active {
+      background: var(--emerald-600);
+      color: var(--white);
+      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .tab-badge {
+      font-size: 0.65rem;
+      opacity: 0.85;
+      font-weight: 600;
+    }
+
+    /* Main Tab Scrollable Content Viewport */
+    .proc-viewport {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      padding: 0.75rem 1.25rem;
+      max-width: 1720px;
+      width: 100%;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+
+    .opn-summary-card {
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--emerald-600);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 1rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .opn-summary-title {
+      font-size: 0.98rem;
+      font-weight: 800;
+      color: var(--slate-900);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-panel {
+      margin-bottom: 0.75rem;
+      padding: 0.75rem;
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .section-panel-header {
+      margin-bottom: 0.65rem;
+      padding-bottom: 0.45rem;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-panel-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--slate-900);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 0.5rem;
+    }
+
+    .doc-card {
+      padding: 0.65rem 0.85rem;
+      background: var(--slate-50);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+
+    .doc-card:hover {
+      border-color: var(--emerald-500);
+      background: var(--white);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .doc-card-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .doc-card-meta {
+      font-size: 0.7rem;
+      color: var(--slate-500);
+    }
+
+    .doc-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-open-native {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.74rem;
+      font-weight: 700;
+      border-radius: 5px;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+
+    .btn-open-native.word { background: #185abd; color: #fff; }
+    .btn-open-native.word:hover { background: #104289; }
+    .btn-open-native.pdf { background: #d9381e; color: #fff; }
+    .btn-open-native.pdf:hover { background: #b02812; }
+    .btn-open-native.excel { background: #107c41; color: #fff; }
+    .btn-open-native.excel:hover { background: #0b582e; }
+
+    .btn-download-fallback {
+      padding: 0.35rem 0.55rem;
+      background: var(--slate-100);
+      border: 1px solid var(--border-color);
+      border-radius: 5px;
+      color: var(--slate-700);
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      font-size: 0.74rem;
+      font-weight: 600;
+    }
+    .btn-download-fallback:hover {
+      background: var(--emerald-50);
+      color: var(--emerald-800);
+      border-color: var(--emerald-300);
+    }
+
+    .empty-state {
+      padding: 1.25rem 1rem;
+      text-align: center;
+      color: var(--slate-500);
+      font-size: 0.78rem;
+      border: 1px dashed var(--slate-300);
+      border-radius: var(--radius-sm);
+      background: var(--slate-50);
+    }
+
+    /* Ultra-Slim Footer */
+    .cockpit-footer {
+      background: var(--emerald-950);
+      color: var(--emerald-200);
+      font-size: 0.68rem;
+      padding: 0 1.25rem;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Corporate Header -->
+  <header class="corp-header">
+    <div class="corp-header-inner" style="max-width:1720px; width:100%; margin:0 auto; display:flex; align-items:center; justify-content:space-between;">
+      <a href="../index.html" class="brand-section" style="display:flex; align-items:center; gap:0.65rem; text-decoration:none; color:#fff;">
+        <img src="../fcldc.png" alt="FCLDC Logo" style="height:32px; width:auto; object-fit:contain; border-radius:4px; display:block;">
+        <div class="brand-info">
+          <h1 style="font-size:1.02rem; font-weight:800; margin:0; line-height:1.1; color:#fff;">FCLaranang Dev Corp <span style="color:var(--emerald-300); font-weight:500; font-size:0.85rem;">• Construction Procedures</span></h1>
+        </div>
+      </a>
+      <nav class="header-nav" style="display:flex; align-items:center; gap:0.35rem;">
+        <a href="../index.html" class="nav-link" style="color:var(--emerald-100); font-size:0.8rem; font-weight:600; padding:0.3rem 0.7rem; border-radius:4px; text-decoration:none;">Home</a>
+        <a href="../QAQC_GOVERNANCE/index.html" class="nav-link" style="color:var(--emerald-100); font-size:0.8rem; font-weight:600; padding:0.3rem 0.7rem; border-radius:4px; text-decoration:none;">Governance & QITP</a>
+        <a href="index.html" class="nav-link active" style="background:var(--emerald-600); color:#fff; font-size:0.8rem; font-weight:600; padding:0.3rem 0.7rem; border-radius:4px; text-decoration:none;">Procedures (OPN)</a>
+        <a href="../CAPA/index.html" class="nav-link" style="color:var(--emerald-100); font-size:0.8rem; font-weight:600; padding:0.3rem 0.7rem; border-radius:4px; text-decoration:none;">CAPA</a>
+        <a href="../PUNCHLISTING_COMMISSIONING/punchlisting_commisioning.html" class="nav-link" style="color:var(--emerald-100); font-size:0.8rem; font-weight:600; padding:0.3rem 0.7rem; border-radius:4px; text-decoration:none;">Punchlisting</a>
+        <a href="../QAQC_KPI/index.html" class="nav-link" style="color:var(--emerald-100); font-size:0.8rem; font-weight:600; padding:0.3rem 0.7rem; border-radius:4px; text-decoration:none;">QA/QC KPI</a>
+        <a href="../EXECUTIVE_REPORT/index.html" class="nav-link" style="color:var(--emerald-100); font-size:0.8rem; font-weight:600; padding:0.3rem 0.7rem; border-radius:4px; text-decoration:none;">Reports</a>
+      </nav>
+      <div class="header-status">
+        <div id="server-status-badge" class="status-badge" style="padding:0.25rem 0.6rem; font-size:0.72rem;">
+          <span class="status-indicator-dot"></span> Checking Status...
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Procedures Command & Search Ribbon -->
+  <section class="proc-command-ribbon">
+    <div class="proc-ribbon-left">
+      <span class="proc-ribbon-eyebrow">Standard SOP Deck</span>
+      <h2 class="proc-ribbon-title">Construction Quality & Operations Procedures (PM-OPN-01 to PM-OPN-07)</h2>
+    </div>
+
+    <!-- Search & Filter Bar -->
+    <div class="proc-search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="procSearchInput" placeholder="Quick search procedures, rebar, masonry, concrete, forms...">
+    </div>
+  </section>
+
+  <!-- Master Tabs Container -->
+  <div class="tabs-container">
+    <nav class="tabs-nav" id="opnTabsNav">
+      <button class="tab-btn active" data-tab="tab-opn-01">OPN-01 <span class="tab-badge">Cost & Bidding</span></button>
+      <button class="tab-btn" data-tab="tab-opn-02">OPN-02 <span class="tab-badge">Planning & Execution</span></button>
+      <button class="tab-btn" data-tab="tab-opn-03">OPN-03 <span class="tab-badge">Safety</span></button>
+      <button class="tab-btn" data-tab="tab-opn-04">OPN-04 <span class="tab-badge">Progress Billing</span></button>
+      <button class="tab-btn" data-tab="tab-opn-05">OPN-05 <span class="tab-badge">Turn Over</span></button>
+      <button class="tab-btn" data-tab="tab-opn-06">OPN-06 <span class="tab-badge">Subcontractor</span></button>
+      <button class="tab-btn" data-tab="tab-opn-07">OPN-07 <span class="tab-badge">Batching Plant</span></button>
+      <button class="tab-btn" data-tab="tab-all-master">Master Registry <span class="tab-badge">All 21 Files</span></button>
+    </nav>
+  </div>
+
+  <!-- Main Scrollable Viewport Pane -->
+  <main class="proc-viewport">
+
+    <!-- TAB 1: OPN-01 -->
+    <div id="tab-opn-01" class="tab-content active">
+      <div class="opn-summary-card">
+        <div>
+          <div class="opn-summary-title">
+            <span class="meta-tag" style="background:var(--emerald-800); color:#fff;">PM-OPN-01</span>
+            Cost Proposal & Project Cost Estimate Procedure
+          </div>
+          <div style="font-size:0.85rem; color:var(--slate-600); margin-top:0.35rem;">
+            Standard procedure for project bidding, cost estimation, quantity takeoff verification, and commercial proposals.
+          </div>
+        </div>
+        <div class="meta-tag">Doc Status: Active Rev 04</div>
+      </div>
+
+      <!-- Main Procedure -->
+      <section class="section-panel">
+        <div class="section-panel-header">
+          <div class="section-panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Main Operation Procedure
+          </div>
+        </div>
+        <div class="doc-grid">
+          <div class="doc-card">
+            <div class="doc-card-header">
+              <div class="doc-type-icon word">DOC</div>
+              <div>
+                <div class="doc-card-title">PM-OPN-01 COST PROPOSAL & PROJECT COST ESTIMATE Rev 04.doc</div>
+                <div class="doc-card-meta">
+                  <span>Revision: Rev 04</span>
+                  <span>•</span>
+                  <span>Type: MS Word</span>
+                  <span>•</span>
+                  <span>Size: 1.14 MB</span>
+                </div>
+              </div>
+            </div>
+            <div class="doc-card-actions">
+              <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-01/PM-OPN-01 COST PROPOSAL & PROJECT COST ESTIMATE Rev 04.doc', 'PM-OPN-01 Cost Proposal Rev 04')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Open in MS Word
+              </button>
+              <a href="OPERATION%20PROCEDURE/PM-OPN-01/PM-OPN-01%20COST%20PROPOSAL%20%26%20PROJECT%20COST%20ESTIMATE%20Rev%2004.doc" class="btn-download-fallback" download title="Download/View">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sub Procedures -->
+      <section class="section-panel">
+        <div class="section-panel-header">
+          <div class="section-panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            Sub-Procedures
+          </div>
+        </div>
+        <div class="doc-grid">
+          <div class="doc-card">
+            <div class="doc-card-header">
+              <div class="doc-type-icon word">DOCX</div>
+              <div>
+                <div class="doc-card-title">Bidding procedure.docx</div>
+                <div class="doc-card-meta">
+                  <span>Scope: Bidding & Tendering</span>
+                  <span>•</span>
+                  <span>Type: MS Word</span>
+                  <span>•</span>
+                  <span>Size: 1.02 MB</span>
+                </div>
+              </div>
+            </div>
+            <div class="doc-card-actions">
+              <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-01/SUB PROCEDURE/Bidding procedure.docx', 'Bidding Procedure')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Open in MS Word
+              </button>
+              <a href="OPERATION%20PROCEDURE/PM-OPN-01/SUB%20PROCEDURE/Bidding%20procedure.docx" class="btn-download-fallback" download title="Download/View">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Forms & Checklists -->
+      <section class="section-panel">
+        <div class="section-panel-header">
+          <div class="section-panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            Forms & Checklists
+          </div>
+        </div>
+        <div class="empty-state">
+          No specialized forms attached yet for OPN-01. You can add documents to <code>CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-01/FORMS</code>.
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB 2: OPN-02 -->
+    <div id="tab-opn-02" class="tab-content">
+      <div class="opn-summary-card">
+        <div>
+          <div class="opn-summary-title">
+            <span class="meta-tag" style="background:var(--emerald-800); color:#fff;">PM-OPN-02</span>
+            Project Planning and Execution Procedure
+          </div>
+          <div style="font-size:0.85rem; color:var(--slate-600); margin-top:0.35rem;">
+            Primary construction quality protocol covering rebar, formworks, concrete pouring, screed, CHB masonry, plastering, tiling, and painting.
+          </div>
+        </div>
+        <div class="meta-tag">Doc Status: Active Rev 02</div>
+      </div>
+
+      <!-- Main Procedure -->
+      <section class="section-panel">
+        <div class="section-panel-header">
+          <div class="section-panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Main Operation Procedure
+          </div>
+        </div>
+        <div class="doc-grid">
+          <div class="doc-card">
+            <div class="doc-card-header">
+              <div class="doc-type-icon word">DOCX</div>
+              <div>
+                <div class="doc-card-title">PM-OPN-02 PROJECT PLANNING AND EXECUTION PROCEDURE_rev2.docx</div>
+                <div class="doc-card-meta">
+                  <span>Revision: Rev 02</span>
+                  <span>•</span>
+                  <span>Type: MS Word</span>
+                  <span>•</span>
+                  <span>Size: 1.03 MB</span>
+                </div>
+              </div>
+            </div>
+            <div class="doc-card-actions">
+              <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/PM-OPN-02 PROJECT PLANNING AND EXECUTION PROCEDURE_rev2.docx', 'PM-OPN-02 Planning & Execution Rev 2')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Open in MS Word
+              </button>
+              <a href="OPERATION%20PROCEDURE/PM-OPN-02/PM-OPN-02%20PROJECT%20PLANNING%20AND%20EXECUTION%20PROCEDURE_rev2.docx" class="btn-download-fallback" download title="Download/View">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sub Procedures -->
+      <section class="section-panel">
+        <div class="section-panel-header">
+          <div class="section-panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            Sub-Procedures (Method Statements & SOPs)
+          </div>
+        </div>
+        <div class="doc-grid">
+          <!-- 1. Rebar & Forms -->
+          <div class="doc-card">
+            <div class="doc-card-header">
+              <div class="doc-type-icon word">DOCX</div>
+              <div>
+                <div class="doc-card-title">concrete rebar forms procedure.docx</div>
+                <div class="doc-card-meta">
+                  <span>Scope: Structural Rebar & Formworks</span>
+                  <span>•</span>
+                  <span>Size: 16.37 MB</span>
+                </div>
+              </div>
+            </div>
+            <div class="doc-card-actions">
+              <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/SUB PROCEDURE/concrete rebar forms procedure.docx', 'Concrete Rebar Forms Procedure')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Open in MS Word
+              </button>
+              <a href="OPERATION%20PROCEDURE/PM-OPN-02/SUB%20PROCEDURE/concrete%20rebar%20forms%20procedure.docx" class="btn-download-fallback" download title="Download">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- 2. Concrete Topping -->
+          <div class="doc-card">
+            <div class="doc-card-header">
+              <div class="doc-type-icon word">DOCX</div>
+              <div>
+                <div class="doc-card-title">Concrete topping works.docx</div>
+                <div class="doc-card-meta">
+                  <span>Scope: Floor Screed & Topping</span>
+                  <span>•</span>
+                  <span>Size: 6.96 MB</span>
+                </div>
+              </div>
+            </div>
+            <div class="doc-card-actions">
+              <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/SUB PROCEDURE/Concrete topping works.docx', 'Concrete Topping Works')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Open in MS Word
+              </button>
+              <a href="OPERATION%20PROCEDURE/PM-OPN-02/SUB%20PROCEDURE/Concrete%20topping%20works.docx" class="btn-download-fallback" download title="Download">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- 3. CHB Laying & Plastering -->
+          <div class="doc-card">
+            <div class="doc-card-header">
+              <div class="doc-type-icon word">DOCX</div>
+              <div>
+                <div class="doc-card-title">chb laying and plastering works.docx</div>
+                <div class="doc-card-meta">
+                  <span>Scope: Concrete Hollow Block Masonry</span>
+                  <span>•</span>
+                  <span>Size: 5.31 MB</span>
+                </div>
+              </div>
+            </div>
+            <div class="doc-card-actions">
+              <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/SUB PROCEDURE/chb laying and plastering works.docx', 'CHB Laying and Plastering Works')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Open in MS Word
+              </button>
+              <a href="OPERATION%20PROCEDURE/PM-OPN-02/SUB%20PROCEDURE/chb%20laying%20and%20plastering%20works.docx" class="btn-download-fallback" download title="Download">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- 4. Plastering Works -->
+          <div class="doc-card">
+            <div class="doc-card-header">
+              <div class="doc-type-icon word">DOCX</div>
+              <div>
+                <div class="doc-card-title">plastering works.docx</div>
+                <div class="doc-card-meta">
+                  <span>Scope: Wall Plastering & Skimming</span>
+                  <span>•</span>
+                  <span>Size: 3.72 MB</span>
+                </div>
+              </div>
+            </div>
+            <div class="doc-card-actions">
+              <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/SUB PROCEDURE/plastering works.docx', 'Plastering Works')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Open in MS Word
+              </button>
+              <a href="OPERATION%20PROCEDURE/PM-OPN-02/SUB%20PROCEDURE/plastering%20works.docx" class="btn-download-fallback" download title="Download">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- 5. Tile Works -->
+          <div class="doc-card">
+            <div class="doc-card-header">
+              <div class="doc-type-icon word">DOCX</div>
+              <div>
+                <div class="doc-card-title">Tile_works.docx</div>
+                <div class="doc-card-meta">
+                  <span>Scope: Ceramic & Homogeneous Tile Works</span>
+                  <span>•</span>
+                  <span>Size: 35.97 MB</span>
+                </div>
+              </div>
+            </div>
+            <div class="doc-card-actions">
+              <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/SUB PROCEDURE/Tile_works.docx', 'Tile Works Procedure')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Open in MS Word
+              </button>
+              <a href="OPERATION%20PROCEDURE/PM-OPN-02/SUB%20PROCEDURE/Tile_works.docx" class="btn-download-fallback" download title="Download">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- 6. Painting Works -->
+          <div class="doc-card">
+            <div class="doc-card-header">
+              <div class="doc-type-icon word">DOCX</div>
+              <div>
+                <div class="doc-card-title">painting works procedure - refine.docx</div>
+                <div class="doc-card-meta">
+                  <span>Scope: Surface Prep & Architectural Painting</span>
+                  <span>•</span>
+                  <span>Size: 10.24 MB</span>
+                </div>
+              </div>
+            </div>
+            <div class="doc-card-actions">
+              <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/SUB PROCEDURE/painting works procedure - refine.docx', 'Painting Works Procedure')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Open in MS Word
+              </button>
+              <a href="OPERATION%20PROCEDURE/PM-OPN-02/SUB%20PROCEDURE/painting%20works%20procedure%20-%20refine.docx" class="btn-download-fallback" download title="Download">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Forms & Checklists for OPN-02 -->
+      <section class="section-panel">
+        <div class="section-panel-header">
+          <div class="section-panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            QA/QC Inspection Checklists & Forms (OPN-02)
+          </div>
+        </div>
+        <div class="doc-grid">
+          <!-- 1. Concrete Screed -->
+          <div class="doc-card">
+            <div class="doc-card-header">
+              <div class="doc-type-icon pdf">PDF</div>
+              <div>
+                <div class="doc-card-title">FM-OPN-02-10 Concrete screed-Topping checklist.pdf</div>
+                <div class="doc-card-meta">
+                  <span>Code: FM-OPN-02-10</span>
+                  <span>•</span>
+                  <span>Type: Inspection Checklist</span>
+                </div>
+              </div>
+            </div>
+            <div class="doc-card-actions">
+              <button class="btn-open-native pdf" onclick="QAQCBridge.openFile('CONST_PROCEDURES/FORMS/FM-OPN-02-10 Concrete screed-Topping checklist.pdf', 'FM-OPN-02-10 Screed Checklist')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Open in PDF App
+              </button>
+              <a href="FORMS/FM-OPN-02-10%20Concrete%20screed-Topping%20checklist.pdf" target="_blank" class="btn-download-fallback" title="Preview in Browser">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- 2. Rebar Works -->
+          <div class="doc-card">
+            <div class="doc-card-header">
+              <div class="doc-type-icon pdf">PDF</div>
+              <div>
+                <div class="doc-card-title">FM-OPN-02-12 Rebar works checklist.pdf</div>
+                <div class="doc-card-meta">
+                  <span>Code: FM-OPN-02-12</span>
+                  <span>•</span>
+                  <span>Type: Inspection Checklist</span>
+                </div>
+              </div>
+            </div>
+            <div class="doc-card-actions">
+              <button class="btn-open-native pdf" onclick="QAQCBridge.openFile('CONST_PROCEDURES/FORMS/FM-OPN-02-12 Rebar works checklist.pdf', 'FM-OPN-02-12 Rebar Checklist')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Open in PDF App
+              </button>
+              <a href="FORMS/FM-OPN-02-12%20Rebar%20works%20checklist.pdf" target="_blank" class="btn-download-fallback" title="Preview in Browser">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- 3. Formworks -->
+          <div class="doc-card">
+            <div class="doc-card-header">
+              <div class="doc-type-icon pdf">PDF</div>
+              <div>
+                <div class="doc-card-title">FM-OPN-02-13 formworks checklist.pdf</div>
+                <div class="doc-card-meta">
+                  <span>Code: FM-OPN-02-13</span>
+                  <span>•</span>
+                  <span>Type: Inspection Checklist</span>
+                </div>
+              </div>
+            </div>
+            <div class="doc-card-actions">
+              <button class="btn-open-native pdf" onclick="QAQCBridge.openFile('CONST_PROCEDURES/FORMS/FM-OPN-02-13 formworks checklist.pdf', 'FM-OPN-02-13 Formworks Checklist')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Open in PDF App
+              </button>
+              <a href="FORMS/FM-OPN-02-13%20formworks%20checklist.pdf" target="_blank" class="btn-download-fallback" title="Preview in Browser">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- 4. Masonry -->
+          <div class="doc-card">
+            <div class="doc-card-header">
+              <div class="doc-type-icon pdf">PDF</div>
+              <div>
+                <div class="doc-card-title">FM-OPN-02-14 Masonry works checklist.pdf</div>
+                <div class="doc-card-meta">
+                  <span>Code: FM-OPN-02-14</span>
+                  <span>•</span>
+                  <span>Type: Inspection Checklist</span>
+                </div>
+              </div>
+            </div>
+            <div class="doc-card-actions">
+              <button class="btn-open-native pdf" onclick="QAQCBridge.openFile('CONST_PROCEDURES/FORMS/FM-OPN-02-14 Masonry works checklist.pdf', 'FM-OPN-02-14 Masonry Checklist')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Open in PDF App
+              </button>
+              <a href="FORMS/FM-OPN-02-14%20Masonry%20works%20checklist.pdf" target="_blank" class="btn-download-fallback" title="Preview in Browser">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- 5. Tile Works -->
+          <div class="doc-card">
+            <div class="doc-card-header">
+              <div class="doc-type-icon pdf">PDF</div>
+              <div>
+                <div class="doc-card-title">FM-OPN-02-15 Tile Works Checklist.pdf</div>
+                <div class="doc-card-meta">
+                  <span>Code: FM-OPN-02-15</span>
+                  <span>•</span>
+                  <span>Type: Inspection Checklist</span>
+                </div>
+              </div>
+            </div>
+            <div class="doc-card-actions">
+              <button class="btn-open-native pdf" onclick="QAQCBridge.openFile('CONST_PROCEDURES/FORMS/FM-OPN-02-15 Tile Works Checklist.pdf', 'FM-OPN-02-15 Tile Checklist')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Open in PDF App
+              </button>
+              <a href="FORMS/FM-OPN-02-15%20Tile%20Works%20Checklist.pdf" target="_blank" class="btn-download-fallback" title="Preview in Browser">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB 3: OPN-03 -->
+    <div id="tab-opn-03" class="tab-content">
+      <div class="opn-summary-card">
+        <div>
+          <div class="opn-summary-title">
+            <span class="meta-tag" style="background:var(--emerald-800); color:#fff;">PM-OPN-03</span>
+            Safety Procedures
+          </div>
+          <div style="font-size:0.85rem; color:var(--slate-600); margin-top:0.35rem;">
+            Occupational safety, health, hazard identification, PPE requirements, and site safety management system protocols.
+          </div>
+        </div>
+        <div class="meta-tag">Doc Status: Active Rev 05</div>
+      </div>
+
+      <section class="section-panel">
+        <div class="section-panel-header">
+          <div class="section-panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Main Operation Procedure
+          </div>
+        </div>
+        <div class="doc-grid">
+          <div class="doc-card">
+            <div class="doc-card-header">
+              <div class="doc-type-icon word">DOC</div>
+              <div>
+                <div class="doc-card-title">PM-OPN-03 SAFETY PROCEDURES (5).doc</div>
+                <div class="doc-card-meta">
+                  <span>Revision: Rev 05</span>
+                  <span>•</span>
+                  <span>Type: MS Word</span>
+                  <span>•</span>
+                  <span>Size: 1.09 MB</span>
+                </div>
+              </div>
+            </div>
+            <div class="doc-card-actions">
+              <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-03/PM-OPN-03 SAFETY PROCEDURES (5).doc', 'PM-OPN-03 Safety Procedures')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Open in MS Word
+              </button>
+              <a href="OPERATION%20PROCEDURE/PM-OPN-03/PM-OPN-03%20SAFETY%20PROCEDURES%20(5).doc" class="btn-download-fallback" download title="Download">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB 4: OPN-04 -->
+    <div id="tab-opn-04" class="tab-content">
+      <div class="opn-summary-card">
+        <div>
+          <div class="opn-summary-title">
+            <span class="meta-tag" style="background:var(--emerald-800); color:#fff;">PM-OPN-04</span>
+            Progress Billing Procedure
+          </div>
+          <div style="font-size:0.85rem; color:var(--slate-600); margin-top:0.35rem;">
+            Standard protocol for site accomplishment validation, progress billing evaluation, and QA/QC milestone signoffs.
+          </div>
+        </div>
+        <div class="meta-tag">Doc Status: Active Rev 00</div>
+      </div>
+
+      <section class="section-panel">
+        <div class="section-panel-header">
+          <div class="section-panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Main Operation Procedure
+          </div>
+        </div>
+        <div class="doc-grid">
+          <div class="doc-card">
+            <div class="doc-card-header">
+              <div class="doc-type-icon word">DOC</div>
+              <div>
+                <div class="doc-card-title">PM-OPN-04 PROGRESS BILLING rev00.doc</div>
+                <div class="doc-card-meta">
+                  <span>Revision: Rev 00</span>
+                  <span>•</span>
+                  <span>Type: MS Word</span>
+                  <span>•</span>
+                  <span>Size: 1.19 MB</span>
+                </div>
+              </div>
+            </div>
+            <div class="doc-card-actions">
+              <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-04/PM-OPN-04 PROGRESS BILLING rev00.doc', 'PM-OPN-04 Progress Billing')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Open in MS Word
+              </button>
+              <a href="OPERATION%20PROCEDURE/PM-OPN-04/PM-OPN-04%20PROGRESS%20BILLING%20rev00.doc" class="btn-download-fallback" download title="Download">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB 5: OPN-05 -->
+    <div id="tab-opn-05" class="tab-content">
+      <div class="opn-summary-card">
+        <div>
+          <div class="opn-summary-title">
+            <span class="meta-tag" style="background:var(--emerald-800); color:#fff;">PM-OPN-05</span>
+            Project Turn Over Procedure
+          </div>
+          <div style="font-size:0.85rem; color:var(--slate-600); margin-top:0.35rem;">
+            Protocol for substantial completion, final inspection handover, punchlist clearance, and QA/QC documentation handover.
+          </div>
+        </div>
+        <div class="meta-tag">Doc Status: Active Rev 03</div>
+      </div>
+
+      <section class="section-panel">
+        <div class="section-panel-header">
+          <div class="section-panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Main Operation Procedure
+          </div>
+        </div>
+        <div class="doc-grid">
+          <div class="doc-card">
+            <div class="doc-card-header">
+              <div class="doc-type-icon word">DOC</div>
+              <div>
+                <div class="doc-card-title">PM-OPN-05 PROJECT TURN OVER Rev 3.doc</div>
+                <div class="doc-card-meta">
+                  <span>Revision: Rev 03</span>
+                  <span>•</span>
+                  <span>Type: MS Word</span>
+                  <span>•</span>
+                  <span>Size: 1.12 MB</span>
+                </div>
+              </div>
+            </div>
+            <div class="doc-card-actions">
+              <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-05/PM-OPN-05 PROJECT TURN OVER Rev 3.doc', 'PM-OPN-05 Project Turn Over Rev 3')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Open in MS Word
+              </button>
+              <a href="OPERATION%20PROCEDURE/PM-OPN-05/PM-OPN-05%20PROJECT%20TURN%20OVER%20Rev%203.doc" class="btn-download-fallback" download title="Download">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB 6: OPN-06 -->
+    <div id="tab-opn-06" class="tab-content">
+      <div class="opn-summary-card">
+        <div>
+          <div class="opn-summary-title">
+            <span class="meta-tag" style="background:var(--emerald-800); color:#fff;">PM-OPN-06</span>
+            Subcontractor Monitoring Procedure
+          </div>
+          <div style="font-size:0.85rem; color:var(--slate-600); margin-top:0.35rem;">
+            Quality oversight, performance appraisal, site quality compliance audits, and QS alignment for all trade subcontractors.
+          </div>
+        </div>
+        <div class="meta-tag">Doc Status: Active Rev 02</div>
+      </div>
+
+      <section class="section-panel">
+        <div class="section-panel-header">
+          <div class="section-panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Main Operation Procedure
+          </div>
+        </div>
+        <div class="doc-grid">
+          <div class="doc-card">
+            <div class="doc-card-header">
+              <div class="doc-type-icon word">DOCX</div>
+              <div>
+                <div class="doc-card-title">PM-OPN-06 Subcontractor Monitoring Procedure_Rev. 2_Procedure_with QS.docx</div>
+                <div class="doc-card-meta">
+                  <span>Revision: Rev 02 (with QS)</span>
+                  <span>•</span>
+                  <span>Type: MS Word</span>
+                  <span>•</span>
+                  <span>Size: 108.4 KB</span>
+                </div>
+              </div>
+            </div>
+            <div class="doc-card-actions">
+              <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-06/PM-OPN-06 Subcontractor Monitoring Procedure_Rev. 2_Procedure_with QS.docx', 'PM-OPN-06 Subcontractor Monitoring')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Open in MS Word
+              </button>
+              <a href="OPERATION%20PROCEDURE/PM-OPN-06/PM-OPN-06%20Subcontractor%20Monitoring%20Procedure_Rev.%202_Procedure_with%20QS.docx" class="btn-download-fallback" download title="Download">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB 7: OPN-07 -->
+    <div id="tab-opn-07" class="tab-content">
+      <div class="opn-summary-card">
+        <div>
+          <div class="opn-summary-title">
+            <span class="meta-tag" style="background:var(--emerald-800); color:#fff;">PM-OPN-07</span>
+            Batching Plant Procedure
+          </div>
+          <div style="font-size:0.85rem; color:var(--slate-600); margin-top:0.35rem;">
+            Ready-mix concrete batching operations, mix design verification, slump testing, cylinder sampling, and batch quality controls.
+          </div>
+        </div>
+        <div class="meta-tag">Doc Status: Active Rev 02</div>
+      </div>
+
+      <section class="section-panel">
+        <div class="section-panel-header">
+          <div class="section-panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Main Operation Procedure
+          </div>
+        </div>
+        <div class="doc-grid">
+          <div class="doc-card">
+            <div class="doc-card-header">
+              <div class="doc-type-icon word">DOCX</div>
+              <div>
+                <div class="doc-card-title">PM-OPN-07 BATCHING PLANT PROCEDURE rev02.docx</div>
+                <div class="doc-card-meta">
+                  <span>Revision: Rev 02</span>
+                  <span>•</span>
+                  <span>Type: MS Word</span>
+                  <span>•</span>
+                  <span>Size: 1.12 MB</span>
+                </div>
+              </div>
+            </div>
+            <div class="doc-card-actions">
+              <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-07/PM-OPN-07 BATCHING PLANT PROCEDURE rev02.docx', 'PM-OPN-07 Batching Plant Procedure')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Open in MS Word
+              </button>
+              <a href="OPERATION%20PROCEDURE/PM-OPN-07/PM-OPN-07%20BATCHING%20PLANT%20PROCEDURE%20rev02.docx" class="btn-download-fallback" download title="Download">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB 8: MASTER REGISTRY (ALL PROCEDURES & FORMS) -->
+    <div id="tab-all-master" class="tab-content">
+      <div class="opn-summary-card">
+        <div>
+          <div class="opn-summary-title">
+            <span class="meta-tag" style="background:var(--emerald-800); color:#fff;">MASTER INDEX</span>
+            All Quality Documents, Procedures & Forms
+          </div>
+          <div style="font-size:0.85rem; color:var(--slate-600); margin-top:0.35rem;">
+            Unified repository of all 7 core operational procedures, 7 sub-procedures, and 5 QA/QC inspection checklists.
+          </div>
+        </div>
+      </div>
+
+      <section class="section-panel">
+        <div class="section-panel-header">
+          <div class="section-panel-title">Consolidated Construction QA/QC Library</div>
+        </div>
+        <div class="doc-grid" id="masterDocsGrid">
+          <!-- All cards are populated here for instant filtering -->
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <!-- Corporate Footer -->
+  <footer class="cockpit-footer">
+    <div>
+      <strong>FCLaranang Dev Corp QA/QC System</strong> &bull; ISO 9001:2015 Compliance &bull; Operation Procedures Series
+    </div>
+    <div>
+      &copy; 2026 FCLaranang Dev Corp. All Rights Reserved.
+    </div>
+  </footer>
+
+  <script src="../shared/js/qaqc-bridge.js"></script>
+  <script>
+    // Tab switching logic
+    document.querySelectorAll('#opnTabsNav .tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#opnTabsNav .tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+        btn.classList.add('active');
+        const targetId = btn.getAttribute('data-tab');
+        const targetContent = document.getElementById(targetId);
+        if (targetContent) targetContent.classList.add('active');
+      });
+    });
+
+    // Populate master registry tab
+    function populateMasterRegistry() {
+      const grid = document.getElementById('masterDocsGrid');
+      if (!grid) return;
+
+      const allCards = document.querySelectorAll('.tab-content:not(#tab-all-master) .doc-card');
+      grid.innerHTML = '';
+      allCards.forEach(card => {
+        const clone = card.cloneNode(true);
+        grid.appendChild(clone);
+      });
+    }
+
+    populateMasterRegistry();
+
+    // Global Search across cards
+    QAQCBridge.bindSearch('procSearchInput', '.doc-card');
+  </script>
+</body>
+</html>

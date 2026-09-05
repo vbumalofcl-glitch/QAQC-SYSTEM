@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FCLaranang Dev Corp • QA/QC Executive Management System</title>
+  <link rel="icon" type="image/png" href="fcldc.png">
+  <link rel="stylesheet" href="shared/css/corporate-green.css">
+  <style>
+    /* ==========================================================================
+       Fit-To-Screen Executive Cockpit Layout
+       ========================================================================== */
+    :root {
+      --header-height: 50px;
+      --ribbon-height: 54px;
+      --footer-height: 30px;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: radial-gradient(circle at 50% 0%, #064e3b12 0%, #f4f7f6 65%);
+    }
+
+    /* Sleek Top Navigation */
+    .corp-header {
+      background: linear-gradient(135deg, var(--emerald-950), var(--emerald-900));
+      border-bottom: 2px solid var(--emerald-600);
+      padding: 0 1.25rem;
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(2, 36, 27, 0.25);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      flex-shrink: 0;
+    }
+
+    .corp-header-inner {
+      width: 100%;
+      max-width: 1720px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      text-decoration: none;
+      color: var(--white);
+    }
+
+    .brand-logo-img {
+      height: 34px;
+      width: auto;
+      object-fit: contain;
+      border-radius: var(--radius-sm);
+      display: block;
+    }
+
+    .brand-info h1 {
+      font-size: 1.02rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin: 0;
+      letter-spacing: -0.01em;
+    }
+
+    .brand-info h1 span {
+      color: var(--emerald-300);
+      font-weight: 500;
+      font-size: 0.85rem;
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .nav-link {
+      color: var(--emerald-100);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.3rem 0.7rem;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: var(--white);
+    }
+
+    .nav-link.active {
+      background: var(--emerald-600);
+      color: var(--white);
+      box-shadow: 0 2px 6px rgba(5, 150, 105, 0.3);
+    }
+
+    /* Executive Command Ribbon */
+    .command-ribbon {
+      background: var(--white);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0.45rem 1.25rem;
+      box-shadow: var(--shadow-sm);
+      flex-shrink: 0;
+    }
+
+    .command-ribbon-inner {
+      max-width: 1720px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.85rem;
+      flex-wrap: wrap;
+    }
+
+    .ribbon-title-box {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .ribbon-eyebrow {
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--emerald-700);
+      background: var(--emerald-50);
+      border: 1px solid var(--emerald-200);
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+    }
+
+    .ribbon-heading {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--slate-900);
+      margin: 0;
+    }
+
+    .ribbon-chips {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+
+    .ribbon-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--slate-700);
+      background: var(--slate-50);
+      border: 1px solid var(--border-color);
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+    }
+
+    .ribbon-chip strong {
+      color: var(--emerald-700);
+      font-weight: 800;
+    }
+
+    /* Global Search Box in Ribbon */
+    .ribbon-search {
+      position: relative;
+      min-width: 220px;
+      max-width: 300px;
+      flex-grow: 1;
+    }
+
+    .ribbon-search svg {
+      position: absolute;
+      left: 0.65rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      color: var(--slate-400);
+    }
+
+    .ribbon-search input {
+      width: 100%;
+      padding: 0.32rem 0.75rem 0.32rem 2rem;
+      font-size: 0.78rem;
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      background: var(--slate-50);
+      color: var(--slate-800);
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .ribbon-search input:focus {
+      border-color: var(--emerald-500);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    }
+
+    /* Cockpit Main Area */
+    .cockpit-main {
+      flex: 1 1 auto;
+      max-width: 1720px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0.65rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      justify-content: space-between;
+    }
+
+    /* 6-Column Master Subsystem Card Deck */
+    .subsystem-deck {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.65rem;
+      flex: 1 1 auto;
+      align-items: stretch;
+    }
+
+    .deck-card {
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .deck-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--emerald-500), var(--emerald-700));
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .deck-card:hover {
+      border-color: var(--emerald-500);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+      background: var(--bg-card-hover);
+    }
+
+    .deck-card:hover::before {
+      opacity: 1;
+    }
+
+    .card-top {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .card-head-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .card-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: var(--emerald-50);
+      color: var(--emerald-700);
+      border: 1px solid var(--emerald-200);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      transition: var(--transition);
+    }
+
+    .deck-card:hover .card-icon {
+      background: var(--emerald-700);
+      color: var(--white);
+      transform: scale(1.05);
+    }
+
+    .card-icon svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .card-badge {
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      background: var(--slate-100);
+      color: var(--slate-700);
+      border: 1px solid var(--slate-200);
+    }
+
+    .card-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--slate-900);
+      line-height: 1.25;
+      margin: 0;
+    }
+
+    .card-desc {
+      font-size: 0.74rem;
+      color: var(--slate-600);
+      line-height: 1.4;
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin-top: 0.3rem;
+    }
+
+    .tag-pill {
+      font-size: 0.64rem;
+      font-weight: 600;
+      background: var(--emerald-50);
+      color: var(--emerald-800);
+      padding: 0.12rem 0.4rem;
+      border-radius: 4px;
+      border: 1px solid var(--emerald-100);
+    }
+
+    .card-action-bar {
+      margin-top: 0.55rem;
+      padding-top: 0.45rem;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .btn-launch {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--emerald-700);
+      transition: var(--transition);
+    }
+
+    .deck-card:hover .btn-launch {
+      color: var(--emerald-800);
+      transform: translateX(3px);
+    }
+
+    .btn-launch svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Compact Bottom Quick Launcher Dock */
+    .quick-dock {
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.45rem 0.85rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+
+    .dock-title {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.74rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--slate-800);
+    }
+
+    .dock-title svg {
+      color: var(--emerald-600);
+      width: 15px;
+      height: 15px;
+    }
+
+    .dock-items {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+
+    .dock-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.28rem 0.6rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--slate-50);
+      color: var(--slate-800);
+      cursor: pointer;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .dock-btn:hover {
+      border-color: var(--emerald-500);
+      background: var(--white);
+      box-shadow: var(--shadow-sm);
+      transform: translateY(-1px);
+    }
+
+    .dock-badge {
+      font-size: 0.6rem;
+      font-weight: 900;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      color: var(--white);
+    }
+
+    .dock-badge.excel { background: var(--doc-excel); }
+    .dock-badge.corp  { background: var(--emerald-700); }
+    .dock-badge.word  { background: var(--doc-word); }
+    .dock-badge.pdf   { background: var(--doc-pdf); }
+
+    /* Ultra-Slim Footer */
+    .cockpit-footer {
+      background: var(--emerald-950);
+      color: var(--emerald-200);
+      font-size: 0.68rem;
+      padding: 0 1.25rem;
+      height: var(--footer-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+
+    /* Responsive Queries */
+    @media (max-width: 1300px) {
+      .subsystem-deck {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (max-width: 860px) {
+      .subsystem-deck {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .command-ribbon-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .ribbon-search {
+        max-width: 100%;
+      }
+    }
+    @media (max-width: 580px) {
+      .subsystem-deck {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Corporate Top Navigation -->
+  <header class="corp-header">
+    <div class="corp-header-inner">
+      <a href="index.html" class="brand-section">
+        <img src="fcldc.png" alt="FCLDC Logo" class="brand-logo-img">
+        <div class="brand-info">
+          <h1>FCLaranang Dev Corp <span>• Executive QA/QC System</span></h1>
+        </div>
+      </a>
+      <nav class="header-nav">
+        <a href="index.html" class="nav-link active">Home</a>
+        <a href="QAQC_GOVERNANCE/index.html" class="nav-link">Governance & QITP</a>
+        <a href="CONST_PROCEDURES/index.html" class="nav-link">Procedures (OPN)</a>
+        <a href="CAPA/index.html" class="nav-link">CAPA</a>
+        <a href="PUNCHLISTING_COMMISSIONING/punchlisting_commisioning.html" class="nav-link">Punchlisting</a>
+        <a href="QAQC_KPI/index.html" class="nav-link">QA/QC KPI</a>
+        <a href="EXECUTIVE_REPORT/index.html" class="nav-link">Reports</a>
+      </nav>
+      <div class="header-status">
+        <div id="server-status-badge" class="status-badge" style="padding:0.25rem 0.6rem; font-size:0.72rem;">
+          <span class="status-indicator-dot"></span> Checking Status...
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Executive Command Ribbon & Live KPIs -->
+  <section class="command-ribbon">
+    <div class="command-ribbon-inner">
+      <div class="ribbon-title-box">
+        <span class="ribbon-eyebrow">Enterprise Cockpit</span>
+        <h2 class="ribbon-heading">Quality Assurance & Quality Control Management Portal</h2>
+      </div>
+
+      <div class="ribbon-chips">
+        <div class="ribbon-chip">📋 <span>Procedures:</span> <strong>7 OPN</strong></div>
+        <div class="ribbon-chip">🎯 <span>QITP Criteria:</span> <strong>141 Points (16 Trades)</strong></div>
+        <div class="ribbon-chip">⚡ <span>Quality Target:</span> <strong>98.4% Pass</strong></div>
+        <div class="ribbon-chip">🛡️ <span>Stop-Work:</span> <strong>Active Protocol</strong></div>
+      </div>
+
+      <!-- Quick Global Search -->
+      <div class="ribbon-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="globalSystemSearch" placeholder="Quick search procedures, QITP, CAPA, forms...">
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Cockpit Deck -->
+  <main class="cockpit-main">
+
+    <!-- 5 Master Subsystem Cards Deck -->
+    <div class="subsystem-deck">
+
+      <!-- Module 1: Construction Operations Procedures -->
+      <a href="CONST_PROCEDURES/index.html" class="deck-card">
+        <div class="card-top">
+          <div class="card-head-row">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </div>
+            <span class="card-badge">OPN-01 to 07</span>
+          </div>
+          <h3 class="card-title">Construction Operation Procedures</h3>
+          <p class="card-desc">
+            Standard Procedures (PM-OPN-01 to 07), Sub-Procedures, and PDF Inspection Checklists with native app launcher.
+          </p>
+          <div class="card-tags">
+            <span class="tag-pill">SOP Registry</span>
+            <span class="tag-pill">7 Sub-Procedures</span>
+            <span class="tag-pill">PDF Checklists</span>
+          </div>
+        </div>
+        <div class="card-action-bar">
+          <span class="btn-launch">
+            Open Procedures
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+        </div>
+      </a>
+
+      <!-- Module 2: QAQC Governance & QITP -->
+      <a href="QAQC_GOVERNANCE/index.html" class="deck-card">
+        <div class="card-top">
+          <div class="card-head-row">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <span class="card-badge">GOVERNANCE & QITP</span>
+          </div>
+          <h3 class="card-title">QA/QC Governance & QITP System</h3>
+          <p class="card-desc">
+            Dynamic QMS Framework, QA vs QC matrix, 141-point interactive QITP across 16 trades, and real-time KPI calculators.
+          </p>
+          <div class="card-tags">
+            <span class="tag-pill">141 QITP Points</span>
+            <span class="tag-pill">FTQ & Rework Calc</span>
+            <span class="tag-pill">Stop-Work Hierarchy</span>
+          </div>
+        </div>
+        <div class="card-action-bar">
+          <span class="btn-launch">
+            Open Governance App
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+        </div>
+      </a>
+
+      <!-- Module 3: CAPA Management Subsystem -->
+      <a href="CAPA/index.html" class="deck-card">
+        <div class="card-top">
+          <div class="card-head-row">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <span class="card-badge">CAPA TRACKER</span>
+          </div>
+          <h3 class="card-title">CAPA Management & Registry</h3>
+          <p class="card-desc">
+            Non-Conformance registry, root cause analysis (5-Whys/Fishbone), action letters, RACIM responsibility matrix, and database sync.
+          </p>
+          <div class="card-tags">
+            <span class="tag-pill">NC Registry</span>
+            <span class="tag-pill">Action Letters</span>
+            <span class="tag-pill">RACIM Matrix</span>
+          </div>
+        </div>
+        <div class="card-action-bar">
+          <span class="btn-launch">
+            Open CAPA System
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+        </div>
+      </a>
+
+      <!-- Module 4: Punchlisting & Commissioning -->
+      <a href="PUNCHLISTING_COMMISSIONING/punchlisting_commisioning.html" class="deck-card">
+        <div class="card-top">
+          <div class="card-head-row">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            </div>
+            <span class="card-badge">PUNCHLIST & CX</span>
+          </div>
+          <h3 class="card-title">Punchlisting & Commissioning</h3>
+          <p class="card-desc">
+            Substantial completion Kanban, turnover gatekeeper, pre-commissioning testing, defect rectification, and field handover.
+          </p>
+          <div class="card-tags">
+            <span class="tag-pill">Defect Kanban</span>
+            <span class="tag-pill">Commissioning</span>
+            <span class="tag-pill">Turnover Gates</span>
+          </div>
+        </div>
+        <div class="card-action-bar">
+          <span class="btn-launch">
+            Open Punchlisting
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+        </div>
+      </a>
+
+      <!-- Module 5: QAQC KPI Program (Next to Punchlisting) -->
+      <a href="QAQC_KPI/index.html" class="deck-card">
+        <div class="card-top">
+          <div class="card-head-row">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+            </div>
+            <span class="card-badge">QAQC_KPI</span>
+          </div>
+          <h3 class="card-title">QA/QC KPI Monitoring Program</h3>
+          <p class="card-desc">
+            Full Excel-grade KPI suite with active project tracking, FTQ testing metrics, standards & specs, themes, and report engine.
+          </p>
+          <div class="card-tags">
+            <span class="tag-pill">Excel KPI Suite</span>
+            <span class="tag-pill">FTQ Testing</span>
+            <span class="tag-pill">Multi-Project</span>
+          </div>
+        </div>
+        <div class="card-action-bar">
+          <span class="btn-launch">
+            Open KPI Program
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+        </div>
+      </a>
+
+      <!-- Module 6: Executive Analytics & Reporting -->
+      <a href="EXECUTIVE_REPORT/index.html" class="deck-card">
+        <div class="card-top">
+          <div class="card-head-row">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </div>
+            <span class="card-badge">ANALYTICS & PDF</span>
+          </div>
+          <h3 class="card-title">Executive Quality Reporting</h3>
+          <p class="card-desc">
+            Executive scorecards, trade compliance meters, subcontractor rankings, milestone audit reviews, and printable executive summaries.
+          </p>
+          <div class="card-tags">
+            <span class="tag-pill">Executive KPI</span>
+            <span class="tag-pill">Trade Meters</span>
+            <span class="tag-pill">PDF / Print</span>
+          </div>
+        </div>
+        <div class="card-action-bar">
+          <span class="btn-launch">
+            Open Analytics
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- Quick Document Launcher Dock -->
+    <div class="quick-dock">
+      <div class="dock-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span>Quick Desktop App Launchers</span>
+      </div>
+
+      <div class="dock-items">
+        <a href="QAQC_KPI/index.html" class="dock-btn">
+          <span class="dock-badge corp">KPI</span>
+          <span>QA/QC KPI Program</span>
+        </a>
+        <a href="QAQC_GOVERNANCE/index.html" class="dock-btn">
+          <span class="dock-badge excel">XLS</span>
+          <span>QITP Master Matrix</span>
+        </a>
+        <a href="QAQC_GOVERNANCE/index.html" class="dock-btn">
+          <span class="dock-badge corp">QMS</span>
+          <span>Governance Framework</span>
+        </a>
+        <button class="dock-btn" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/PM-OPN-02 PROJECT PLANNING AND EXECUTION PROCEDURE_rev2.docx', 'PM-OPN-02 Execution Procedure')">
+          <span class="dock-badge word">DOC</span>
+          <span>PM-OPN-02 Execution</span>
+        </button>
+        <button class="dock-btn" onclick="QAQCBridge.openFile('CONST_PROCEDURES/FORMS/FM-OPN-02-12 Rebar works checklist.pdf', 'FM-OPN-02-12 Rebar Checklist')">
+          <span class="dock-badge pdf">PDF</span>
+          <span>FM-OPN-02-12 Rebar</span>
+        </button>
+        <button class="dock-btn" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-03/PM-OPN-03 SAFETY PROCEDURES (5).doc', 'PM-OPN-03 Safety Procedures')">
+          <span class="dock-badge word">DOC</span>
+          <span>PM-OPN-03 Safety</span>
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Ultra-Slim Footer -->
+  <footer class="cockpit-footer">
+    <div>
+      <strong>FCLaranang Dev Corp</strong> • Enterprise Quality Assurance & Quality Control Management System (ISO 9001:2015)
+    </div>
+    <div>
+      © 2026 FCLaranang Dev Corp. All Rights Reserved.
+    </div>
+  </footer>
+
+  <script src="shared/js/qaqc-bridge.js"></script>
+  <script>
+    QAQCBridge.bindSearch('globalSystemSearch', '.deck-card, .dock-btn');
+  </script>
+</body>
+</html>

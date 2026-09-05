@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Executive QA/QC Analytics & Reporting Dashboard | FCLaranang Dev Corp</title>
+  <link rel="icon" type="image/png" href="../fcldc.png">
+  <link rel="stylesheet" href="../shared/css/corporate-green.css">
+  <style>
+    /* ==========================================================================
+       Fit-To-Screen Executive Reports Layout
+       ========================================================================== */
+    html, body {
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: radial-gradient(circle at 50% 0%, #064e3b10 0%, #f8fafc 65%);
+    }
+
+    .corp-header {
+      height: 48px;
+      padding: 0 1.25rem;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--emerald-950), var(--emerald-900));
+      border-bottom: 2px solid var(--emerald-600);
+      display: flex;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .exec-command-ribbon {
+      height: 44px;
+      flex-shrink: 0;
+      background: var(--white);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .exec-ribbon-left {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .exec-ribbon-eyebrow {
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--emerald-700);
+      background: var(--emerald-50);
+      border: 1px solid var(--emerald-200);
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+    }
+
+    .exec-ribbon-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--slate-900);
+      margin: 0;
+    }
+
+    .exec-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Main Scrollable Viewport */
+    .exec-viewport {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      padding: 0.75rem 1.25rem;
+      max-width: 1720px;
+      width: 100%;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+
+    .kpi-deck {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.65rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .kpi-item {
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 0.85rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .kpi-item-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--slate-500);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .kpi-item-val {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: var(--emerald-700);
+      line-height: 1.2;
+      margin: 0.2rem 0;
+    }
+
+    .kpi-item-sub {
+      font-size: 0.7rem;
+      color: var(--slate-600);
+    }
+
+    .exec-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+    @media (max-width: 992px) {
+      .exec-grid { grid-template-columns: 1fr; }
+    }
+    .chart-box {
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .chart-box h3 {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--slate-900);
+      margin: 0 0 0.65rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .btn-exec {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 5px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition);
+    }
+    .btn-exec-primary {
+      background: linear-gradient(135deg, var(--emerald-700), var(--emerald-800));
+      color: var(--white);
+    }
+    .btn-exec-primary:hover {
+      background: var(--emerald-900);
+    }
+    .btn-exec-light {
+      background: var(--slate-50);
+      color: var(--slate-700);
+      border: 1px solid var(--border-color);
+    }
+    .btn-exec-light:hover {
+      background: var(--emerald-50);
+      color: var(--emerald-800);
+      border-color: var(--emerald-300);
+    }
+    .progress-bar-wrap {
+      margin-bottom: 0.55rem;
+    }
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.76rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+      color: var(--slate-700);
+    }
+    .progress-bar-bg {
+      height: 8px;
+      background: var(--slate-200);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 9999px;
+      background: linear-gradient(90deg, var(--emerald-600), var(--emerald-400));
+    }
+
+    /* Ultra-Slim Footer */
+    .cockpit-footer {
+      background: var(--emerald-950);
+      color: var(--emerald-200);
+      font-size: 0.68rem;
+      padding: 0 1.25rem;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+    @media print {
+      .corp-header, .exec-command-ribbon, .cockpit-footer { display: none !important; }
+      .exec-viewport { overflow: visible !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Corporate Header -->
+  <header class="corp-header">
+    <div class="corp-header-inner" style="max-width:1720px; width:100%; margin:0 auto; display:flex; align-items:center; justify-content:space-between;">
+      <a href="../index.html" class="brand-section" style="display:flex; align-items:center; gap:0.65rem; text-decoration:none; color:#fff;">
+        <img src="../fcldc.png" alt="FCLDC Logo" style="height:32px; width:auto; object-fit:contain; border-radius:4px; display:block;">
+        <div class="brand-info">
+          <h1 style="font-size:1.02rem; font-weight:800; margin:0; line-height:1.1; color:#fff;">FCLaranang Dev Corp <span style="color:var(--emerald-300); font-weight:500; font-size:0.85rem;">• Executive Reports</span></h1>
+        </div>
+      </a>
+      <nav class="header-nav" style="display:flex; align-items:center; gap:0.35rem;">
+        <a href="../index.html" class="nav-link" style="color:var(--emerald-100); font-size:0.8rem; font-weight:600; padding:0.3rem 0.7rem; border-radius:4px; text-decoration:none;">Home</a>
+        <a href="../QAQC_GOVERNANCE/index.html" class="nav-link" style="color:var(--emerald-100); font-size:0.8rem; font-weight:600; padding:0.3rem 0.7rem; border-radius:4px; text-decoration:none;">Governance & QITP</a>
+        <a href="../CONST_PROCEDURES/index.html" class="nav-link" style="color:var(--emerald-100); font-size:0.8rem; font-weight:600; padding:0.3rem 0.7rem; border-radius:4px; text-decoration:none;">Procedures (OPN)</a>
+        <a href="../CAPA/index.html" class="nav-link" style="color:var(--emerald-100); font-size:0.8rem; font-weight:600; padding:0.3rem 0.7rem; border-radius:4px; text-decoration:none;">CAPA</a>
+        <a href="../PUNCHLISTING_COMMISSIONING/punchlisting_commisioning.html" class="nav-link" style="color:var(--emerald-100); font-size:0.8rem; font-weight:600; padding:0.3rem 0.7rem; border-radius:4px; text-decoration:none;">Punchlisting</a>
+        <a href="../QAQC_KPI/index.html" class="nav-link" style="color:var(--emerald-100); font-size:0.8rem; font-weight:600; padding:0.3rem 0.7rem; border-radius:4px; text-decoration:none;">QA/QC KPI</a>
+        <a href="index.html" class="nav-link active" style="background:var(--emerald-600); color:#fff; font-size:0.8rem; font-weight:600; padding:0.3rem 0.7rem; border-radius:4px; text-decoration:none;">Reports</a>
+      </nav>
+      <div class="header-status">
+        <div id="server-status-badge" class="status-badge" style="padding:0.25rem 0.6rem; font-size:0.72rem;">
+          <span class="status-indicator-dot"></span> Checking Status...
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Executive Command Ribbon -->
+  <section class="exec-command-ribbon">
+    <div class="exec-ribbon-left">
+      <span class="exec-ribbon-eyebrow">Executive Intelligence</span>
+      <h2 class="exec-ribbon-title">Executive QA/QC Performance Dashboard & Reporting</h2>
+    </div>
+
+    <!-- Actions -->
+    <div class="exec-actions">
+      <button class="btn-exec btn-exec-primary" onclick="window.print()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Print / PDF
+      </button>
+      <button class="btn-exec btn-exec-light" onclick="generateReportData()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export CSV
+      </button>
+      <button class="btn-exec btn-exec-light" onclick="QAQCBridge.showToast('Refreshing live project quality analytics...', 'info')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Refresh
+      </button>
+    </div>
+  </section>
+
+  <!-- Main Scrollable Viewport Pane -->
+  <main class="exec-viewport">
+
+    <!-- Executive KPI Widgets -->
+    <div class="kpi-deck">
+      <div class="kpi-item">
+        <div class="kpi-item-label">Quality Health Index</div>
+        <div class="kpi-item-val" style="color:var(--emerald-600);">98.4%</div>
+        <div class="kpi-item-sub">Target &ge; 98.0% (Passing)</div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-item-label">First-Time Pass Rate</div>
+        <div class="kpi-item-val" style="color:var(--emerald-600);">96.8%</div>
+        <div class="kpi-item-sub">Concrete & Rebar Inspections</div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-item-label">CAPA Closure Rate</div>
+        <div class="kpi-item-val" style="color:var(--emerald-700);">94.2%</div>
+        <div class="kpi-item-sub">Avg Turnaround: 4.8 Days</div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-item-label">Punchlist Rectification</div>
+        <div class="kpi-item-val" style="color:var(--emerald-800);">91.5%</div>
+        <div class="kpi-item-sub">Cleared Prior to Gate</div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-item-label">Rework Cost Factor</div>
+        <div class="kpi-item-val" style="color:var(--emerald-600);">0.18%</div>
+        <div class="kpi-item-sub">Threshold &le; 0.50%</div>
+      </div>
+    </div>
+
+    <!-- Executive Analytics Grid -->
+    <div class="exec-grid">
+      <!-- Quality Performance by Trade -->
+      <div class="chart-box">
+        <h3>
+          <span>Quality Inspection Compliance by Construction Trade</span>
+          <span class="meta-tag">Live Scope</span>
+        </h3>
+        
+        <div class="progress-bar-wrap">
+          <div class="progress-header">
+            <span>Structural Concrete & Batching Plant (OPN-02 & 07)</span>
+            <span>99.2%</span>
+          </div>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 99.2%;"></div></div>
+        </div>
+
+        <div class="progress-bar-wrap">
+          <div class="progress-header">
+            <span>Rebar & Formworks Execution (OPN-02)</span>
+            <span>98.6%</span>
+          </div>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 98.6%;"></div></div>
+        </div>
+
+        <div class="progress-bar-wrap">
+          <div class="progress-header">
+            <span>CHB Masonry & Plastering Works (OPN-02)</span>
+            <span>97.4%</span>
+          </div>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 97.4%;"></div></div>
+        </div>
+
+        <div class="progress-bar-wrap">
+          <div class="progress-header">
+            <span>Floor Screed & Concrete Topping (OPN-02)</span>
+            <span>98.1%</span>
+          </div>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 98.1%;"></div></div>
+        </div>
+
+        <div class="progress-bar-wrap">
+          <div class="progress-header">
+            <span>Architectural Tiling & Finishing (OPN-02)</span>
+            <span>96.5%</span>
+          </div>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 96.5%;"></div></div>
+        </div>
+
+        <div class="progress-bar-wrap">
+          <div class="progress-header">
+            <span>Safety & PPE Site Compliance (OPN-03)</span>
+            <span>99.5%</span>
+          </div>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 99.5%; background: var(--emerald-700);"></div></div>
+        </div>
+      </div>
+
+      <!-- Subcontractor Quality Ranking -->
+      <div class="chart-box">
+        <h3>
+          <span>Trade Subcontractor Rating</span>
+          <span class="meta-tag">PM-OPN-06</span>
+        </h3>
+        <div style="font-size:0.88rem;">
+          <div style="display:flex; justify-content:space-between; padding:0.6rem 0; border-bottom:1px solid var(--border-color);">
+            <div><strong>Structural Core Works</strong><br><small style="color:var(--slate-500);">Rebar & Formworks</small></div>
+            <div style="text-align:right;"><strong style="color:var(--emerald-700);">Grade A+</strong><br><small>99.1% Pass</small></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:0.6rem 0; border-bottom:1px solid var(--border-color);">
+            <div><strong>Batching & Ready-Mix</strong><br><small style="color:var(--slate-500);">Concrete Supply</small></div>
+            <div style="text-align:right;"><strong style="color:var(--emerald-700);">Grade A</strong><br><small>98.4% Pass</small></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:0.6rem 0; border-bottom:1px solid var(--border-color);">
+            <div><strong>Masonry & Plastering</strong><br><small style="color:var(--slate-500);">Civil Finishing</small></div>
+            <div style="text-align:right;"><strong style="color:var(--emerald-700);">Grade A</strong><br><small>97.8% Pass</small></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:0.6rem 0; border-bottom:1px solid var(--border-color);">
+            <div><strong>Architectural Tiling</strong><br><small style="color:var(--slate-500);">Finishing & Screed</small></div>
+            <div style="text-align:right;"><strong style="color:var(--slate-700);">Grade B+</strong><br><small>96.2% Pass</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monthly Executive Audit Memos & Bulletins -->
+    <section class="section-panel">
+      <div class="section-panel-header">
+        <div class="section-panel-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Executive Quality Memos & Monthly Reports
+        </div>
+      </div>
+      <p style="font-size:0.9rem; color:var(--slate-600); margin-bottom:1rem;">
+        Generated monthly executive reviews, client quality submittals, and ISO compliance audit records stored in <code>EXECUTIVE_REPORT</code>.
+      </p>
+      <div class="doc-grid" id="execDocsGrid">
+        <div class="doc-card">
+          <div class="doc-card-header">
+            <div class="doc-type-icon word">DOCX</div>
+            <div>
+              <div class="doc-card-title">Monthly QAQC Executive Summary - Current Cycle.docx</div>
+              <div class="doc-card-meta">
+                <span>Type: Executive Memo</span>
+                <span>•</span>
+                <span>Audited by: QAQC Manager</span>
+              </div>
+            </div>
+          </div>
+          <div class="doc-card-actions">
+            <button class="btn-open-native word" onclick="QAQCBridge.showToast('Generating and opening current cycle Executive Summary...', 'success')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Open in MS Word
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Corporate Footer -->
+  <footer class="cockpit-footer">
+    <div>
+      <strong>FCLaranang Dev Corp QA/QC System</strong> &bull; ISO 9001:2015 Compliance &bull; Executive Intelligence Series
+    </div>
+    <div>
+      &copy; 2026 FCLaranang Dev Corp. All Rights Reserved.
+    </div>
+  </footer>
+
+  <script src="../shared/js/qaqc-bridge.js"></script>
+  <script>
+    function generateReportData() {
+      const csvContent = "data:text/csv;charset=utf-8," 
+        + "Metric,Value,Target,Status\n"
+        + "Quality Health Index,98.4%,>=98.0%,PASS\n"
+        + "First-Time Pass Rate,96.8%,>=95.0%,PASS\n"
+        + "CAPA Closure Rate,94.2%,>=90.0%,PASS\n"
+        + "Punchlist Rectification,91.5%,>=90.0%,PASS\n"
+        + "Rework Cost Factor,0.18%,<=0.50%,PASS\n";
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "FCLDC_QAQC_Executive_Report_Summary.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      QAQCBridge.showToast("Exported Executive Quality Summary to CSV.", "success");
+    }
+  </script>
+</body>
+</html>
