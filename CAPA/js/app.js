@@ -2592,8 +2592,8 @@ function getActiveCompilerColumns(){
   });
 }
 
-let currentCompilerZoom = 1;
-let currentCompilerZoomMode = "fit";
+let currentCompilerZoom = 0.75;
+let currentCompilerZoomMode = "0.75";
 
 function applyCompilerZoom(modeOrVal){
   const wirSetting = parsePaperSetting(compilerPaperOrientation ? compilerPaperOrientation.value : "a4-landscape", "a4-landscape");
@@ -2612,8 +2612,8 @@ function applyCompilerZoom(modeOrVal){
     fitScale = Math.min(1.15, Math.max(0.35, fitScale));
     currentCompilerZoom = fitScale;
   } else {
-    currentCompilerZoomMode = "manual";
-    currentCompilerZoom = Number(modeOrVal) || 1;
+    currentCompilerZoomMode = String(modeOrVal || "0.75");
+    currentCompilerZoom = Number(modeOrVal) || 0.75;
   }
 
   // Update active button state in toolbar
@@ -2621,7 +2621,7 @@ function applyCompilerZoom(modeOrVal){
     if(currentCompilerZoomMode === "fit"){
       b.classList.toggle("active", b.dataset.zoom === "fit");
     } else {
-      b.classList.toggle("active", Number(b.dataset.zoom) === currentCompilerZoom);
+      b.classList.toggle("active", Math.abs(Number(b.dataset.zoom) - currentCompilerZoom) < 0.01);
     }
   });
 
@@ -3924,9 +3924,7 @@ function renderCompilerPreview(){
     bindCompilerPageBreakEvents();
 
     // Apply zoom scaling
-    if(currentCompilerZoomMode === "fit"){
-      applyCompilerZoom("fit");
-    }
+    applyCompilerZoom(currentCompilerZoomMode || 0.75);
   } catch(err){
     console.error("renderCompilerPreview error:", err);
   }
@@ -3956,9 +3954,9 @@ function openReportCompiler(){
       reportCompilerModal.scrollTop = 0;
     }
 
-    // Recalculate fit zoom after modal becomes visible
+    // Recalculate zoom after modal becomes visible
     setTimeout(() => {
-      applyCompilerZoom(currentCompilerZoomMode || "fit");
+      applyCompilerZoom(currentCompilerZoomMode || 0.75);
     }, 60);
   } catch(err){
     console.error("Error opening report compiler:", err);
@@ -4853,8 +4851,8 @@ if(compilerRefreshBtn) compilerRefreshBtn.addEventListener("click", () => {
   customColPercentagesByOrientation[wirSetting.orientation] = {};
   customActionLetterColPercentagesByOrientation[alSetting.orientation] = {};
   renderCompilerPreview();
-  if(currentCompilerZoomMode === "fit") applyCompilerZoom("fit");
-  showToast("Preview refreshed & auto-fitted to paper.");
+  applyCompilerZoom(currentCompilerZoomMode || 0.75);
+  showToast("Preview refreshed.");
 });
 
 function toggleCompilerSidebar(){
@@ -4866,9 +4864,7 @@ function toggleCompilerSidebar(){
     const headerToggleBtn = $("compilerHeaderToggleSidebarBtn");
     if(headerToggleBtn) headerToggleBtn.textContent = btnText;
     setTimeout(() => {
-      if(currentCompilerZoomMode === "fit"){
-        applyCompilerZoom("fit");
-      }
+      applyCompilerZoom(currentCompilerZoomMode || 0.75);
     }, 150);
   }
 }
@@ -4899,12 +4895,12 @@ if(compilerPaperOrientation) compilerPaperOrientation.addEventListener("change",
   const wirSetting = parsePaperSetting(compilerPaperOrientation ? compilerPaperOrientation.value : "a4-landscape", "a4-landscape");
   customColPercentagesByOrientation[wirSetting.orientation] = {};
   renderCompilerPreview();
-  if(currentCompilerZoomMode === "fit") applyCompilerZoom("fit");
+  applyCompilerZoom(currentCompilerZoomMode || 0.75);
 });
 
 if(compilerLetterPaperFormat) compilerLetterPaperFormat.addEventListener("change", () => {
   renderCompilerPreview();
-  if(currentCompilerZoomMode === "fit") applyCompilerZoom("fit");
+  applyCompilerZoom(currentCompilerZoomMode || 0.75);
 });
 
 const compilerResetLetterColWidthsBtn = $("compilerResetLetterColWidthsBtn");
@@ -4914,7 +4910,7 @@ if(compilerResetLetterColWidthsBtn){
     const orientKey = alSetting.orientation === "landscape" ? "landscape" : "portrait";
     customActionLetterColPercentagesByOrientation[orientKey] = {};
     renderCompilerPreview();
-    if(currentCompilerZoomMode === "fit") applyCompilerZoom("fit");
+    applyCompilerZoom(currentCompilerZoomMode || 0.75);
     showToast("Action Letter column widths reset to default (" + (orientKey === "portrait" ? "Portrait" : "Landscape") + ").");
   });
 }
@@ -4971,7 +4967,7 @@ if(compilerResetColWidthsBtn){
     const orientation = (compilerPaperOrientation ? compilerPaperOrientation.value : "landscape") === "portrait" ? "portrait" : "landscape";
     customColPercentagesByOrientation[orientation] = {};
     renderCompilerPreview();
-    if(currentCompilerZoomMode === "fit") applyCompilerZoom("fit");
+    applyCompilerZoom(currentCompilerZoomMode || 0.75);
     showToast("Column widths reset to auto-fit for " + (orientation === "portrait" ? "Portrait" : "Landscape") + ".");
   });
 }
@@ -5026,7 +5022,7 @@ if(compilerContextResetWidthsBtn){
     const wirSetting = parsePaperSetting(compilerPaperOrientation ? compilerPaperOrientation.value : "a4-landscape", "a4-landscape");
     customColPercentagesByOrientation[wirSetting.orientation] = {};
     renderCompilerPreview();
-    if(currentCompilerZoomMode === "fit") applyCompilerZoom("fit");
+    applyCompilerZoom(currentCompilerZoomMode || 0.75);
     showToast("Column widths reset to default.");
     hideCompilerColContextMenu();
   });
