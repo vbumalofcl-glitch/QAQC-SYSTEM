@@ -65,6 +65,7 @@ const seedData = [
     "rootCause": "N/A - resolved.",
     "owner": "QAQC",
     "dueDate": "2026-05-15",
+    "dateClosed": "2026-05-15",
     "coverage": "2026-05-06|2026-05-13",
     "remarks": "Closed and verified.",
     "status": "Closed",
@@ -84,7 +85,8 @@ try {
         id: item.id || ("CAPA-" + Date.now() + "-" + idx),
         client: item.client || (match ? match.client : "") || "",
         projectLocation: item.projectLocation || (match ? match.projectLocation : "") || "",
-        image: item.image || (match ? match.image : "") || ""
+        image: item.image || (match ? match.image : "") || "",
+        dateClosed: item.dateClosed || (match ? match.dateClosed : "") || (item.status === "Closed" ? (item.dueDate || "") : "")
       };
     });
   } else {
@@ -115,7 +117,7 @@ const editProjectModal = $("editProjectModal"), editProjectForm = $("editProject
 const actionLettersBtn = $("actionLettersBtn"), actionLettersSheet = $("actionLettersSheet"), backToRegistry = $("backToRegistry");
 const actionLetterRows = $("actionLetterRows"), actionLetterEmpty = $("actionLetterEmpty");
 const actionLetterSearch = $("actionLetterSearch"), actionLetterStatusFilter = $("actionLetterStatusFilter");
-const columnHeaders = ["Select","No.","Project Name","Client","Location of Project","Image","Non-Conformance","Corrective Action","Preventive Action","Root Cause","Responsible Party","Due Date","Coverage","Remarks","Status","Action Letter"];
+const columnHeaders = ["Select","No.","Project Name","Client","Location of Project","Image","Non-Conformance","Corrective Action","Preventive Action","Root Cause","Responsible Party","Due Date","Date Closed","Coverage","Remarks","Status","Action Letter"];
 let selectedCapaIds = new Set();
 function upgradeActionLetterHtmlHeader(html){
   if(!html) return "";
@@ -530,6 +532,7 @@ function renderRows(){
       <td class="cell-formatted-text">${formatCellContent(item.rootCause)}</td>
       <td>${escapeHtml(item.owner)}</td>
       <td>${escapeHtml(item.dueDate)}</td>
+      <td>${escapeHtml(item.dateClosed || (item.status === 'Closed' ? (item.dueDate || '') : ''))}</td>
       <td>${escapeHtml(coverageLabel(item.coverage))}</td>
       <td class="cell-formatted-text">${formatCellContent(item.remarks || "")}</td>
       <td><span class="pill ${statusClass(item.status)}">${escapeHtml(item.status)}</span></td>
@@ -1468,6 +1471,7 @@ function rowsForExport(){
     "Root Cause": item.rootCause || "",
     "Responsible Party": item.owner || "",
     "Due Date": item.dueDate || "",
+    "Date Closed": item.dateClosed || (item.status === "Closed" ? (item.dueDate || "") : ""),
     "Coverage": coverageLabel(item.coverage),
     "Remarks": item.remarks || "",
     "Status": item.status || ""
@@ -1482,13 +1486,13 @@ function downloadBlob(content, filename, type){
 }
 function exportCsv(){
   const data = rowsForExport();
-  const headers = Object.keys(data[0] || {"Project Name":"","Client":"","Location of Project":"","Image":"","Non-Conformance":"","Corrective Action":"","Preventive Action":"","Root Cause":"","Responsible Party":"","Due Date":"","Coverage":"","Remarks":"","Status":""});
+  const headers = Object.keys(data[0] || {"Project Name":"","Client":"","Location of Project":"","Image":"","Non-Conformance":"","Corrective Action":"","Preventive Action":"","Root Cause":"","Responsible Party":"","Due Date":"","Date Closed":"","Coverage":"","Remarks":"","Status":""});
   const csv = [headers, ...data.map(row => headers.map(h => row[h]))].map(row => row.map(v => `"${String(v ?? "").replace(/"/g,'""')}"`).join(",")).join("\n");
   downloadBlob(csv, "capa_register.csv", "text/csv;charset=utf-8");
 }
 function exportExcel(){
   const data = rowsForExport();
-  const headers = Object.keys(data[0] || {"Project Name":"","Client":"","Location of Project":"","Image":"","Non-Conformance":"","Corrective Action":"","Preventive Action":"","Root Cause":"","Responsible Party":"","Due Date":"","Coverage":"","Remarks":"","Status":""});
+  const headers = Object.keys(data[0] || {"Project Name":"","Client":"","Location of Project":"","Image":"","Non-Conformance":"","Corrective Action":"","Preventive Action":"","Root Cause":"","Responsible Party":"","Due Date":"","Date Closed":"","Coverage":"","Remarks":"","Status":""});
   const table = `<html><head><meta charset="utf-8"></head><body><table border="1"><thead><tr>${headers.map(h=>`<th>${escapeHtml(h)}</th>`).join("")}</tr></thead><tbody>${data.map(row=>`<tr>${headers.map(h=>`<td>${escapeHtml(row[h])}</td>`).join("")}</tr>`).join("")}</tbody></table></body></html>`;
   downloadBlob(table, "capa_register.xls", "application/vnd.ms-excel;charset=utf-8");
 }
@@ -1520,6 +1524,7 @@ function normalizeImportedRow(row){
     rootCause:String(get("Root Cause","rootCause")).trim(),
     owner:String(get("Responsible Party","Owner","owner")).trim(),
     dueDate:String(get("Due Date","dueDate")).trim(),
+    dateClosed:String(get("Date Closed","dateClosed","Date Resolved","dateResolved","Closure Date","closureDate")).trim(),
     coverage:String(get("Coverage","coverage")).trim(),
     remarks:String(get("Remarks","remarks")).trim(),
     status:String(get("Status","status") || "Open").trim()
@@ -1653,6 +1658,28 @@ if($("closeEditProject")) $("closeEditProject").addEventListener("click", closeE
 if(editProjectModal) editProjectModal.addEventListener("click", e => { /* outside click disabled for Edit CAPA */ });
 if(editProjectForm) editProjectForm.addEventListener("submit", saveEditProject);
 if($("deleteEditProject")) $("deleteEditProject").addEventListener("click", deleteEditProjectRecord);
+if($("status")){
+  $("status").addEventListener("change", function(){
+    const dateEl = $("dateClosed");
+    if(!dateEl) return;
+    if(this.value === "Closed"){
+      if(!dateEl.value) dateEl.value = new Date().toISOString().split("T")[0];
+    } else {
+      dateEl.value = "";
+    }
+  });
+}
+if($("editStatus")){
+  $("editStatus").addEventListener("change", function(){
+    const dateEl = $("editDateClosed");
+    if(!dateEl) return;
+    if(this.value === "Closed"){
+      if(!dateEl.value) dateEl.value = new Date().toISOString().split("T")[0];
+    } else {
+      dateEl.value = "";
+    }
+  });
+}
 
 searchEl.addEventListener("input", renderRows);
 statusFilterEl.addEventListener("change", renderRows);
@@ -1761,9 +1788,15 @@ if($("bulkDeleteBtn")){
 function applyBulkStatus(status){
   if(!selectedCapaIds.size) return;
   let count = 0;
+  const todayIso = new Date().toISOString().split("T")[0];
   capaData.forEach(item => {
     if(selectedCapaIds.has(item.id)){
       item.status = status;
+      if(status === "Closed" && !item.dateClosed){
+        item.dateClosed = todayIso;
+      } else if(status !== "Closed" && item.dateClosed){
+        item.dateClosed = "";
+      }
       count++;
     }
   });
@@ -1885,6 +1918,7 @@ function openEditProject(id){
   $("editCoverageStart").value = coverage.start;
   $("editCoverageEnd").value = coverage.end;
   $("editDueDate").value = item.dueDate || "";
+  if($("editDateClosed")) $("editDateClosed").value = item.dateClosed || (item.status === "Closed" ? (item.dueDate || "") : "");
   $("editStatus").value = item.status || "Open";
   
   const editImgUpload = $("editImageUpload");
@@ -1959,6 +1993,7 @@ async function saveEditProject(event){
     remarks:$("editRemarks").value.trim(),
     coverage:makeEditCoverageValue(),
     dueDate:$("editDueDate").value,
+    dateClosed:($("editStatus").value === "Closed" ? (($("editDateClosed") && $("editDateClosed").value.trim()) || new Date().toISOString().split("T")[0]) : ""),
     status:$("editStatus").value,
     image:finalImage
   };
@@ -2062,6 +2097,12 @@ form.addEventListener("submit", async e => {
     }
     const coverage = makeCoverageValue();
     const status = ($("status")?.value || "Open").trim();
+    let dateClosed = ($("dateClosed")?.value || "").trim();
+    if(status === "Closed" && !dateClosed){
+      dateClosed = new Date().toISOString().split("T")[0];
+    } else if(status !== "Closed"){
+      dateClosed = "";
+    }
 
     const base = {
       projectName,
@@ -2069,6 +2110,7 @@ form.addEventListener("submit", async e => {
       projectLocation,
       owner,
       dueDate,
+      dateClosed,
       coverage,
       remarks: "",
       status
@@ -2225,7 +2267,7 @@ function parsePaperSetting(val, defaultKey = "a4-landscape"){
   return { key: defaultKey, ...PAPER_CONFIGS[defaultKey] };
 }
 
-// Complete 14-column registry mapping for Report Compiler
+// Complete 15-column registry mapping for Report Compiler
 const COMPILER_COLUMN_WEIGHTS = {
   landscape: {
     no: 3.5,
@@ -2238,7 +2280,8 @@ const COMPILER_COLUMN_WEIGHTS = {
     preventiveAction: 11,
     rootCause: 6,
     owner: 5,
-    dueDate: 5,
+    dueDate: 4.5,
+    dateClosed: 4.5,
     coverage: 4,
     remarks: 4,
     status: 4.5
@@ -2254,7 +2297,8 @@ const COMPILER_COLUMN_WEIGHTS = {
     preventiveAction: 10,
     rootCause: 6,
     owner: 5,
-    dueDate: 5,
+    dueDate: 4.5,
+    dateClosed: 4.5,
     coverage: 4,
     remarks: 3.5,
     status: 3.5
@@ -2552,6 +2596,14 @@ const COMPILER_COLUMNS = [
     renderTd: (item) => `<td class="col-due" style="text-align:center;">${escapeHtml(item.dueDate)}</td>`
   },
   {
+    id: "compColDateClosed",
+    key: "dateClosed",
+    name: "Date Closed",
+    thClass: "col-date-closed",
+    renderTh: (resizerHtml) => `<th class="col-date-closed" data-col-key="dateClosed"><div class="th-content">Date Closed</div>${resizerHtml}</th>`,
+    renderTd: (item) => `<td class="col-date-closed" style="text-align:center;">${escapeHtml(item.dateClosed || (item.status === 'Closed' ? (item.dueDate || '') : ''))}</td>`
+  },
+  {
     id: "compColCoverage",
     key: "coverage",
     name: "Coverage",
@@ -2761,19 +2813,22 @@ function getCompiledData(){
     if(itemStatus === "Closed"){
       if(!allowClosed) return;
 
+      const itemDateClosed = parseDateOnly(item.dateClosed) || itemEnd || itemDue;
+      const isClosedInCoverage = itemDateClosed ? ((!covStart || itemDateClosed >= covStart) && (!covEnd || itemDateClosed <= covEnd)) : isWithinCoverage;
+
       if(excludePrevClosed && covStart){
-        const closedBefore = (itemEnd && itemEnd < covStart) || (!itemEnd && itemDue && itemDue < covStart);
+        const closedBefore = itemDateClosed && itemDateClosed < covStart;
         if(closedBefore){
           excludedPrevClosedCount++;
-        } else if(isWithinCoverage){
+        } else if(isClosedInCoverage){
           filtered.push({...item, _isClosedInCoverage: true});
           closedInCoverageCount++;
         } else {
           excludedPrevClosedCount++;
         }
       } else {
-        filtered.push({...item, _isClosedInCoverage: isWithinCoverage});
-        if(isWithinCoverage) closedInCoverageCount++;
+        filtered.push({...item, _isClosedInCoverage: isClosedInCoverage});
+        if(isClosedInCoverage) closedInCoverageCount++;
       }
     } else {
       // Active statuses (Open, In Progress, Overdue)

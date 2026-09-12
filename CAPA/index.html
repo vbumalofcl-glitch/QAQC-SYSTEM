@@ -148,7 +148,7 @@
           <tr>
             <th class="select-col" style="width:36px; text-align:center;"><input type="checkbox" id="selectAllCapa" title="Select all CAPA records"></th>
             <th class="num-col" style="width:46px; text-align:center;">No.</th>
-            <th>Project Name</th><th>Client</th><th>Location of Project</th><th>Image</th><th>Non-Conformance</th><th>Corrective Action</th><th>Preventive Action</th><th>Root Cause</th><th>Responsible Party</th><th>Due Date</th><th>Coverage</th><th>Remarks</th><th>Status</th>
+            <th>Project Name</th><th>Client</th><th>Location of Project</th><th>Image</th><th>Non-Conformance</th><th>Corrective Action</th><th>Preventive Action</th><th>Root Cause</th><th>Responsible Party</th><th>Due Date</th><th>Date Closed</th><th>Coverage</th><th>Remarks</th><th>Status</th>
             <th style="min-width:210px; text-align:center;">Action Letter</th>
           </tr>
         </thead>
@@ -526,6 +526,7 @@
             <label><input type="checkbox" id="compColRootCause" checked> <span>Root Cause</span></label>
             <label><input type="checkbox" id="compColOwner" checked> <span>Responsible Party</span></label>
             <label><input type="checkbox" id="compColDueDate" checked> <span>Due Date</span></label>
+            <label><input type="checkbox" id="compColDateClosed" checked> <span>Date Closed</span></label>
             <label><input type="checkbox" id="compColCoverage" checked> <span>Coverage</span></label>
             <label><input type="checkbox" id="compColRemarks" checked> <span>Remarks</span></label>
             <label><input type="checkbox" id="compColStatus" checked> <span>Status</span></label>
@@ -648,6 +649,7 @@
       <div class="form-row"><label for="coverageStart">Coverage Start</label><input class="field" id="coverageStart" type="date"></div>
       <div class="form-row"><label for="coverageEnd">Coverage End</label><input class="field" id="coverageEnd" type="date"></div>
       <div class="form-row"><label for="dueDate">Due Date</label><input class="field" id="dueDate" type="date" required></div>
+      <div class="form-row"><label for="dateClosed">Date Closed</label><input class="field" id="dateClosed" type="date"></div>
       <div class="form-row"><label for="status">Status</label><select class="field" id="status" required><option>Open</option><option>In Progress</option><option>Overdue</option><option>Closed</option></select></div>
       <div class="modal-actions">
         <button class="btn btn-light" type="button" id="actionLetterBtn">Action Letter</button>
@@ -690,6 +692,7 @@
       <div class="form-row"><label for="editCoverageStart">Coverage Start</label><input class="field" id="editCoverageStart" type="date"></div>
       <div class="form-row"><label for="editCoverageEnd">Coverage End</label><input class="field" id="editCoverageEnd" type="date"></div>
       <div class="form-row"><label for="editDueDate">Due Date</label><input class="field" id="editDueDate" type="date" required></div>
+      <div class="form-row"><label for="editDateClosed">Date Closed</label><input class="field" id="editDateClosed" type="date"></div>
       <div class="form-row"><label for="editStatus">Status</label><select class="field" id="editStatus" required><option>Open</option><option>In Progress</option><option>Overdue</option><option>Closed</option></select></div>
       <div class="modal-actions">
         <button class="btn btn-light" type="button" id="deleteEditProject">Delete</button>

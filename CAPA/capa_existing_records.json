@@ -58,6 +58,7 @@
     "rootCause": "N/A - resolved.",
     "owner": "QAQC",
     "dueDate": "2026-05-15",
+    "dateClosed": "2026-05-15",
     "coverage": "2026-05-06|2026-05-13",
     "remarks": "Closed and verified.",
     "status": "Closed",

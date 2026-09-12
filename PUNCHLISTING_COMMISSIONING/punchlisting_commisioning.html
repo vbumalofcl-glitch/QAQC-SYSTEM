@@ -2283,6 +2283,74 @@ th {
   display: none !important;
 }
 
+#punchRegistrySheet td[data-punch-col="action"],
+#cxRegistrySheet td:last-child {
+  white-space: nowrap;
+}
+
+#punchRegistrySheet .action-btn-group,
+#cxRegistrySheet .action-btn-group {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+
+#punchTable tr.selected-punch-row td {
+  background-color: #f0f9ff !important;
+  border-top: 1px solid #7dd3fc !important;
+  border-bottom: 1px solid #7dd3fc !important;
+}
+
+#cxTable tr.selected-cx-row td {
+  background-color: #f0f9ff !important;
+  border-top: 1px solid #7dd3fc !important;
+  border-bottom: 1px solid #7dd3fc !important;
+}
+
+#punchRegistrySheet th[data-punch-col="action"],
+#punchRegistrySheet td[data-punch-col="action"] {
+  position: sticky;
+  right: 0;
+  background: #ffffff;
+  z-index: 3;
+  box-shadow: -3px 0 6px rgba(0, 0, 0, 0.06);
+}
+
+#punchRegistrySheet th[data-punch-col="action"] {
+  background: #f8fafc;
+  z-index: 4;
+}
+
+#punchTable tr:hover td[data-punch-col="action"] {
+  background: #f1f5f9;
+}
+
+#punchTable tr.selected-punch-row td[data-punch-col="action"] {
+  background-color: #f0f9ff !important;
+}
+
+#cxRegistrySheet th:last-child,
+#cxRegistrySheet td:last-child {
+  position: sticky;
+  right: 0;
+  background: #ffffff;
+  z-index: 3;
+  box-shadow: -3px 0 6px rgba(0, 0, 0, 0.06);
+}
+
+#cxRegistrySheet th:last-child {
+  background: #f8fafc;
+  z-index: 4;
+}
+
+#cxTable tr:hover td:last-child {
+  background: #f1f5f9;
+}
+
+#cxTable tr.selected-cx-row td:last-child {
+  background-color: #f0f9ff !important;
+}
+
 
 
 /* Punchlist Registry print/PDF: print complete registry plus information summary. */
@@ -4424,6 +4492,7 @@ body.printing-report-compiler .table-wrap {
         <button class="tab-button registry-tab" id="cxRegistryTabBtn" onclick="showSheet('cxRegistry')">Commissioning Registry</button>
         <button class="tab-button registry-tab" id="reportCompilerTabBtn" onclick="showSheet('reportCompiler')">Report Compiler</button>
         <div class="dashboard-json-controls" id="dashboardJsonControls" aria-label="Dashboard JSON save and load controls">
+          <button class="ghost" type="button" onclick="loadDefaultDemoData()" title="Load sample projects, defects, and commissioning records to demo and test">&#9881; Load Sample Data</button>
           <button class="secondary" type="button" onclick="saveDashboardJson()">Save JSON</button>
           <button class="secondary" type="button" onclick="document.getElementById('dashboardJsonLoadInput').click()">Load JSON</button>
         </div>
@@ -4440,6 +4509,7 @@ body.printing-report-compiler .table-wrap {
         </label>
         <button class="success" onclick="addProject('punch')">Add Project</button>
         <button class="secondary" onclick="printSheet('punch')">Print to PDF</button>
+        <button class="ghost" onclick="showSheet('punchRegistry')" style="font-weight:700; border:1px solid var(--brand);">&#128203; Open Punchlist Registry</button>
         <label>Area / Zone
           <select id="punchAreaFilter" onchange="handleAreaDropdown('punch', 'punchAreaFilter')"></select>
         </label>
@@ -4489,8 +4559,10 @@ body.printing-report-compiler .table-wrap {
           </div>
           <div class="footer-actions">
             <button onclick="addPunchItem()">Add Punchlist Item</button>
+            <button class="danger" type="button" onclick="promptDeletePunchItem()" style="background:#dc2626 !important; color:#ffffff !important; font-weight:800 !important; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;" title="Delete a punchlist row/item">&#128465; Delete Row / Item</button>
             <button class="ghost" onclick="resetFilters('punch')">Reset Filters</button>
             <button class="secondary" onclick="exportCsv('punch')">Export Punchlist CSV</button>
+            <button class="success" onclick="showSheet('punchRegistry')" style="font-weight:700;">&#128203; View Punchlist Registry</button>
           </div>
         </div>
 
@@ -4526,6 +4598,7 @@ body.printing-report-compiler .table-wrap {
         </label>
         <button class="success" onclick="addProject('cx')">Add Project</button>
         <button class="secondary" onclick="printSheet('commissioning')">Print to PDF</button>
+        <button class="ghost" onclick="showSheet('cxRegistry')" style="font-weight:700; border:1px solid var(--brand);">&#128203; Open Commissioning Registry</button>
         <label>System / Area
           <select id="cxAreaFilter" onchange="handleAreaDropdown('cx', 'cxAreaFilter')"></select>
         </label>
@@ -4569,8 +4642,10 @@ body.printing-report-compiler .table-wrap {
           </div>
           <div class="footer-actions">
             <button onclick="addCxItem()">Add Commissioning Activity</button>
+            <button class="danger" type="button" onclick="deleteCxRegistrySelectedRow()" style="background:#dc2626 !important; color:#ffffff !important; font-weight:800 !important; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;" title="Delete a commissioning activity">&#128465; Delete Row / Item</button>
             <button class="ghost" onclick="resetFilters('cx')">Reset Filters</button>
             <button class="secondary" onclick="exportCsv('cx')">Export Commissioning CSV</button>
+            <button class="success" onclick="showSheet('cxRegistry')" style="font-weight:700;">&#128203; View Commissioning Registry</button>
           </div>
         </div>
 
@@ -4604,6 +4679,7 @@ body.printing-report-compiler .table-wrap {
           <h2>Punchlist Registry</h2>
           <div class="footer-actions" style="margin-top:0;">
             <button class="ghost" onclick="showSheet('punch')">Back to Punchlisting Sheet</button>
+            <button class="danger" id="punchToolbarDeleteBtn" onclick="deletePunchRegistrySelectedRow()" title="Delete selected row or choose punchlist item to delete" style="background:#dc2626 !important; color:#ffffff !important; font-weight:800 !important; border:none; padding:8px 18px; border-radius:8px; box-shadow:0 2px 4px rgba(220,38,38,0.3); cursor:pointer; font-size:12px;">&#128465; Delete Row</button>
             <button class="secondary" onclick="printSheet('punchRegistry')">Print to PDF</button>
             <button class="secondary" onclick="exportCsv('punch')">Export Punchlist CSV</button>
             <button class="success" onclick="showSheet('kanban')">Kanban Board</button>
@@ -4629,11 +4705,30 @@ body.printing-report-compiler .table-wrap {
           </label>
           <button class="ghost" onclick="resetPunchRegistryFilters()">All Projects</button>
           <button class="secondary" onclick="showSheet('kanban')">Open Kanban</button>
+          <button class="danger" id="punchToolbarDeleteBtn2" onclick="deletePunchRegistrySelectedRow()" title="Delete selected punchlist row" style="background:#dc2626 !important; color:#ffffff !important; font-weight:800 !important; border:none; padding:8px 18px; border-radius:8px; box-shadow:0 2px 4px rgba(220,38,38,0.3); cursor:pointer; font-size:12px;">&#128465; Delete Row</button>
         </div>
         <section class="punch-registry-print-summary" id="punchRegistryPrintSummary" aria-label="Punchlist Registry Print Summary"></section>
         <div class="table-wrap">
           <table>
-            <thead><tr><th data-punch-col="id">ID</th><th data-punch-col="project">Project</th><th data-punch-col="discipline">Discipline</th><th data-punch-col="area">Area</th><th data-punch-col="location">Location</th><th data-punch-col="image">Doc. Image</th><th data-punch-col="description">Activity/Description</th><th data-punch-col="correction">Punchlist Correction</th><th data-punch-col="priority">Priority</th><th data-punch-col="status">Status</th><th data-punch-col="owner">Owner</th><th data-punch-col="manpower">Manpower</th><th data-punch-col="start">Start</th><th data-punch-col="due">Due</th><th data-punch-col="dateClosed">Date Closed</th><th data-punch-col="reference">Reference</th><th data-punch-col="action">Action</th></tr></thead>
+            <thead><tr>
+              <th data-punch-col="id" style="min-width:75px; width:80px;">ID</th>
+              <th data-punch-col="action" style="min-width:180px; width:185px; text-align:center;">Action</th>
+              <th data-punch-col="project">Project</th>
+              <th data-punch-col="discipline">Discipline</th>
+              <th data-punch-col="area">Area</th>
+              <th data-punch-col="location">Location</th>
+              <th data-punch-col="image">Doc. Image</th>
+              <th data-punch-col="description">Activity/Description</th>
+              <th data-punch-col="correction">Punchlist Correction</th>
+              <th data-punch-col="priority">Priority</th>
+              <th data-punch-col="status">Status</th>
+              <th data-punch-col="owner">Owner</th>
+              <th data-punch-col="manpower">Manpower</th>
+              <th data-punch-col="start">Start</th>
+              <th data-punch-col="due">Due</th>
+              <th data-punch-col="dateClosed">Date Closed</th>
+              <th data-punch-col="reference">Reference</th>
+            </tr></thead>
             <tbody id="punchTable"></tbody>
           </table>
         </div>
@@ -4731,6 +4826,7 @@ body.printing-report-compiler .table-wrap {
           <h2>Commissioning Registry</h2>
           <div class="footer-actions" style="margin-top:0;">
             <button class="ghost" onclick="showSheet('commissioning')">Back to Commissioning Sheet</button>
+            <button class="danger" id="cxToolbarDeleteBtn" onclick="deleteCxRegistrySelectedRow()" title="Delete selected row or choose commissioning item to delete" style="background:#dc2626 !important; color:#ffffff !important; font-weight:800 !important; border:none; padding:8px 18px; border-radius:8px; box-shadow:0 2px 4px rgba(220,38,38,0.3); cursor:pointer; font-size:12px;">&#128465; Delete Row</button>
             <button class="secondary" onclick="printSheet('cxRegistry')">Print to PDF</button>
             <button class="secondary" onclick="exportCsv('cx')">Export Commissioning CSV</button>
             <button class="success" onclick="showSheet('reportCompiler')">Report Compiler</button>
@@ -4756,10 +4852,25 @@ body.printing-report-compiler .table-wrap {
           </label>
           <button class="ghost" onclick="resetCxRegistryFilters()">All Projects</button>
           <button class="secondary" onclick="showSheet('reportCompiler')">Open Compiler</button>
+          <button class="danger" id="cxToolbarDeleteBtn2" onclick="deleteCxRegistrySelectedRow()" title="Delete selected commissioning row" style="background:#dc2626 !important; color:#ffffff !important; font-weight:800 !important; border:none; padding:8px 18px; border-radius:8px; box-shadow:0 2px 4px rgba(220,38,38,0.3); cursor:pointer; font-size:12px;">&#128465; Delete Row</button>
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>ID</th><th>Project</th><th>Discipline</th><th>System / Area</th><th>Asset</th><th>Image</th><th>Requirement / Test</th><th>Stage</th><th>Status</th><th>Owner</th><th>Target</th><th>Reference</th><th>Action</th></tr></thead>
+            <thead><tr>
+              <th style="min-width:75px; width:80px;">ID</th>
+              <th class="cx-action-col" style="min-width:180px; width:185px; text-align:center;">Action</th>
+              <th>Project</th>
+              <th>Discipline</th>
+              <th>System / Area</th>
+              <th>Asset</th>
+              <th>Image</th>
+              <th>Requirement / Test</th>
+              <th>Stage</th>
+              <th>Status</th>
+              <th>Owner</th>
+              <th>Target</th>
+              <th>Reference</th>
+            </tr></thead>
             <tbody id="cxTable"></tbody>
           </table>
         </div>
@@ -5192,10 +5303,20 @@ body.printing-report-compiler .table-wrap {
 
   <div class="cell-context-menu" id="cellContextMenu">
     <button onclick="editSelectedCell()">Edit cell</button>
+    <button id="cellEditPunchModalBtn" onclick="openSelectedCellPunchEditor()" style="display:none;">Edit</button>
+    <button id="cellEditCxModalBtn" onclick="openSelectedCellCxEditor()" style="display:none;">Edit</button>
+    <button id="cellDeletePunchRowBtn" onclick="deleteSelectedCellPunchRow()" style="color:var(--bad); display:none;">Delete Row</button>
+    <button id="cellDeleteCxRowBtn" onclick="deleteSelectedCellCxRow()" style="color:var(--bad); display:none;">Delete Row</button>
   </div>
 
   <div class="cell-context-menu" id="punchlistContextMenu">
     <button onclick="openSelectedPunchlistEditor()">Edit Punchlist</button>
+    <button onclick="deleteSelectedPunchlistRow()" style="color:var(--bad);">Delete Row</button>
+  </div>
+
+  <div class="cell-context-menu" id="cxContextMenu">
+    <button onclick="openSelectedCxEditor()">Edit</button>
+    <button onclick="deleteSelectedCxRow()" style="color:var(--bad);">Delete Row</button>
   </div>
 
   <div class="cell-context-menu" id="kanbanLocationContextMenu">
@@ -5218,6 +5339,25 @@ body.printing-report-compiler .table-wrap {
   <input id="replaceImageInput" type="file" accept="image/*" style="display:none;" />
   <input id="compilerSignatureInput" type="file" accept="image/*" style="display:none;" onchange="handleCompilerSignatureUpload(event)" />
 
+  <div class="edit-modal" id="punchDeleteModal" onclick="closePunchDeleteModal(event)">
+    <div class="edit-modal-content" onclick="event.stopPropagation()" style="max-width:540px; border-top:4px solid #dc2626;">
+      <div class="panel-title">
+        <h2 style="color:#b91c1c; display:flex; align-items:center; gap:8px;">
+          <span>&#128465;</span> Delete Punchlist Row
+        </h2>
+        <span class="pill critical">Delete Confirmation</span>
+      </div>
+      <p style="margin:14px 0 8px; color:var(--text); font-size:13px; line-height:1.4;">
+        Select the punchlist item you wish to permanently remove from the registry:
+      </p>
+      <select id="punchDeleteModalSelect" style="width:100%; margin-bottom:18px; font-weight:600; padding:10px; font-size:13px; border:1px solid var(--line); border-radius:10px;"></select>
+      <div class="edit-modal-actions" style="display:flex; justify-content:flex-end; gap:10px;">
+        <button class="ghost" onclick="closePunchDeleteModal()">Cancel</button>
+        <button class="danger" onclick="confirmPunchDeleteFromModal()" style="background:#dc2626; color:white; font-weight:800; padding:8px 18px; border-radius:8px;">&#128465; Delete Selected Row</button>
+      </div>
+    </div>
+  </div>
+
   <div class="edit-modal" id="punchlistEditModal" onclick="closePunchlistEditModal(event)">
     <div class="edit-modal-content" onclick="event.stopPropagation()">
       <div class="panel-title">
@@ -5232,6 +5372,7 @@ body.printing-report-compiler .table-wrap {
         <label>Status<select id="editPunchStatus"><option>Open</option><option>Inc. Work</option><option>In Progress</option><option>Ready for Inspection</option><option>Closed</option></select></label>
         <label>Start Date<input id="editPunchStart" type="date" /></label>
         <label>Due Date<input id="editPunchDue" type="date" /></label>
+        <label>Date Closed<input id="editPunchDateClosed" type="date" /></label>
         <label>Responsible Party<input id="editPunchOwner" /></label>
         <label>Manpower<input id="editPunchManpower" type="number" min="0" step="1" /></label>
         <label>Location<input id="editPunchLocation" /></label>
@@ -5240,8 +5381,53 @@ body.printing-report-compiler .table-wrap {
         <label class="wide">Punchlist Correction<textarea id="editPunchCorrection"></textarea></label>
       </div>
       <div class="edit-modal-actions">
+        <button class="danger ghost" type="button" onclick="deletePunchItemFromModal()" style="margin-right:auto;">Delete Row</button>
         <button class="ghost" onclick="closePunchlistEditModal()">Cancel</button>
         <button class="success" onclick="savePunchlistEdit()">Save Punchlist Item</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="edit-modal" id="cxEditModal" onclick="closeCxEditModal(event)">
+    <div class="edit-modal-content" onclick="event.stopPropagation()">
+      <div class="panel-title">
+        <h2>Edit Commissioning Activity</h2>
+        <span class="pill commissioning" id="cxEditId">CX-0000</span>
+      </div>
+      <div class="form-grid">
+        <label>Project<select id="editCxProject"></select></label>
+        <label>Discipline<select id="editCxDiscipline"></select></label>
+        <label>System / Area<select id="editCxArea"></select></label>
+        <label>Stage
+          <select id="editCxStage">
+            <option>Pre-Functional</option>
+            <option>Functional Test</option>
+            <option>Integrated Systems Test</option>
+            <option>Documentation</option>
+            <option>Training / Handover</option>
+          </select>
+        </label>
+        <label>Status
+          <select id="editCxStatus">
+            <option>Not Started</option>
+            <option>In Progress</option>
+            <option>Ready for Witness</option>
+            <option>Passed</option>
+            <option>Failed / Retest</option>
+          </select>
+        </label>
+        <label>Target Date<input id="editCxDue" type="date" /></label>
+        <label>Responsible Party<input id="editCxOwner" placeholder="Trade / vendor / Cx agent" /></label>
+        <label>Asset / System<input id="editCxAsset" placeholder="AHU-01, MSB, fire pump, lift" /></label>
+        <label>Reference<input id="editCxReference" placeholder="Cx sheet, test form, method statement" /></label>
+        <label class="wide">Commissioning Requirement / Test / Acceptance Criteria
+          <textarea id="editCxDescription" placeholder="Describe the commissioning activity, functional test, witness requirement, acceptance criteria, or documentation requirement."></textarea>
+        </label>
+      </div>
+      <div class="edit-modal-actions">
+        <button class="danger ghost" type="button" onclick="deleteCxItemFromModal()" style="margin-right:auto;">Delete Row</button>
+        <button class="ghost" onclick="closeCxEditModal()">Cancel</button>
+        <button class="success" onclick="saveCxEdit()">Save Commissioning Item</button>
       </div>
     </div>
   </div>
@@ -5890,8 +6076,14 @@ body.printing-report-compiler .table-wrap {
       document.getElementById("punchVisible").textContent = visible.length + " Visible";
 
       document.getElementById("punchTable").innerHTML = visible.map(item => `
-        <tr>
+        <tr onclick="selectPunchRegistryRow(${item.id}, this)" class="${selectedPunchRowId === item.id ? 'selected-punch-row' : ''}">
           <td data-punch-col="id">PL-${String(item.id).padStart(4, "0")}</td>
+          <td data-punch-col="action" style="text-align:center; white-space:nowrap;">
+            <div class="action-btn-group" style="justify-content:center; gap:6px;">
+              <button class="ghost compact-btn" onclick="event.stopPropagation(); advancePunch(${item.id})" title="Advance punchlist status">Advance</button>
+              <button class="danger compact-btn" onclick="event.stopPropagation(); deletePunchItem(${item.id})" title="Delete this punchlist row" style="background:#dc2626 !important; color:#ffffff !important; font-weight:800 !important; border:none; padding:6px 12px; border-radius:6px; cursor:pointer;">&#128465; Delete Row</button>
+            </div>
+          </td>
           <td data-punch-col="project" class="editable-cell" contenteditable="true" data-table="punch" data-id="${item.id}" data-field="project">${item.project}</td>
           <td data-punch-col="discipline" class="editable-cell" contenteditable="true" data-table="punch" data-id="${item.id}" data-field="discipline">${item.discipline}</td>
           <td data-punch-col="area" class="editable-cell" contenteditable="true" data-table="punch" data-id="${item.id}" data-field="area">${item.area}</td>
@@ -5905,11 +6097,10 @@ body.printing-report-compiler .table-wrap {
           <td data-punch-col="manpower" class="editable-cell" contenteditable="true" data-table="punch" data-id="${item.id}" data-field="manpower">${item.manpower || ""}</td>
           <td data-punch-col="start" class="editable-cell" contenteditable="true" data-table="punch" data-id="${item.id}" data-field="start">${formatDateMDY(item.start)}</td>
           <td data-punch-col="due" class="editable-cell" contenteditable="true" data-table="punch" data-id="${item.id}" data-field="due">${formatDateMDY(item.due)}</td>
-          <td data-punch-col="dateClosed" class="editable-cell" contenteditable="true" data-table="punch" data-id="${item.id}" data-field="dateClosed">${formatDateMDY(item.dateClosed || (item.status === 'Closed' ? (item.closedDate || item.due) : '')) || (item.status === 'Closed' ? '-' : '—')}</td>
+          <td data-punch-col="dateClosed" class="editable-cell" contenteditable="true" data-table="punch" data-id="${item.id}" data-field="dateClosed">${formatDateMDY(getItemDateClosed(item)) || (item.status === 'Closed' ? '-' : '—')}</td>
           <td data-punch-col="reference" class="editable-cell" contenteditable="true" data-table="punch" data-id="${item.id}" data-field="reference">${item.reference}</td>
-          <td data-punch-col="action"><button class="ghost" onclick="advancePunch(${item.id})">Advance</button></td>
         </tr>
-      `).join("") || `<tr><td colspan="16" class="empty">No punchlist items match the current filters.</td></tr>`;
+      `).join("") || `<tr><td colspan="17" class="empty" style="text-align:center; padding:24px;">No punchlist items match the current filters. <button class="ghost compact-btn" onclick="loadDefaultDemoData()" style="margin-left:12px; font-weight:700;">Load Sample Data</button> or <button class="ghost compact-btn" onclick="showSheet('punch')" style="margin-left:6px; font-weight:700;">Add New Item</button></td></tr>`;
 
       applyPunchRegistryColumnVisibility();
 
@@ -5939,8 +6130,14 @@ body.printing-report-compiler .table-wrap {
       document.getElementById("cxVisible").textContent = visible.length + " Visible";
 
       document.getElementById("cxTable").innerHTML = visible.map(item => `
-        <tr>
+        <tr onclick="selectCxRegistryRow(${item.id}, this)" class="${selectedCxRowId === item.id ? 'selected-cx-row' : ''}">
           <td>CX-${String(item.id).padStart(4, "0")}</td>
+          <td class="cx-action-col" style="text-align:center; white-space:nowrap;">
+            <div class="action-btn-group" style="justify-content:center; gap:6px;">
+              <button class="ghost compact-btn" onclick="event.stopPropagation(); advanceCx(${item.id})" title="Advance commissioning status">Advance</button>
+              <button class="danger compact-btn" onclick="event.stopPropagation(); deleteCxItem(${item.id})" title="Delete this commissioning row" style="background:#dc2626 !important; color:#ffffff !important; font-weight:800 !important; border:none; padding:6px 12px; border-radius:6px; cursor:pointer;">&#128465; Delete Row</button>
+            </div>
+          </td>
           <td class="editable-cell" contenteditable="true" data-table="cx" data-id="${item.id}" data-field="project">${item.project}</td>
           <td class="editable-cell" contenteditable="true" data-table="cx" data-id="${item.id}" data-field="discipline">${item.discipline}</td>
           <td class="editable-cell" contenteditable="true" data-table="cx" data-id="${item.id}" data-field="area">${item.area}</td>
@@ -5952,9 +6149,8 @@ body.printing-report-compiler .table-wrap {
           <td class="editable-cell" contenteditable="true" data-table="cx" data-id="${item.id}" data-field="owner">${item.owner}</td>
           <td class="editable-cell" contenteditable="true" data-table="cx" data-id="${item.id}" data-field="due">${formatDateMDY(item.due)}</td>
           <td class="editable-cell" contenteditable="true" data-table="cx" data-id="${item.id}" data-field="reference">${item.reference}</td>
-          <td><button class="ghost" onclick="advanceCx(${item.id})">Advance</button></td>
         </tr>
-      `).join("") || `<tr><td colspan="13" class="empty">No commissioning activities match the current filters.</td></tr>`;
+      `).join("") || `<tr><td colspan="13" class="empty" style="text-align:center; padding:24px;">No commissioning activities match the current filters. <button class="ghost compact-btn" onclick="loadDefaultDemoData()" style="margin-left:12px; font-weight:700;">Load Sample Data</button> or <button class="ghost compact-btn" onclick="showSheet('commissioning')" style="margin-left:6px; font-weight:700;">Add New Activity</button></td></tr>`;
 
       renderDisciplineSummary("cx", cxDisciplines, cxItems, "Passed");
       const retest = cxItems.filter(i => i.status === "Failed / Retest").length;
@@ -6057,6 +6253,7 @@ body.printing-report-compiler .table-wrap {
       } : null;
       hideCellContextMenu();
       hidePunchlistContextMenu();
+      hideCxContextMenu();
       hideKanbanLocationContextMenu();
       hideImageContextMenu();
 
@@ -6366,7 +6563,8 @@ body.printing-report-compiler .table-wrap {
     }
 
     function getItemDateClosed(item) {
-      return item.dateClosed || item.closedDate || (item.status === "Closed" ? item.due : "") || "";
+      if (!item) return "";
+      return item.dateClosed || item.closedDate || item.dateClose || item.closeDate || "";
     }
 
     function getLatestDateClosed(items) {
@@ -6519,10 +6717,10 @@ body.printing-report-compiler .table-wrap {
 
         disciplines.forEach(discipline => {
           html += `<tr class="kanban-section-row"><td colspan="${kanbanVisibleColumnCount(kanbanColumnKeys)}">${escapeHtml(discipline)}</td></tr>`;
-          const descriptions = [...new Set(areaItems.filter(item => item.discipline === discipline).map(item => item.description))];
+          const descriptions = [...new Set(areaItems.filter(item => item.discipline === discipline).map(item => item.description || ""))];
 
           descriptions.forEach(description => {
-            const rowItems = areaItems.filter(item => item.discipline === discipline && item.description === description);
+            const rowItems = areaItems.filter(item => item.discipline === discipline && (item.description || "") === description);
             const responsible = [...new Set(rowItems.map(item => item.owner).filter(Boolean))].join(" / ");
             const earliestStart = getEarliestStartDate(rowItems);
             const latestTarget = getLatestTargetDate(rowItems);
@@ -6681,12 +6879,351 @@ body.printing-report-compiler .table-wrap {
       render();
     }
 
+    function deletePunchItem(id) {
+      const item = punchItems.find(i => i.id === id);
+      if (!item) return;
+      const idStr = `PL-${String(item.id).padStart(4, "0")}`;
+      const desc = item.description ? ` "${item.description.slice(0, 35)}${item.description.length > 35 ? '...' : ''}"` : '';
+      if (!confirm(`Are you sure you want to delete punchlist row ${idStr}${desc}?`)) {
+        return;
+      }
+      punchItems = punchItems.filter(i => i.id !== id);
+      if (selectedPunchRowId === id) {
+        selectedPunchRowId = null;
+        updatePunchDeleteButtonLabels();
+      }
+      if (typeof editingPunchlistId !== "undefined" && editingPunchlistId === id) {
+        editingPunchlistId = null;
+        closePunchlistEditModal();
+      }
+      render();
+      if (typeof renderReportCompiler === "function") {
+        renderReportCompiler();
+      }
+    }
+
     function advanceCx(id) {
       const order = ["Not Started", "In Progress", "Ready for Witness", "Passed"];
       const item = cxItems.find(i => i.id === id);
       item.status = item.status === "Failed / Retest" ? "In Progress" : order[(order.indexOf(item.status) + 1) % order.length];
       render();
     }
+
+    function deleteCxItem(id) {
+      const item = cxItems.find(i => i.id === id);
+      if (!item) return;
+      const idStr = `CX-${String(item.id).padStart(4, "0")}`;
+      const desc = item.description ? ` "${item.description.slice(0, 35)}${item.description.length > 35 ? '...' : ''}"` : (item.asset ? ` (${item.asset})` : '');
+      if (!confirm(`Are you sure you want to delete commissioning row ${idStr}${desc}?`)) {
+        return;
+      }
+      cxItems = cxItems.filter(i => i.id !== id);
+      if (selectedCxRowId === id) {
+        selectedCxRowId = null;
+        updateCxDeleteButtonLabels();
+      }
+      if (typeof editingCxId !== "undefined" && editingCxId === id) {
+        editingCxId = null;
+        closeCxEditModal();
+      }
+      render();
+      if (typeof renderReportCompiler === "function") {
+        renderReportCompiler();
+      }
+    }
+
+    function deletePunchRow(id) {
+      deletePunchItem(id);
+    }
+    function deleteCxRow(id) {
+      deleteCxItem(id);
+    }
+    window.deletePunchItem = deletePunchItem;
+    window.deletePunchRow = deletePunchRow;
+    window.deleteCxItem = deleteCxItem;
+    function deleteRow(target, maybeId) {
+      if (typeof target === "number") {
+        deletePunchItem(target);
+      } else if (target === "cx" || target === "cxItems") {
+        deleteCxItem(maybeId);
+      } else {
+        deletePunchItem(maybeId || target);
+      }
+    }
+    window.deleteRow = deleteRow;
+
+    let selectedPunchRowId = null;
+    let selectedCxRowId = null;
+
+    function updatePunchDeleteButtonLabels() {
+      const label = selectedPunchRowId ? `Delete Row (PL-${String(selectedPunchRowId).padStart(4, "0")})` : "Delete Row";
+      const btn1 = document.getElementById("punchToolbarDeleteBtn");
+      if (btn1) btn1.textContent = label;
+      const btn2 = document.getElementById("punchToolbarDeleteBtn2");
+      if (btn2) btn2.textContent = label;
+    }
+
+    function updateCxDeleteButtonLabels() {
+      const label = selectedCxRowId ? `Delete Row (CX-${String(selectedCxRowId).padStart(4, "0")})` : "Delete Row";
+      const btn1 = document.getElementById("cxToolbarDeleteBtn");
+      if (btn1) btn1.textContent = label;
+      const btn2 = document.getElementById("cxToolbarDeleteBtn2");
+      if (btn2) btn2.textContent = label;
+    }
+
+    function selectPunchRegistryRow(id, rowEl) {
+      if (selectedPunchRowId === id) {
+        selectedPunchRowId = null;
+      } else {
+        selectedPunchRowId = id;
+      }
+      document.querySelectorAll("#punchTable tr").forEach(tr => tr.classList.remove("selected-punch-row"));
+      if (selectedPunchRowId && rowEl) {
+        rowEl.classList.add("selected-punch-row");
+      }
+      updatePunchDeleteButtonLabels();
+    }
+
+    function selectCxRegistryRow(id, rowEl) {
+      if (selectedCxRowId === id) {
+        selectedCxRowId = null;
+      } else {
+        selectedCxRowId = id;
+      }
+      document.querySelectorAll("#cxTable tr").forEach(tr => tr.classList.remove("selected-cx-row"));
+      if (selectedCxRowId && rowEl) {
+        rowEl.classList.add("selected-cx-row");
+      }
+      updateCxDeleteButtonLabels();
+    }
+
+    function openPunchDeleteModal(preselectedId = null) {
+      if (!punchItems.length) {
+        alert("There are currently no punchlist items in the registry to delete.\n\nYou can click 'Load Sample Data' or add items via the 'Add Punchlist Item' form.");
+        return;
+      }
+      const select = document.getElementById("punchDeleteModalSelect");
+      if (select) {
+        select.innerHTML = punchItems.map(item => {
+          const idStr = `PL-${String(item.id).padStart(4, "0")}`;
+          const desc = item.description ? ` - ${item.description.slice(0, 45)}` : "";
+          const proj = item.project ? ` [${item.project}]` : "";
+          const isSelected = (preselectedId && item.id === preselectedId) || (selectedPunchRowId && item.id === selectedPunchRowId);
+          return `<option value="${item.id}" ${isSelected ? "selected" : ""}>${idStr}${proj}${desc}</option>`;
+        }).join("");
+      }
+      const modal = document.getElementById("punchDeleteModal");
+      if (modal) modal.classList.add("active");
+    }
+
+    function closePunchDeleteModal(event) {
+      if (event && event.target && event.target.id !== "punchDeleteModal" && !event.target.classList.contains("modal-close-trigger")) return;
+      const modal = document.getElementById("punchDeleteModal");
+      if (modal) modal.classList.remove("active");
+    }
+
+    function confirmPunchDeleteFromModal() {
+      const select = document.getElementById("punchDeleteModalSelect");
+      if (!select || !select.value) return;
+      const id = Number(select.value);
+      closePunchDeleteModal();
+      if (id) deletePunchItem(id);
+    }
+
+    function promptDeletePunchItem() {
+      if (selectedPunchRowId) {
+        deletePunchItem(selectedPunchRowId);
+      } else {
+        openPunchDeleteModal();
+      }
+    }
+
+    function deletePunchRegistrySelectedRow() {
+      if (selectedPunchRowId) {
+        deletePunchItem(selectedPunchRowId);
+      } else {
+        openPunchDeleteModal();
+      }
+    }
+
+    function deleteCxRegistrySelectedRow() {
+      if (selectedCxRowId) {
+        deleteCxItem(selectedCxRowId);
+        return;
+      }
+      if (!cxItems.length) {
+        alert("There are no commissioning activities to delete.");
+        return;
+      }
+      const input = prompt("Enter the Commissioning Item ID or Number to delete (e.g. 1 or CX-0001):");
+      if (!input) return;
+      const cleanNum = Number(String(input).replace(/[^\d]/g, ""));
+      if (cleanNum && cxItems.some(i => i.id === cleanNum)) {
+        deleteCxItem(cleanNum);
+      } else {
+        alert(`Commissioning activity "${input}" not found.`);
+      }
+    }
+
+    function loadDefaultDemoData() {
+      if (!punchProjects.includes("Project Alpha")) punchProjects.push("Project Alpha");
+      if (!punchProjects.includes("Project Beta")) punchProjects.push("Project Beta");
+      if (!cxProjects.includes("Project Alpha")) cxProjects.push("Project Alpha");
+      if (!cxProjects.includes("Project Beta")) cxProjects.push("Project Beta");
+
+      punchItems = [
+        {
+          id: 1,
+          project: "Project Alpha",
+          discipline: "Architectural Works",
+          area: "Ground Floor",
+          location: "Lobby / Entrance",
+          imageData: "",
+          description: "Cracked granite floor tile near main reception desk.",
+          correction: "Replace damaged tile and re-grout perimeter.",
+          punchlistCorrection: "Replace damaged tile and re-grout perimeter.",
+          priority: "High",
+          status: "Open",
+          owner: "Stone Works Subcon",
+          manpower: "2",
+          start: "2026-09-01",
+          startDate: "2026-09-01",
+          due: "2026-09-15",
+          dateClosed: "",
+          reference: "DWG-ARC-102"
+        },
+        {
+          id: 2,
+          project: "Project Alpha",
+          discipline: "M.E.P.F. Works",
+          area: "Basement",
+          location: "Pump Room B-02",
+          imageData: "",
+          description: "Chilled water pipe insulation torn and condensation dripping.",
+          correction: "Re-insulate chilled water line with vapor barrier.",
+          punchlistCorrection: "Re-insulate chilled water line with vapor barrier.",
+          priority: "Critical",
+          status: "In Progress",
+          owner: "HVAC Specialist",
+          manpower: "3",
+          start: "2026-09-03",
+          startDate: "2026-09-03",
+          due: "2026-09-12",
+          dateClosed: "",
+          reference: "MEP-CHW-005"
+        },
+        {
+          id: 3,
+          project: "Project Beta",
+          discipline: "Electrical",
+          area: "Level 1",
+          location: "Electrical Room 101",
+          imageData: "",
+          description: "Missing hazard warning labels on main switchboard Panel-1A.",
+          correction: "Install engraved phenolic arc-flash warning placards.",
+          punchlistCorrection: "Install engraved phenolic arc-flash warning placards.",
+          priority: "Medium",
+          status: "Ready for Inspection",
+          owner: "Electro Power Corp",
+          manpower: "1",
+          start: "2026-09-02",
+          startDate: "2026-09-02",
+          due: "2026-09-10",
+          dateClosed: "",
+          reference: "SPECS-EE-201"
+        },
+        {
+          id: 4,
+          project: "Project Alpha",
+          discipline: "Civil",
+          area: "Exterior Works",
+          location: "Loading Dock Bay 1",
+          imageData: "",
+          description: "Sealant failure at concrete driveway expansion joint.",
+          correction: "Rake out failed backing rod and re-apply polyurethane sealant.",
+          punchlistCorrection: "Rake out failed backing rod and re-apply polyurethane sealant.",
+          priority: "Low",
+          status: "Closed",
+          owner: "Road & Paving Subcon",
+          manpower: "2",
+          start: "2026-08-20",
+          startDate: "2026-08-20",
+          due: "2026-09-05",
+          dateClosed: "2026-09-04",
+          reference: "CIV-EXT-304"
+        }
+      ];
+
+      cxItems = [
+        {
+          id: 1,
+          project: "Project Alpha",
+          discipline: "Mechanical",
+          area: "Roof",
+          asset: "AHU-Roof-01",
+          imageData: "",
+          description: "AHU-Roof-01 air volume balancing & damper sequence test.",
+          stage: "Functional Test",
+          status: "In Progress",
+          owner: "TAB Contractor",
+          due: "2026-09-14",
+          reference: "CX-MECH-FPT-01"
+        },
+        {
+          id: 2,
+          project: "Project Alpha",
+          discipline: "Fire Protection",
+          area: "Basement",
+          asset: "Fire Pump FP-01",
+          imageData: "",
+          description: "Diesel fire pump auto-start on pressure drop witness test.",
+          stage: "Functional Test",
+          status: "Ready for Witness",
+          owner: "Fire System Vendor",
+          due: "2026-09-11",
+          reference: "CX-FP-PUMP-02"
+        }
+      ];
+
+      syncProjectSelects();
+      syncAreaSelects();
+      render();
+      if (typeof renderReportCompiler === "function") {
+        renderReportCompiler();
+      }
+      alert("Sample demonstration data loaded with 4 punchlist items and 2 commissioning activities.");
+    }
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Delete" || event.key === "Del") {
+        const active = document.activeElement;
+        const isEditing = active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA" || active.tagName === "SELECT" || active.isContentEditable);
+        if (!isEditing) {
+          const punchSheet = document.getElementById("punchRegistrySheet");
+          if (punchSheet && punchSheet.classList.contains("active") && selectedPunchRowId) {
+            event.preventDefault();
+            deletePunchItem(selectedPunchRowId);
+            return;
+          }
+          const cxSheet = document.getElementById("cxRegistrySheet");
+          if (cxSheet && cxSheet.classList.contains("active") && selectedCxRowId) {
+            event.preventDefault();
+            deleteCxItem(selectedCxRowId);
+            return;
+          }
+        }
+      }
+    });
+
+    window.selectPunchRegistryRow = selectPunchRegistryRow;
+    window.deletePunchRegistrySelectedRow = deletePunchRegistrySelectedRow;
+    window.openPunchDeleteModal = openPunchDeleteModal;
+    window.closePunchDeleteModal = closePunchDeleteModal;
+    window.confirmPunchDeleteFromModal = confirmPunchDeleteFromModal;
+    window.promptDeletePunchItem = promptDeletePunchItem;
+    window.loadDefaultDemoData = loadDefaultDemoData;
+    window.selectCxRegistryRow = selectCxRegistryRow;
+    window.deleteCxRegistrySelectedRow = deleteCxRegistrySelectedRow;
 
     function resetFilters(type) {
       if (type === "punch") {
@@ -6944,7 +7481,25 @@ body.printing-report-compiler .table-wrap {
     function openSelectedPunchlistEditor() {
       hidePunchlistContextMenu();
       if (!selectedPunchlistProjectCell) return;
-      openPunchlistEditor(Number(selectedPunchlistProjectCell.dataset.id));
+      let id = Number(selectedPunchlistProjectCell.dataset.id);
+      if (!id && selectedPunchlistProjectCell.closest) {
+        const tr = selectedPunchlistProjectCell.closest("tr");
+        const idEl = tr ? tr.querySelector("[data-id]") : null;
+        if (idEl) id = Number(idEl.dataset.id);
+      }
+      if (id) openPunchlistEditor(id);
+    }
+
+    function deleteSelectedPunchlistRow() {
+      hidePunchlistContextMenu();
+      if (!selectedPunchlistProjectCell) return;
+      let id = Number(selectedPunchlistProjectCell.dataset.id);
+      if (!id && selectedPunchlistProjectCell.closest) {
+        const tr = selectedPunchlistProjectCell.closest("tr");
+        const idEl = tr ? tr.querySelector("[data-id]") : null;
+        if (idEl) id = Number(idEl.dataset.id);
+      }
+      if (id) deletePunchItem(id);
     }
 
     function openPunchlistEditor(id) {
@@ -6968,6 +7523,7 @@ body.printing-report-compiler .table-wrap {
       if (document.getElementById("editPunchStart")) document.getElementById("editPunchStart").value = item.startDate || item.start || "";
       document.getElementById("editPunchStart").value = item.start || "";
       document.getElementById("editPunchDue").value = item.due || "";
+      if (document.getElementById("editPunchDateClosed")) document.getElementById("editPunchDateClosed").value = item.dateClosed || item.closedDate || "";
       document.getElementById("editPunchOwner").value = item.owner || "";
       if (document.getElementById("editPunchManpower")) document.getElementById("editPunchManpower").value = item.manpower || "";
       document.getElementById("editPunchLocation").value = item.location || "";
@@ -6989,6 +7545,14 @@ body.printing-report-compiler .table-wrap {
       item.start = document.getElementById("editPunchStart").value;
       item.startDate = item.start;
       item.due = document.getElementById("editPunchDue").value;
+      if (document.getElementById("editPunchDateClosed")) {
+        item.dateClosed = document.getElementById("editPunchDateClosed").value || "";
+      }
+      if (item.status === "Closed" && !item.dateClosed) {
+        item.dateClosed = new Date().toISOString().slice(0, 10);
+      } else if (item.status !== "Closed") {
+        item.dateClosed = "";
+      }
       item.owner = document.getElementById("editPunchOwner").value || "Unassigned";
       item.manpower = document.getElementById("editPunchManpower") ? document.getElementById("editPunchManpower").value : (item.manpower || "");
       item.location = document.getElementById("editPunchLocation").value || "TBC";
@@ -7009,6 +7573,136 @@ body.printing-report-compiler .table-wrap {
       const modal = document.getElementById("punchlistEditModal");
       if (modal) modal.classList.remove("active");
       editingPunchlistId = null;
+    }
+
+    function deletePunchItemFromModal() {
+      if (!editingPunchlistId) return;
+      const id = editingPunchlistId;
+      deletePunchItem(id);
+    }
+
+    function openSelectedCellPunchEditor() {
+      hideCellContextMenu();
+      if (!selectedEditableCell) return;
+      openPunchlistEditor(Number(selectedEditableCell.dataset.id));
+    }
+
+    let selectedCxProjectCell = null;
+    let editingCxId = null;
+
+    function showCxContextMenu(event, cell) {
+      event.preventDefault();
+      selectedCxProjectCell = cell;
+      selectedEditableCell = cell;
+      hideCellContextMenu();
+      hideImageContextMenu();
+      hidePunchlistContextMenu();
+      hideKanbanLocationContextMenu();
+      hidePunchRegistryColumnMenu();
+
+      const menu = document.getElementById("cxContextMenu");
+      menu.style.left = event.clientX + "px";
+      menu.style.top = event.clientY + "px";
+      menu.style.display = "block";
+    }
+
+    function hideCxContextMenu() {
+      const menu = document.getElementById("cxContextMenu");
+      if (menu) menu.style.display = "none";
+    }
+
+    function openSelectedCxEditor() {
+      hideCxContextMenu();
+      if (!selectedCxProjectCell) return;
+      let id = Number(selectedCxProjectCell.dataset.id);
+      if (!id && selectedCxProjectCell.closest) {
+        const tr = selectedCxProjectCell.closest("tr");
+        const idEl = tr ? tr.querySelector("[data-id]") : null;
+        if (idEl) id = Number(idEl.dataset.id);
+      }
+      if (id) openCxEditor(id);
+    }
+
+    function openSelectedCellCxEditor() {
+      hideCellContextMenu();
+      if (!selectedEditableCell) return;
+      openCxEditor(Number(selectedEditableCell.dataset.id));
+    }
+
+    function deleteSelectedCxRow() {
+      hideCxContextMenu();
+      if (!selectedCxProjectCell) return;
+      let id = Number(selectedCxProjectCell.dataset.id);
+      if (!id && selectedCxProjectCell.closest) {
+        const tr = selectedCxProjectCell.closest("tr");
+        const idEl = tr ? tr.querySelector("[data-id]") : null;
+        if (idEl) id = Number(idEl.dataset.id);
+      }
+      if (id) deleteCxItem(id);
+    }
+
+    function openCxEditor(id) {
+      const item = cxItems.find(record => record.id === id);
+      if (!item) return;
+      editingCxId = id;
+
+      fillSelect("editCxProject", cxProjects);
+      if (!cxProjects.includes(item.project)) fillSelect("editCxProject", [...cxProjects, item.project]);
+      fillSelect("editCxDiscipline", cxDisciplines);
+      if (!cxDisciplines.includes(item.discipline)) fillSelect("editCxDiscipline", [...cxDisciplines, item.discipline]);
+      fillSelect("editCxArea", cxAreas);
+      if (!cxAreas.includes(item.area)) fillSelect("editCxArea", [...cxAreas, item.area]);
+
+      document.getElementById("cxEditId").textContent = "CX-" + String(item.id).padStart(4, "0");
+      document.getElementById("editCxProject").value = item.project;
+      document.getElementById("editCxDiscipline").value = item.discipline;
+      document.getElementById("editCxArea").value = item.area;
+      document.getElementById("editCxStage").value = item.stage;
+      document.getElementById("editCxStatus").value = item.status;
+      document.getElementById("editCxDue").value = item.due || "";
+      document.getElementById("editCxOwner").value = item.owner || "";
+      document.getElementById("editCxAsset").value = item.asset || "";
+      document.getElementById("editCxReference").value = item.reference || "";
+      document.getElementById("editCxDescription").value = item.description || "";
+
+      document.getElementById("cxEditModal").classList.add("active");
+    }
+
+    function saveCxEdit() {
+      const item = cxItems.find(record => record.id === editingCxId);
+      if (!item) return;
+
+      item.project = document.getElementById("editCxProject").value;
+      item.discipline = document.getElementById("editCxDiscipline").value;
+      item.area = document.getElementById("editCxArea").value;
+      item.stage = document.getElementById("editCxStage").value;
+      item.status = document.getElementById("editCxStatus").value;
+      item.due = document.getElementById("editCxDue").value;
+      item.owner = document.getElementById("editCxOwner").value || "Unassigned";
+      item.asset = document.getElementById("editCxAsset").value || "TBC";
+      item.reference = document.getElementById("editCxReference").value || "TBC";
+      item.description = document.getElementById("editCxDescription").value || "No description entered.";
+
+      closeCxEditModal();
+      syncProjectSelects();
+      syncAreaSelects();
+      render();
+      if (typeof renderReportCompiler === "function") {
+        renderReportCompiler();
+      }
+    }
+
+    function closeCxEditModal(event) {
+      if (event && event.target.id !== "cxEditModal") return;
+      const modal = document.getElementById("cxEditModal");
+      if (modal) modal.classList.remove("active");
+      editingCxId = null;
+    }
+
+    function deleteCxItemFromModal() {
+      if (!editingCxId) return;
+      const id = editingCxId;
+      deleteCxItem(id);
     }
 
 
@@ -7064,6 +7758,7 @@ body.printing-report-compiler .table-wrap {
       selectedPunchRegistryColumn = col;
       hideCellContextMenu();
       hidePunchlistContextMenu();
+      hideCxContextMenu();
       hideKanbanLocationContextMenu();
       hideImageContextMenu();
 
@@ -7305,6 +8000,22 @@ body.printing-report-compiler .table-wrap {
     function showCellContextMenu(event, cell) {
       event.preventDefault();
       selectedEditableCell = cell;
+      const punchDelBtn = document.getElementById("cellDeletePunchRowBtn");
+      if (punchDelBtn) {
+        punchDelBtn.style.display = (cell && (cell.dataset.table === "punch" || cell.closest("#punchTable"))) ? "block" : "none";
+      }
+      const cxDelBtn = document.getElementById("cellDeleteCxRowBtn");
+      if (cxDelBtn) {
+        cxDelBtn.style.display = (cell && (cell.dataset.table === "cx" || cell.closest("#cxTable"))) ? "block" : "none";
+      }
+      const punchEditBtn = document.getElementById("cellEditPunchModalBtn");
+      if (punchEditBtn) {
+        punchEditBtn.style.display = (cell && (cell.dataset.table === "punch" || cell.closest("#punchTable"))) ? "block" : "none";
+      }
+      const cxEditBtn = document.getElementById("cellEditCxModalBtn");
+      if (cxEditBtn) {
+        cxEditBtn.style.display = (cell && (cell.dataset.table === "cx" || cell.closest("#cxTable"))) ? "block" : "none";
+      }
       const menu = document.getElementById("cellContextMenu");
       menu.style.left = event.clientX + "px";
       menu.style.top = event.clientY + "px";
@@ -7321,9 +8032,24 @@ body.printing-report-compiler .table-wrap {
       startCellEdit(selectedEditableCell);
     }
 
+    function deleteSelectedCellPunchRow() {
+      hideCellContextMenu();
+      if (!selectedEditableCell) return;
+      const id = Number(selectedEditableCell.dataset.id);
+      if (id) deletePunchItem(id);
+    }
+
+    function deleteSelectedCellCxRow() {
+      hideCellContextMenu();
+      if (!selectedEditableCell) return;
+      const id = Number(selectedEditableCell.dataset.id);
+      if (id) deleteCxItem(id);
+    }
+
     document.addEventListener("click", event => {
       hideCellContextMenu();
       hidePunchlistContextMenu();
+      hideCxContextMenu();
       hideKanbanLocationContextMenu();
       hideImageContextMenu();
       hidePunchRegistryColumnMenu();
@@ -7382,31 +8108,67 @@ body.printing-report-compiler .table-wrap {
       const imageCell = event.target.closest(".image-cell");
       if (imageCell) {
         hidePunchlistContextMenu();
+        hideCxContextMenu();
         hideKanbanLocationContextMenu();
         showImageContextMenu(event, imageCell);
         return;
       }
 
-      if (event.target.closest(".registry-select")) {
-        hideCellContextMenu();
-        hidePunchlistContextMenu();
-        hideKanbanLocationContextMenu();
-        hideImageContextMenu();
-        hidePunchRegistryColumnMenu();
-        return;
+      const punchRow = event.target.closest("#punchTable tr");
+      if (punchRow) {
+        const cell = event.target.closest(".editable-cell");
+        if (cell && cell.dataset.field === "project") {
+          showPunchlistContextMenu(event, cell);
+          return;
+        } else if (cell) {
+          hideImageContextMenu();
+          hidePunchlistContextMenu();
+          hideCxContextMenu();
+          hideKanbanLocationContextMenu();
+          showCellContextMenu(event, cell);
+          return;
+        } else {
+          const refCell = punchRow.querySelector('[data-field="project"]') || punchRow.querySelector('[data-id]') || punchRow.querySelector("td");
+          if (refCell) {
+            showPunchlistContextMenu(event, refCell);
+            return;
+          }
+        }
+      }
+
+      const cxRow = event.target.closest("#cxTable tr");
+      if (cxRow) {
+        const cell = event.target.closest(".editable-cell");
+        if (cell && cell.dataset.field === "project") {
+          showCxContextMenu(event, cell);
+          return;
+        } else if (cell) {
+          hideImageContextMenu();
+          hidePunchlistContextMenu();
+          hideCxContextMenu();
+          hideKanbanLocationContextMenu();
+          showCellContextMenu(event, cell);
+          return;
+        } else {
+          const refCell = cxRow.querySelector('[data-field="project"]') || cxRow.querySelector('[data-id]') || cxRow.querySelector("td");
+          if (refCell) {
+            showCxContextMenu(event, refCell);
+            return;
+          }
+        }
       }
 
       const cell = event.target.closest(".editable-cell");
-      if (cell && cell.dataset.table === "punch" && cell.dataset.field === "project") {
-        showPunchlistContextMenu(event, cell);
-      } else if (cell) {
+      if (cell) {
         hideImageContextMenu();
         hidePunchlistContextMenu();
+        hideCxContextMenu();
         hideKanbanLocationContextMenu();
         showCellContextMenu(event, cell);
       } else {
         hideCellContextMenu();
         hidePunchlistContextMenu();
+        hideCxContextMenu();
         hideKanbanLocationContextMenu();
         hideImageContextMenu();
       }
@@ -7421,16 +8183,18 @@ body.printing-report-compiler .table-wrap {
 
     document.addEventListener("keydown", event => {
       const cell = event.target.closest(".editable-cell");
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closePunchlistEditModal();
+        closeCxEditModal();
+        render();
+        return;
+      }
       if (!cell) return;
 
       if (event.key === "Enter") {
         event.preventDefault();
         cell.blur();
-      }
-
-      if (event.key === "Escape") {
-        event.preventDefault();
-        render();
       }
     });
 
@@ -8491,6 +9255,14 @@ body.printing-report-compiler .table-wrap {
       const pEnd = document.getElementById("compilerPeriodEnd") ? document.getElementById("compilerPeriodEnd").value : "";
       const statusScope = document.getElementById("compilerStatusScope") ? document.getElementById("compilerStatusScope").value : "all";
 
+      function isPunchDateCloseBlank(item) {
+        if (!item) return true;
+        const closedVal = getItemDateClosed(item);
+        if (!closedVal) return true;
+        const str = String(closedVal).trim();
+        return !str || str === "-" || str === "—" || str.toLowerCase() === "n/a" || str.toLowerCase() === "null" || str.toLowerCase() === "undefined";
+      }
+
       function getItemPeriodDate(item) {
         if (item && item.status === "Closed") {
           const closed = getItemDateClosed(item);
@@ -8499,8 +9271,33 @@ body.printing-report-compiler .table-wrap {
         return (item && (item.due || item.targetDate || item.date || item.target || item.createdAt || item.startDate)) || "";
       }
 
-      function matchesDatePeriod(item) {
+      function matchesDatePeriod(item, type) {
         if (!pStart && !pEnd) return true;
+
+        if ((statusScope === "all" || !statusScope) && (type === "punch" || !type)) {
+          if (isPunchDateCloseBlank(item)) {
+            return true;
+          }
+          const closedStr = getItemDateClosed(item);
+          const d = parseDateForCompare(closedStr) || new Date(closedStr);
+          if (isNaN(d.getTime())) return true;
+          if (pStart) {
+            const startD = parseDateForCompare(pStart) || new Date(pStart);
+            if (startD) {
+              startD.setHours(0, 0, 0, 0);
+              if (d < startD) return false;
+            }
+          }
+          if (pEnd) {
+            const endD = parseDateForCompare(pEnd) || new Date(pEnd);
+            if (endD) {
+              endD.setHours(23, 59, 59, 999);
+              if (d > endD) return false;
+            }
+          }
+          return true;
+        }
+
         const dStr = getItemPeriodDate(item);
         if (!dStr) return true;
         const d = parseDateForCompare(dStr) || new Date(dStr);
@@ -8535,13 +9332,13 @@ body.printing-report-compiler .table-wrap {
       const compiledPunchItems = punchItems.filter(item => 
         (punchProject === "All Projects" || item.project === punchProject) &&
         matchesStatusScope(item, "punch") &&
-        matchesDatePeriod(item)
+        matchesDatePeriod(item, "punch")
       );
 
       const compiledCxItems = cxItems.filter(item => 
         (cxProject === "All Projects" || item.project === cxProject) &&
         matchesStatusScope(item, "cx") &&
-        matchesDatePeriod(item)
+        matchesDatePeriod(item, "cx")
       );
 
       const punchTotal = compiledPunchItems.length;
@@ -9199,9 +9996,9 @@ body.printing-report-compiler .table-wrap {
 
                 const allAreaRows = [];
                 disciplines.forEach(discipline => {
-                  const descriptions = [...new Set(areaItems.filter(item => item.discipline === discipline).map(item => item.description))];
+                  const descriptions = [...new Set(areaItems.filter(item => item.discipline === discipline).map(item => item.description || ""))];
                   descriptions.forEach((description, descIdx) => {
-                    const rowItems = areaItems.filter(item => item.discipline === discipline && item.description === description);
+                    const rowItems = areaItems.filter(item => item.discipline === discipline && (item.description || "") === description);
                     const responsible = [...new Set(rowItems.map(item => item.owner).filter(Boolean))].join(" / ");
                     const earliestStart = getEarliestStartDate(rowItems);
                     const latestTarget = getLatestTargetDate(rowItems);
@@ -9323,10 +10120,10 @@ body.printing-report-compiler .table-wrap {
 
                 const allAreaRows = [];
                 disciplines.forEach(discipline => {
-                  const descriptions = [...new Set(areaItems.filter(item => item.discipline === discipline).map(item => item.description))];
+                  const descriptions = [...new Set(areaItems.filter(item => item.discipline === discipline).map(item => item.description || ""))];
 
                   descriptions.forEach((description, descIdx) => {
-                    const rowItems = areaItems.filter(item => item.discipline === discipline && item.description === description);
+                    const rowItems = areaItems.filter(item => item.discipline === discipline && (item.description || "") === description);
                     const imageItems = rowItems.filter(item => item.imageData);
                     const responsible = [...new Set(rowItems.map(item => item.owner).filter(Boolean))].join(" / ");
                     const earliestStart = getEarliestStartDate(rowItems);
@@ -9345,7 +10142,7 @@ body.printing-report-compiler .table-wrap {
                     const locCellHeight = maxLocItems * 28 + 8;
 
                     let computedRowH = Math.max(imgCellHeight, locCellHeight, 28);
-                    if (description.length > 55) {
+                    if (description && description.length > 55) {
                       computedRowH += 16;
                     }
 

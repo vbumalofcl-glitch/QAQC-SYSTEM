@@ -3508,7 +3508,8 @@ body.page-break-dragging .page-break-drop-row {
 }
 
 /* Status Column & Badge - Strict Wrapping & Sizing Parity with Print */
-.compiled-table .col-status {
+.compiled-table .col-status,
+.compiled-table .col-date-closed {
   text-align: center !important;
   vertical-align: middle !important;
   padding: 1.5px 2px !important;
