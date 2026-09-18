@@ -57,12 +57,20 @@
     },
 
     /**
+     * Compute API URL supporting both http://localhost:8000 and direct file:/// execution
+     */
+    getApiUrl: function (endpoint) {
+      const base = window.location.protocol === "file:" ? "http://localhost:8000" : "";
+      return base + endpoint;
+    },
+
+    /**
      * Check if local Python backend server is running
      */
     checkServer: async function () {
       const badge = document.getElementById("server-status-badge");
       try {
-        const res = await fetch("/api/status", { cache: "no-store" });
+        const res = await fetch(this.getApiUrl("/api/status"), { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           this.isServerOnline = true;
@@ -150,7 +158,7 @@
       document.getElementById("btn-stop-backend").onclick = async () => {
         if (confirm("Stop the background QA/QC server?")) {
           try {
-            await fetch("/api/shutdown", { method: "POST" });
+            await fetch(this.getApiUrl("/api/shutdown"), { method: "POST" });
             this.showToast("Backend server stopped.", "info");
           } catch (e) {
             this.showToast("Server stopped.", "info");
@@ -212,7 +220,7 @@
 
       // Attempt 1: Call Local Python Native Launcher API
       try {
-        const res = await fetch("/api/open", {
+        const res = await fetch(this.getApiUrl("/api/open"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ path: relPath }),
@@ -245,16 +253,19 @@
     },
 
     /**
-     * Fetch full structure from backend if available
+     * Fetch full structure from backend if available, or fallback to offline static dataset
      */
     fetchStructure: async function () {
       try {
-        const res = await fetch("/api/structure", { cache: "no-store" });
+        const res = await fetch(this.getApiUrl("/api/structure"), { cache: "no-store" });
         if (res.ok) {
           return await res.json();
         }
       } catch (e) {
-        console.warn("Could not fetch dynamic structure from API:", e);
+        // Backend not available (e.g. GitHub Pages or offline)
+      }
+      if (window.QAQC_PROCEDURES_DATA) {
+        return window.QAQC_PROCEDURES_DATA;
       }
       return null;
     },
