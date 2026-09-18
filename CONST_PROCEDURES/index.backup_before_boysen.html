@@ -1,0 +1,4163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Construction Operation Procedures & Quality Management | FCLaranang Dev Corp</title>
+  <link rel="icon" type="image/png" href="../fcldc.png">
+  <link rel="stylesheet" href="../shared/css/corporate-green.css">
+  <style>
+    /* ==========================================================================
+       Corporate Design System Variables & Theme
+       ========================================================================== */
+    :root {
+      --emerald-950: #022c22;
+      --emerald-900: #064e3b;
+      --emerald-800: #065f46;
+      --emerald-700: #047857;
+      --emerald-600: #059669;
+      --emerald-500: #10b981;
+      --emerald-400: #34d399;
+      --emerald-300: #6ee7b7;
+      --emerald-200: #a7f3d0;
+      --emerald-100: #d1fae5;
+      --emerald-50:  #ecfdf5;
+
+      --slate-950: #020617;
+      --slate-900: #0f172a;
+      --slate-800: #1e293b;
+      --slate-700: #334155;
+      --slate-600: #475569;
+      --slate-500: #64748b;
+      --slate-400: #94a3b8;
+      --slate-300: #cbd5e1;
+      --slate-200: #e2e8f0;
+      --slate-100: #f1f5f9;
+      --slate-50:  #f8fafc;
+      --white:     #ffffff;
+
+      --border-color: #cbd5e1;
+      --border-light: #e2e8f0;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ==========================================================================
+       Global & App Layout
+       ========================================================================== */
+    * { box-sizing: border-box; }
+    html, body {
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f8fafc;
+      color: var(--slate-900);
+    }
+
+    .app-layout {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
+
+    /* ==========================================================================
+       Sidebar Component
+       ========================================================================== */
+    .app-sidebar {
+      width: 270px;
+      background: linear-gradient(180deg, var(--emerald-950) 0%, #031e17 60%, var(--slate-950) 100%);
+      color: var(--slate-100);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      z-index: 120;
+      transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 4px 0 16px rgba(0, 0, 0, 0.18);
+    }
+
+    .app-sidebar.collapsed {
+      width: 72px;
+    }
+
+    .sidebar-header {
+      height: 56px;
+      padding: 0 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      text-decoration: none;
+      color: #fff;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .sidebar-brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: var(--emerald-600);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 0.85rem;
+      color: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .sidebar-brand-text {
+      display: flex;
+      flex-direction: column;
+      transition: opacity 0.2s;
+    }
+
+    .sidebar-brand-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      color: #fff;
+      line-height: 1.1;
+    }
+
+    .sidebar-brand-sub {
+      font-size: 0.65rem;
+      color: var(--emerald-300);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .sidebar-toggle-btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 6px;
+      color: var(--slate-300);
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+
+    .sidebar-toggle-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    .sidebar-scroll {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 0.75rem 0.65rem;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+    }
+
+    .sidebar-nav-section-title {
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--emerald-400);
+      padding: 0.75rem 0.5rem 0.35rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      white-space: nowrap;
+    }
+
+    .sidebar-nav-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar-nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.6rem 0.75rem;
+      width: 100%;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--slate-200);
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      text-decoration: none;
+      transition: var(--transition);
+      white-space: nowrap;
+      position: relative;
+    }
+
+    .sidebar-nav-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .sidebar-nav-btn.active {
+      background: linear-gradient(90deg, var(--emerald-600) 0%, var(--emerald-700) 100%);
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.35);
+      border-color: var(--emerald-500);
+    }
+
+    .sidebar-nav-btn svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      color: var(--emerald-300);
+    }
+
+    .sidebar-nav-btn.active svg {
+      color: #fff;
+    }
+
+    .sidebar-nav-btn .sidebar-label {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sidebar-nav-btn .nav-badge {
+      font-size: 0.62rem;
+      padding: 0.12rem 0.45rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .sidebar-nav-btn.active .nav-badge {
+      background: var(--emerald-950);
+      color: var(--emerald-200);
+    }
+
+    .sidebar-sub-item {
+      padding: 0.35rem 0.75rem 0.35rem 2.1rem;
+      font-size: 0.75rem;
+      color: var(--slate-300);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      width: 100%;
+      text-align: left;
+    }
+
+    .sidebar-sub-item:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .sidebar-sub-item .sub-badge {
+      font-size: 0.6rem;
+      color: var(--slate-400);
+    }
+
+    .sidebar-footer {
+      padding: 0.75rem 0.85rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--slate-400);
+    }
+
+    .sidebar-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--emerald-400);
+      box-shadow: 0 0 8px var(--emerald-400);
+      display: inline-block;
+      margin-right: 0.4rem;
+    }
+
+    /* Collapsed sidebar adjustments */
+    .app-sidebar.collapsed .sidebar-brand-text,
+    .app-sidebar.collapsed .sidebar-nav-section-title,
+    .app-sidebar.collapsed .sidebar-label,
+    .app-sidebar.collapsed .nav-badge,
+    .app-sidebar.collapsed .sidebar-sub-item,
+    .app-sidebar.collapsed .sidebar-footer-text {
+      display: none !important;
+    }
+    .app-sidebar.collapsed .sidebar-nav-btn {
+      justify-content: center;
+      padding: 0.65rem 0;
+    }
+
+    /* ==========================================================================
+       Main Viewport Container
+       ========================================================================== */
+    .app-main {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      min-width: 0;
+      position: relative;
+    }
+
+    /* Top Corporate Header */
+    .corp-header {
+      height: 48px;
+      padding: 0 1.25rem;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--emerald-950), var(--emerald-900));
+      border-bottom: 2px solid var(--emerald-600);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 100;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 4px;
+      color: #fff;
+      padding: 4px 6px;
+      cursor: pointer;
+    }
+
+    .breadcrumb-trail {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      color: var(--emerald-200);
+    }
+
+    .breadcrumb-trail a {
+      color: var(--emerald-200);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .breadcrumb-trail a:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    .breadcrumb-trail .separator {
+      color: var(--emerald-400);
+      opacity: 0.7;
+      font-size: 0.75rem;
+    }
+
+    .breadcrumb-trail .current-view {
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .header-nav .nav-link {
+      color: var(--emerald-100);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.28rem 0.65rem;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .header-nav .nav-link:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .header-nav .nav-link.active {
+      background: var(--emerald-600);
+      color: #fff;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 0.22rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--emerald-300);
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    .status-indicator-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--emerald-400);
+      box-shadow: 0 0 6px var(--emerald-400);
+    }
+
+    /* Views Container */
+    .views-wrapper {
+      flex: 1 1 auto;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .app-view {
+      display: none;
+      flex: 1 1 auto;
+      height: 100%;
+      overflow-y: auto;
+      flex-direction: column;
+    }
+
+    .app-view.active {
+      display: flex;
+    }
+
+    /* ==========================================================================
+       VIEW 1: HOME PAGE (Featuring home.jpeg)
+       ========================================================================== */
+    .home-view-container {
+      padding: 1.25rem 1.75rem 2rem;
+      max-width: 1600px;
+      width: 100%;
+      margin: 0 auto;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Cinematic Hero Banner */
+    .hero-banner {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      min-height: 380px;
+      display: flex;
+      align-items: center;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid rgba(5, 150, 105, 0.3);
+    }
+
+    .hero-bg-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 30%;
+      z-index: 1;
+      transform: scale(1.02);
+      transition: transform 0.6s ease;
+    }
+
+    .hero-banner:hover .hero-bg-img {
+      transform: scale(1.05);
+    }
+
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg,
+        rgba(2, 44, 34, 0.96) 0%,
+        rgba(6, 78, 59, 0.90) 38%,
+        rgba(6, 95, 70, 0.72) 65%,
+        rgba(15, 23, 42, 0.45) 100%
+      );
+      z-index: 2;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 3;
+      padding: 2.5rem 3rem;
+      max-width: 720px;
+      color: #fff;
+    }
+
+    .hero-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.3rem 0.85rem;
+      background: rgba(16, 185, 129, 0.25);
+      border: 1px solid var(--emerald-400);
+      color: var(--emerald-100);
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      backdrop-filter: blur(4px);
+    }
+
+    .hero-title {
+      font-size: 2.25rem;
+      font-weight: 900;
+      line-height: 1.15;
+      margin: 0 0 1rem;
+      letter-spacing: -0.02em;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .hero-title span {
+      color: var(--emerald-300);
+    }
+
+    .hero-desc {
+      font-size: 1.02rem;
+      line-height: 1.55;
+      color: var(--emerald-50);
+      margin: 0 0 1.75rem;
+      opacity: 0.95;
+      max-width: 620px;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      align-items: center;
+    }
+
+    .hero-btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.75rem 1.4rem;
+      background: var(--emerald-500);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .hero-btn-primary:hover {
+      background: var(--emerald-400);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+    }
+
+    .hero-btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.75rem 1.4rem;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .hero-btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: #fff;
+      transform: translateY(-2px);
+    }
+
+    /* Live KPI Row */
+    .home-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+
+    .stat-card {
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--emerald-500);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--emerald-600);
+    }
+
+    .stat-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      background: var(--emerald-50);
+      color: var(--emerald-700);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .stat-icon-wrap svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .stat-number {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--slate-900);
+      line-height: 1.1;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--slate-500);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .stat-subtext {
+      font-size: 0.72rem;
+      color: var(--emerald-700);
+      font-weight: 600;
+      margin-top: 0.15rem;
+    }
+
+    /* Core Modules Portals */
+    .home-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.85rem;
+    }
+
+    .home-section-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--slate-900);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .portal-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .portal-card {
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.35rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .portal-card:hover {
+      border-color: var(--emerald-600);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-3px);
+    }
+
+    .portal-badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      margin-bottom: 0.75rem;
+    }
+
+    .portal-badge.opn {
+      background: var(--emerald-100);
+      color: var(--emerald-800);
+      border: 1px solid var(--emerald-300);
+    }
+
+    .portal-badge.supplier {
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+    }
+
+    .portal-badge.forms {
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fde68a;
+    }
+
+    .portal-card-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--slate-900);
+      margin: 0 0 0.5rem;
+    }
+
+    .portal-card-desc {
+      font-size: 0.85rem;
+      color: var(--slate-600);
+      line-height: 1.5;
+      margin: 0 0 1.25rem;
+      flex-grow: 1;
+    }
+
+    .portal-chips-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .portal-chip {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      background: var(--slate-100);
+      color: var(--slate-700);
+      border: 1px solid var(--slate-200);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .portal-chip:hover {
+      background: var(--emerald-600);
+      color: #fff;
+      border-color: var(--emerald-600);
+    }
+
+    .portal-action-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 1rem;
+      background: var(--slate-50);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--slate-800);
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .portal-action-btn:hover {
+      background: var(--emerald-600);
+      color: #fff;
+      border-color: var(--emerald-600);
+    }
+
+    /* Lifecycle Pipeline */
+    .lifecycle-pipeline {
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .pipeline-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+      position: relative;
+    }
+
+    .pipeline-step {
+      background: var(--slate-50);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 0.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .pipeline-step:hover {
+      border-color: var(--emerald-500);
+      background: var(--emerald-50);
+      transform: translateY(-2px);
+    }
+
+    .pipeline-step-number {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--emerald-700);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pipeline-step-code {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--slate-900);
+    }
+
+    .pipeline-step-name {
+      font-size: 0.68rem;
+      color: var(--slate-500);
+      line-height: 1.2;
+    }
+
+    /* ==========================================================================
+       VIEW 2: OPERATION PROCEDURES (OPN-01 to OPN-07 & Checklists)
+       ========================================================================== */
+    .proc-command-ribbon {
+      height: 48px;
+      flex-shrink: 0;
+      background: var(--white);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      box-shadow: var(--shadow-sm);
+      z-index: 10;
+    }
+
+    .proc-ribbon-left {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .proc-ribbon-eyebrow {
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--emerald-700);
+      background: var(--emerald-50);
+      border: 1px solid var(--emerald-200);
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .proc-ribbon-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--slate-900);
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .proc-search-wrap {
+      position: relative;
+      min-width: 260px;
+      max-width: 380px;
+      flex-grow: 1;
+    }
+
+    .proc-search-wrap svg {
+      position: absolute;
+      left: 0.65rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      color: var(--slate-400);
+    }
+
+    .proc-search-wrap input {
+      width: 100%;
+      padding: 0.35rem 0.75rem 0.35rem 2rem;
+      font-size: 0.78rem;
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      background: var(--slate-50);
+      outline: none;
+      transition: var(--transition);
+      box-sizing: border-box;
+    }
+
+    .proc-search-wrap input:focus {
+      border-color: var(--emerald-500);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    }
+
+    .proc-ribbon-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .proc-btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: var(--emerald-600);
+      color: #fff;
+      border: 1px solid var(--emerald-700);
+      border-radius: var(--radius-sm);
+      padding: 0.35rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .proc-btn-primary:hover {
+      background: var(--emerald-700);
+    }
+
+    .proc-btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: var(--slate-100);
+      color: var(--slate-700);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 0.35rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .proc-btn-secondary:hover {
+      background: var(--slate-200);
+      color: var(--slate-900);
+    }
+
+    .tabs-container {
+      margin: 0;
+      background: var(--slate-900);
+      border-bottom: 2px solid var(--emerald-600);
+      flex-shrink: 0;
+      padding: 0 0.5rem;
+    }
+
+    .tabs-nav {
+      padding: 0.25rem 0.5rem 0;
+      gap: 0.25rem;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      display: flex;
+    }
+
+    .tab-btn {
+      padding: 0.45rem 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--slate-300);
+      border-radius: 6px 6px 0 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+      transition: var(--transition);
+    }
+
+    .tab-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--white);
+    }
+
+    .tab-btn.active {
+      background: var(--emerald-600);
+      color: var(--white);
+      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .tab-badge {
+      font-size: 0.65rem;
+      opacity: 0.85;
+      font-weight: 600;
+    }
+
+    /* Scrollable Procedure Panes */
+    .proc-viewport {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      padding: 0.85rem 1.25rem 2rem;
+      max-width: 1720px;
+      width: 100%;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .opn-summary-card {
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--emerald-600);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .opn-summary-title {
+      font-size: 0.98rem;
+      font-weight: 800;
+      color: var(--slate-900);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .meta-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      background: var(--slate-100);
+      color: var(--slate-700);
+      border: 1px solid var(--border-light);
+    }
+
+    .section-panel {
+      margin-bottom: 0.85rem;
+      padding: 0.85rem;
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .section-panel-header {
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.45rem;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-panel-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--slate-900);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 0.65rem;
+    }
+
+    .doc-card {
+      padding: 0.75rem 0.9rem;
+      background: var(--slate-50);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+
+    .doc-card:hover {
+      border-color: var(--emerald-500);
+      background: var(--white);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .doc-card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+    }
+
+    .doc-type-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.68rem;
+      font-weight: 800;
+      flex-shrink: 0;
+      color: #fff;
+    }
+
+    .doc-type-icon.word { background: #1e40af; }
+    .doc-type-icon.excel { background: #15803d; }
+    .doc-type-icon.pdf { background: #b91c1c; }
+
+    .doc-card-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--slate-900);
+      word-break: break-word;
+    }
+
+    .doc-card-meta {
+      font-size: 0.7rem;
+      color: var(--slate-500);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+      margin-top: 0.2rem;
+    }
+
+    .doc-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: auto;
+      padding-top: 0.45rem;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .btn-open-native {
+      flex: 1;
+      padding: 0.32rem 0.5rem;
+      font-size: 0.74rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      transition: var(--transition);
+      color: #fff;
+    }
+
+    .btn-open-native.word { background: #2563eb; border-color: #1d4ed8; }
+    .btn-open-native.word:hover { background: #1d4ed8; }
+    .btn-open-native.excel { background: #16a34a; border-color: #15803d; }
+    .btn-open-native.excel:hover { background: #15803d; }
+    .btn-open-native.pdf { background: #dc2626; border-color: #b91c1c; }
+    .btn-open-native.pdf:hover { background: #b91c1c; }
+
+    .btn-download-fallback {
+      padding: 0.32rem 0.55rem;
+      font-size: 0.74rem;
+      font-weight: 600;
+      background: var(--white);
+      color: var(--slate-700);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .btn-download-fallback:hover {
+      background: var(--slate-100);
+      color: var(--slate-900);
+    }
+
+    .empty-state {
+      padding: 1.25rem;
+      text-align: center;
+      color: var(--slate-500);
+      font-size: 0.8rem;
+      background: var(--slate-50);
+      border-radius: var(--radius-sm);
+      border: 1px dashed var(--border-color);
+    }
+
+    /* ==========================================================================
+       VIEW 3: SUPPLIER'S PROCEDURES (Topbar with Boysen, Buildrite, Davies, Other)
+       ========================================================================== */
+    .supplier-command-ribbon {
+      height: 48px;
+      flex-shrink: 0;
+      background: var(--white);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      box-shadow: var(--shadow-sm);
+      z-index: 10;
+    }
+
+    .supplier-topbar-container {
+      margin: 0;
+      background: #0f172a;
+      border-bottom: 2px solid #3b82f6;
+      flex-shrink: 0;
+      padding: 0 0.5rem;
+    }
+
+    .supplier-topbar-nav {
+      padding: 0.25rem 0.5rem 0;
+      gap: 0.35rem;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      display: flex;
+    }
+
+    .supplier-tab-btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--slate-300);
+      border-radius: 6px 6px 0 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+      transition: var(--transition);
+    }
+
+    .supplier-tab-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--white);
+    }
+
+    .supplier-tab-btn.active {
+      background: #1d4ed8;
+      color: var(--white);
+      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.25);
+    }
+
+    .supplier-logo-pill {
+      font-size: 0.65rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .supplier-viewport {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      padding: 1rem 1.5rem 2.5rem;
+      max-width: 1720px;
+      width: 100%;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+
+    .supplier-pane {
+      display: none;
+    }
+
+    .supplier-pane.active {
+      display: block;
+    }
+
+    /* Supplier Brand Hero Card */
+    .supplier-brand-header {
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .supplier-brand-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .supplier-avatar {
+      width: 54px;
+      height: 54px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: #fff;
+      box-shadow: var(--shadow-sm);
+      flex-shrink: 0;
+    }
+
+    .supplier-avatar.boysen { background: linear-gradient(135deg, #dc2626, #991b1b); }
+    .supplier-avatar.buildrite { background: linear-gradient(135deg, #0284c7, #0369a1); }
+    .supplier-avatar.davies { background: linear-gradient(135deg, #7c3aed, #5b21b6); }
+    .supplier-avatar.other { background: linear-gradient(135deg, #475569, #1e293b); }
+
+    .supplier-brand-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--slate-900);
+      margin: 0 0 0.25rem;
+    }
+
+    .supplier-brand-sub {
+      font-size: 0.8rem;
+      color: var(--slate-600);
+    }
+
+    /* Technical Method Statement Cards */
+    .spec-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .spec-card {
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: var(--transition);
+    }
+
+    .spec-card:hover {
+      border-color: #3b82f6;
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .spec-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .spec-card-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--slate-900);
+    }
+
+    .spec-tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #dbeafe;
+      white-space: nowrap;
+    }
+
+    .spec-card-body {
+      font-size: 0.82rem;
+      color: var(--slate-600);
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      flex-grow: 1;
+    }
+
+    .spec-steps-list {
+      margin: 0.5rem 0 0;
+      padding-left: 1.2rem;
+      font-size: 0.78rem;
+      color: var(--slate-700);
+    }
+
+    .spec-steps-list li {
+      margin-bottom: 0.35rem;
+    }
+
+    /* Technical Specs Table */
+    .tech-table-wrap {
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tech-table-header {
+      padding: 0.75rem 1rem;
+      background: var(--slate-100);
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--slate-900);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .tech-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+    }
+
+    .tech-table th {
+      background: var(--slate-50);
+      color: var(--slate-700);
+      font-weight: 700;
+      text-align: left;
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .tech-table td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--slate-800);
+    }
+
+    .tech-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .tech-table tr:hover td {
+      background: #f8fafc;
+    }
+
+    /* ==========================================================================
+       Modals & Notifications
+       ========================================================================== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      width: 100%;
+      max-width: 540px;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: modalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.96) translateY(8px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-header {
+      padding: 0.85rem 1.25rem;
+      background: var(--slate-900);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0;
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      color: var(--slate-400);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      border-radius: 4px;
+    }
+
+    .modal-close-btn:hover {
+      color: var(--white);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .modal-body {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .modal-form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .modal-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--slate-700);
+    }
+
+    .modal-select, .modal-input {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      outline: none;
+      background: var(--white);
+    }
+
+    .modal-select:focus, .modal-input:focus {
+      border-color: var(--emerald-500);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    }
+
+    .dropzone-box {
+      border: 2px dashed var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.5rem 1rem;
+      text-align: center;
+      background: var(--slate-50);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .dropzone-box:hover, .dropzone-box.dragover {
+      border-color: var(--emerald-500);
+      background: var(--emerald-50);
+    }
+
+    .dropzone-text {
+      font-size: 0.78rem;
+      color: var(--slate-600);
+      font-weight: 600;
+    }
+
+    .dropzone-sub {
+      font-size: 0.68rem;
+      color: var(--slate-400);
+    }
+
+    .modal-footer {
+      padding: 0.75rem 1.25rem;
+      background: var(--slate-50);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      z-index: 2000;
+      pointer-events: none;
+    }
+
+    .toast-notification {
+      background: var(--slate-900);
+      color: #fff;
+      padding: 0.75rem 1.15rem;
+      border-radius: var(--radius-md);
+      font-size: 0.82rem;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      pointer-events: auto;
+      animation: toastSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .toast-notification.success {
+      border-left: 4px solid var(--emerald-500);
+    }
+
+    .toast-notification.error {
+      border-left: 4px solid #ef4444;
+    }
+
+    @keyframes toastSlideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Ultra-Slim Footer */
+    .cockpit-footer {
+      background: var(--emerald-950);
+      color: var(--emerald-200);
+      font-size: 0.68rem;
+      padding: 0 1.25rem;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+
+    /* Rotating animation */
+    .rotating {
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .app-sidebar {
+        position: fixed;
+        left: -280px;
+        top: 0;
+        bottom: 0;
+        height: 100vh;
+      }
+      .app-sidebar.mobile-open {
+        left: 0;
+      }
+      .mobile-menu-btn {
+        display: block;
+      }
+      .hero-title {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- ========================================================================
+       SIDEBAR NAVIGATION COMPONENT
+       ======================================================================== -->
+  <aside class="app-sidebar" id="appSidebar">
+    <div class="sidebar-header">
+      <a href="#" class="sidebar-brand" id="brandHomeLink" title="FCLaranang Dev Corp QA/QC">
+        <div class="sidebar-brand-logo">FCL</div>
+        <div class="sidebar-brand-text">
+          <span class="sidebar-brand-title">FCLARANANG</span>
+          <span class="sidebar-brand-sub">ConstPro QA/QC System</span>
+        </div>
+      </a>
+      <button type="button" class="sidebar-toggle-btn" id="btnToggleSidebar" title="Toggle Sidebar Width">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+    </div>
+
+    <div class="sidebar-scroll">
+      <!-- Section: Main Views -->
+      <div class="sidebar-nav-section-title">Navigation Hub</div>
+      <div class="sidebar-nav-group">
+        <!-- 1. Home Button -->
+        <button class="sidebar-nav-btn active" data-view-target="view-home" id="sideNavHome">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span class="sidebar-label">Home / Overview</span>
+          <span class="nav-badge">Portal</span>
+        </button>
+
+        <!-- 2. Operation Procedures Button -->
+        <button class="sidebar-nav-btn" data-view-target="view-operation-procedures" id="sideNavOperation">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 14l2 2 4-4"/></svg>
+          <span class="sidebar-label">Operation Procedures</span>
+          <span class="nav-badge" id="sideBadgeOpnCount">7 OPN &bull; 21 Docs</span>
+        </button>
+
+        <!-- 3. Supplier's Procedures Button -->
+        <button class="sidebar-nav-btn" data-view-target="view-supplier-procedures" id="sideNavSupplier">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><line x1="12" y1="11" x2="12" y2="17"/></svg>
+          <span class="sidebar-label">Supplier's Procedures</span>
+          <span class="nav-badge" style="background:rgba(59, 130, 246, 0.3);">Boysen &bull; Buildrite...</span>
+        </button>
+      </div>
+
+      <!-- Quick OPN Shortcuts -->
+      <div class="sidebar-nav-section-title">Core Operations (PM-OPN)</div>
+      <div class="sidebar-nav-group">
+        <button class="sidebar-sub-item" onclick="switchView('view-operation-procedures', 'tab-opn-01')">
+          <span>OPN-01 Cost & Bidding</span>
+          <span class="sub-badge">Rev 04</span>
+        </button>
+        <button class="sidebar-sub-item" onclick="switchView('view-operation-procedures', 'tab-opn-02')">
+          <span>OPN-02 Planning & Execution</span>
+          <span class="sub-badge">Rev 02</span>
+        </button>
+        <button class="sidebar-sub-item" onclick="switchView('view-operation-procedures', 'tab-opn-03')">
+          <span>OPN-03 Safety Procedures</span>
+          <span class="sub-badge">Rev 05</span>
+        </button>
+        <button class="sidebar-sub-item" onclick="switchView('view-operation-procedures', 'tab-opn-04')">
+          <span>OPN-04 Progress Billing</span>
+          <span class="sub-badge">Rev 00</span>
+        </button>
+        <button class="sidebar-sub-item" onclick="switchView('view-operation-procedures', 'tab-opn-05')">
+          <span>OPN-05 Project Turn Over</span>
+          <span class="sub-badge">Rev 03</span>
+        </button>
+        <button class="sidebar-sub-item" onclick="switchView('view-operation-procedures', 'tab-opn-06')">
+          <span>OPN-06 Subcontractor Monitoring</span>
+          <span class="sub-badge">Rev 02</span>
+        </button>
+        <button class="sidebar-sub-item" onclick="switchView('view-operation-procedures', 'tab-opn-07')">
+          <span>OPN-07 Batching Plant Procedure</span>
+          <span class="sub-badge">Rev 02</span>
+        </button>
+      </div>
+
+      <!-- Quick Supplier Shortcuts -->
+      <div class="sidebar-nav-section-title">Supplier Guidelines</div>
+      <div class="sidebar-nav-group">
+        <button class="sidebar-sub-item" onclick="switchView('view-supplier-procedures', null, 'supplier-boysen')">
+          <span>Pacific Paint (Boysen)</span>
+          <span class="sub-badge">Plexibond</span>
+        </button>
+        <button class="sidebar-sub-item" onclick="switchView('view-supplier-procedures', null, 'supplier-buildrite')">
+          <span>Buildrite Chemicals</span>
+          <span class="sub-badge">Sapal RTU</span>
+        </button>
+        <button class="sidebar-sub-item" onclick="switchView('view-supplier-procedures', null, 'supplier-davies')">
+          <span>Davies Paints Philippines</span>
+          <span class="sub-badge">Sun & Rain</span>
+        </button>
+        <button class="sidebar-sub-item" onclick="switchView('view-supplier-procedures', null, 'supplier-other')">
+          <span>Other Allied Brands</span>
+          <span class="sub-badge">Sika, Bostik...</span>
+        </button>
+      </div>
+
+      <!-- Field Checklists Shortcuts -->
+      <div class="sidebar-nav-section-title">Field Inspection Checklists</div>
+      <div class="sidebar-nav-group">
+        <button class="sidebar-sub-item" onclick="openChecklist('FORMS/FM-OPN-02-12 Rebar works checklist.pdf')">
+          <span>Rebar Works (FM-02-12)</span>
+          <span class="sub-badge">PDF</span>
+        </button>
+        <button class="sidebar-sub-item" onclick="openChecklist('FORMS/FM-OPN-02-13 formworks checklist.pdf')">
+          <span>Formworks (FM-02-13)</span>
+          <span class="sub-badge">PDF</span>
+        </button>
+        <button class="sidebar-sub-item" onclick="openChecklist('FORMS/FM-OPN-02-14 Masonry works checklist.pdf')">
+          <span>CHB Masonry (FM-02-14)</span>
+          <span class="sub-badge">PDF</span>
+        </button>
+        <button class="sidebar-sub-item" onclick="openChecklist('FORMS/FM-OPN-02-10 Concrete screed-Topping checklist.pdf')">
+          <span>Concrete Screed (FM-02-10)</span>
+          <span class="sub-badge">PDF</span>
+        </button>
+        <button class="sidebar-sub-item" onclick="openChecklist('FORMS/FM-OPN-02-15 Tile Works Checklist.pdf')">
+          <span>Tile Works (FM-02-15)</span>
+          <span class="sub-badge">PDF</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-text">
+        <span class="sidebar-status-dot"></span>
+        <span>QA/QC System Active</span>
+      </div>
+      <span class="sub-badge">v2.4</span>
+    </div>
+  </aside>
+
+  <!-- ========================================================================
+       MAIN APPLICATION WORKSPACE
+       ======================================================================== -->
+  <div class="app-main">
+
+    <!-- Top Corporate Header -->
+    <header class="corp-header">
+      <div class="header-left">
+        <button type="button" class="mobile-menu-btn" id="btnMobileMenu" title="Open Menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="breadcrumb-trail">
+          <a href="../index.html">FCLDC QA/QC</a>
+          <span class="separator">/</span>
+          <a href="#" id="crumbSectionLink" onclick="switchView('view-home')">Construction Procedures</a>
+          <span class="separator">/</span>
+          <span class="current-view" id="crumbCurrentView">Home Overview</span>
+        </div>
+      </div>
+
+      <nav class="header-nav">
+        <a href="../index.html" class="nav-link">Main QA/QC</a>
+        <a href="../QAQC_GOVERNANCE/index.html" class="nav-link">Governance</a>
+        <a href="index.html" class="nav-link active">Procedures (OPN)</a>
+        <a href="../CAPA/index.html" class="nav-link">CAPA</a>
+        <a href="../PUNCHLISTING_COMMISSIONING/punchlisting_commisioning.html" class="nav-link">Punchlisting</a>
+        <a href="../QAQC_KPI/index.html" class="nav-link">KPI</a>
+      </nav>
+
+      <div class="header-status">
+        <div id="server-status-badge" class="status-badge">
+          <span class="status-indicator-dot"></span> <span id="statusText">System Ready</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- VIEWS WRAPPER -->
+    <div class="views-wrapper">
+
+      <!-- ====================================================================
+           VIEW 1: HOME PAGE (Featuring home.jpeg)
+           ==================================================================== -->
+      <section id="view-home" class="app-view active">
+        <div class="home-view-container">
+
+          <!-- Hero Banner Featuring home.jpeg -->
+          <div class="hero-banner">
+            <img src="home.jpeg" alt="FCLDC Construction Engineering Team" class="hero-bg-img">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+              <div class="hero-badge-pill">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                FCLaranang Development Corporation &bull; QA/QC Division
+              </div>
+              <h1 class="hero-title">Construction Operations & <span>Supplier Procedures</span></h1>
+              <p class="hero-desc">
+                Centralized repository of standard operating procedures (SOPs), rigorous multi-point inspection checklists, and manufacturer-certified application standards for flawless structural, architectural, and finishing execution.
+              </p>
+              <div class="hero-actions">
+                <button class="hero-btn-primary" onclick="switchView('view-operation-procedures')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 12 18 15 15"/></svg>
+                  Operation Procedures (7 OPN)
+                </button>
+                <button class="hero-btn-secondary" onclick="switchView('view-supplier-procedures')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                  Supplier Procedures (Boysen, Buildrite...)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live KPI Statistics Grid -->
+          <div class="home-stats-grid">
+            <div class="stat-card" onclick="switchView('view-operation-procedures')" style="cursor:pointer;">
+              <div class="stat-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              </div>
+              <div>
+                <div class="stat-number">7</div>
+                <div class="stat-label">Core Procedures</div>
+                <div class="stat-subtext">PM-OPN-01 to PM-OPN-07 Active</div>
+              </div>
+            </div>
+
+            <div class="stat-card" onclick="switchView('view-operation-procedures', 'tab-all-master')" style="cursor:pointer;">
+              <div class="stat-icon-wrap" style="background:#eff6ff; color:#1d4ed8;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+              </div>
+              <div>
+                <div class="stat-number">21</div>
+                <div class="stat-label">Total Quality Docs</div>
+                <div class="stat-subtext">Procedures, Sub-SOPs & Forms</div>
+              </div>
+            </div>
+
+            <div class="stat-card" onclick="switchView('view-supplier-procedures')" style="cursor:pointer;">
+              <div class="stat-icon-wrap" style="background:#fef3c7; color:#b45309;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+              </div>
+              <div>
+                <div class="stat-number">4+</div>
+                <div class="stat-label">Supplier Standards</div>
+                <div class="stat-subtext">Boysen, Buildrite, Davies & Allied</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon-wrap" style="background:#fdf2f8; color:#be185d;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div>
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Inspection Forms</div>
+                <div class="stat-subtext">Rebar, Formwork, Screed, Masonry</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section Portals -->
+          <div>
+            <div class="home-section-header">
+              <div class="home-section-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                Operational Systems & Supplier Guidelines
+              </div>
+            </div>
+
+            <div class="portal-cards-grid">
+              <!-- Portal 1: Operation Procedures -->
+              <div class="portal-card">
+                <div>
+                  <span class="portal-badge opn">Core Quality Protocols</span>
+                  <h3 class="portal-card-title">Construction Operations Procedures</h3>
+                  <p class="portal-card-desc">
+                    Comprehensive standard procedures controlling every construction phase: Cost proposal & bidding, structural execution, workplace safety, billing signoffs, handover, subcontractor governance, and batching plant batch controls.
+                  </p>
+                  <div class="portal-chips-list">
+                    <span class="portal-chip" onclick="switchView('view-operation-procedures', 'tab-opn-01')">OPN-01 Cost</span>
+                    <span class="portal-chip" onclick="switchView('view-operation-procedures', 'tab-opn-02')">OPN-02 Execution</span>
+                    <span class="portal-chip" onclick="switchView('view-operation-procedures', 'tab-opn-03')">OPN-03 Safety</span>
+                    <span class="portal-chip" onclick="switchView('view-operation-procedures', 'tab-opn-04')">OPN-04 Billing</span>
+                    <span class="portal-chip" onclick="switchView('view-operation-procedures', 'tab-opn-05')">OPN-05 Turnover</span>
+                    <span class="portal-chip" onclick="switchView('view-operation-procedures', 'tab-opn-06')">OPN-06 Subcon</span>
+                    <span class="portal-chip" onclick="switchView('view-operation-procedures', 'tab-opn-07')">OPN-07 Batching</span>
+                  </div>
+                </div>
+                <button class="portal-action-btn" onclick="switchView('view-operation-procedures')">
+                  <span>Open Operations Procedures Cockpit</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
+              </div>
+
+              <!-- Portal 2: Supplier's Procedures -->
+              <div class="portal-card">
+                <div>
+                  <span class="portal-badge supplier">Manufacturer Specifications</span>
+                  <h3 class="portal-card-title">Supplier & Technical Procedures</h3>
+                  <p class="portal-card-desc">
+                    Manufacturer-endorsed technical method statements, mixing proportions, surface preparation criteria, and application protocols for authorized coating, waterproofing, and construction chemical partners.
+                  </p>
+                  <div class="portal-chips-list">
+                    <span class="portal-chip" onclick="switchView('view-supplier-procedures', null, 'supplier-boysen')">Boysen Paints</span>
+                    <span class="portal-chip" onclick="switchView('view-supplier-procedures', null, 'supplier-buildrite')">Buildrite Chemicals</span>
+                    <span class="portal-chip" onclick="switchView('view-supplier-procedures', null, 'supplier-davies')">Davies Paints</span>
+                    <span class="portal-chip" onclick="switchView('view-supplier-procedures', null, 'supplier-other')">Sika / Bostik / ABC</span>
+                  </div>
+                </div>
+                <button class="portal-action-btn" onclick="switchView('view-supplier-procedures')">
+                  <span>Open Supplier's Procedures</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
+              </div>
+
+              <!-- Portal 3: Forms & Checklists -->
+              <div class="portal-card">
+                <div>
+                  <span class="portal-badge forms">Inspection Checklists</span>
+                  <h3 class="portal-card-title">Site QA/QC Checklists (5 Forms)</h3>
+                  <p class="portal-card-desc">
+                    Field-ready quality inspection sign-off forms designed for Quality Assurance / Quality Control site inspectors to record pre-pour, installation, and architectural finishing compliance.
+                  </p>
+                  <div class="portal-chips-list">
+                    <span class="portal-chip" onclick="openChecklist('FORMS/FM-OPN-02-12 Rebar works checklist.pdf')">Rebar Check</span>
+                    <span class="portal-chip" onclick="openChecklist('FORMS/FM-OPN-02-13 formworks checklist.pdf')">Formwork Check</span>
+                    <span class="portal-chip" onclick="openChecklist('FORMS/FM-OPN-02-14 Masonry works checklist.pdf')">Masonry Check</span>
+                    <span class="portal-chip" onclick="openChecklist('FORMS/FM-OPN-02-10 Concrete screed-Topping checklist.pdf')">Screed Check</span>
+                    <span class="portal-chip" onclick="openChecklist('FORMS/FM-OPN-02-15 Tile Works Checklist.pdf')">Tile Check</span>
+                  </div>
+                </div>
+                <button class="portal-action-btn" onclick="switchView('view-operation-procedures', 'tab-opn-02')">
+                  <span>View Inspection Checklists in OPN-02</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Construction Quality Lifecycle -->
+          <div class="lifecycle-pipeline">
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;">
+              <div style="font-size:0.95rem; font-weight:800; color:var(--slate-900);">
+                FCLDC Construction Quality Execution Lifecycle
+              </div>
+              <span class="meta-tag" style="background:var(--emerald-50); color:var(--emerald-800); border-color:var(--emerald-200);">
+                ISO 9001:2015 Quality Management Framework
+              </span>
+            </div>
+            <div class="pipeline-grid">
+              <div class="pipeline-step" onclick="switchView('view-operation-procedures', 'tab-opn-01')">
+                <div class="pipeline-step-number">1</div>
+                <div class="pipeline-step-code">OPN-01</div>
+                <div class="pipeline-step-name">Cost & Bidding</div>
+              </div>
+              <div class="pipeline-step" onclick="switchView('view-operation-procedures', 'tab-opn-02')">
+                <div class="pipeline-step-number">2</div>
+                <div class="pipeline-step-code">OPN-02</div>
+                <div class="pipeline-step-name">Planning & Execution</div>
+              </div>
+              <div class="pipeline-step" onclick="switchView('view-operation-procedures', 'tab-opn-03')">
+                <div class="pipeline-step-number">3</div>
+                <div class="pipeline-step-code">OPN-03</div>
+                <div class="pipeline-step-name">Safety Standards</div>
+              </div>
+              <div class="pipeline-step" onclick="switchView('view-operation-procedures', 'tab-opn-04')">
+                <div class="pipeline-step-number">4</div>
+                <div class="pipeline-step-code">OPN-04</div>
+                <div class="pipeline-step-name">Progress Billing</div>
+              </div>
+              <div class="pipeline-step" onclick="switchView('view-operation-procedures', 'tab-opn-05')">
+                <div class="pipeline-step-number">5</div>
+                <div class="pipeline-step-code">OPN-05</div>
+                <div class="pipeline-step-name">Turn Over Handover</div>
+              </div>
+              <div class="pipeline-step" onclick="switchView('view-operation-procedures', 'tab-opn-06')">
+                <div class="pipeline-step-number">6</div>
+                <div class="pipeline-step-code">OPN-06</div>
+                <div class="pipeline-step-name">Subcontractor Oversight</div>
+              </div>
+              <div class="pipeline-step" onclick="switchView('view-operation-procedures', 'tab-opn-07')">
+                <div class="pipeline-step-number">7</div>
+                <div class="pipeline-step-code">OPN-07</div>
+                <div class="pipeline-step-name">Batching Plant QC</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- ====================================================================
+           VIEW 2: OPERATION PROCEDURES (7 Procedures • 21 Docs & OPN-01..07)
+           ==================================================================== -->
+      <section id="view-operation-procedures" class="app-view">
+
+        <!-- Procedures Command & Search Ribbon -->
+        <section class="proc-command-ribbon">
+          <div class="proc-ribbon-left">
+            <span class="proc-ribbon-eyebrow" id="procRibbonEyebrow">Live SOP Registry</span>
+            <h2 class="proc-ribbon-title" id="procRibbonTitle">Construction Operations Procedures & Quality Checklists (7 Procedures &bull; 21 Docs)</h2>
+          </div>
+
+          <!-- Search Bar -->
+          <div class="proc-search-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="procSearchInput" placeholder="Quick search procedures, rebar, masonry, concrete, forms...">
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="proc-ribbon-actions">
+            <button id="btnRefreshLibrary" class="proc-btn-secondary" title="Re-scan directory from disk">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              <span>Refresh Library</span>
+            </button>
+            <button id="btnOpenUploadModal" class="proc-btn-primary" title="Upload and add document">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span>+ Add Document</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Master Tabs Container -->
+        <div class="tabs-container">
+          <nav class="tabs-nav" id="opnTabsNav">
+            <button class="tab-btn active" data-tab="tab-opn-01">OPN-01 <span class="tab-badge">Cost & Bidding</span></button>
+            <button class="tab-btn" data-tab="tab-opn-02">OPN-02 <span class="tab-badge">Planning & Execution</span></button>
+            <button class="tab-btn" data-tab="tab-opn-03">OPN-03 <span class="tab-badge">Safety</span></button>
+            <button class="tab-btn" data-tab="tab-opn-04">OPN-04 <span class="tab-badge">Progress Billing</span></button>
+            <button class="tab-btn" data-tab="tab-opn-05">OPN-05 <span class="tab-badge">Turn Over</span></button>
+            <button class="tab-btn" data-tab="tab-opn-06">OPN-06 <span class="tab-badge">Subcontractor</span></button>
+            <button class="tab-btn" data-tab="tab-opn-07">OPN-07 <span class="tab-badge">Batching Plant</span></button>
+            <button class="tab-btn" data-tab="tab-all-master">Master Registry <span class="tab-badge" id="masterBadgeCount">All 21 Files</span></button>
+          </nav>
+        </div>
+
+        <!-- Main Scrollable Viewport Pane -->
+        <main class="proc-viewport">
+
+          <!-- TAB 1: OPN-01 -->
+          <div id="tab-opn-01" class="tab-content active">
+            <div class="opn-summary-card">
+              <div>
+                <div class="opn-summary-title">
+                  <span class="meta-tag" style="background:var(--emerald-800); color:#fff;">PM-OPN-01</span>
+                  Cost Proposal & Project Cost Estimate Procedure
+                </div>
+                <div style="font-size:0.85rem; color:var(--slate-600); margin-top:0.35rem;">
+                  Standard procedure for project bidding, cost estimation, quantity takeoff verification, and commercial proposals.
+                </div>
+              </div>
+              <div class="meta-tag">Doc Status: Active Rev 04</div>
+            </div>
+
+            <!-- Main Procedure -->
+            <section class="section-panel">
+              <div class="section-panel-header">
+                <div class="section-panel-title">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  Main Operation Procedure
+                </div>
+              </div>
+              <div class="doc-grid">
+                <div class="doc-card">
+                  <div class="doc-card-header">
+                    <div class="doc-type-icon word">DOC</div>
+                    <div>
+                      <div class="doc-card-title">PM-OPN-01 COST PROPOSAL & PROJECT COST ESTIMATE Rev 04.doc</div>
+                      <div class="doc-card-meta">
+                        <span>Revision: Rev 04</span>
+                        <span>&bull;</span>
+                        <span>Type: MS Word</span>
+                        <span>&bull;</span>
+                        <span>Size: 1.14 MB</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="doc-card-actions">
+                    <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-01/PM-OPN-01 COST PROPOSAL & PROJECT COST ESTIMATE Rev 04.doc', 'PM-OPN-01 Cost Proposal Rev 04')">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Open in MS Word
+                    </button>
+                    <a href="OPERATION%20PROCEDURE/PM-OPN-01/PM-OPN-01%20COST%20PROPOSAL%20%26%20PROJECT%20COST%20ESTIMATE%20Rev%2004.doc" class="btn-download-fallback" download title="Download/View">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Sub Procedures -->
+            <section class="section-panel">
+              <div class="section-panel-header">
+                <div class="section-panel-title">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                  Sub-Procedures
+                </div>
+              </div>
+              <div class="doc-grid">
+                <div class="doc-card">
+                  <div class="doc-card-header">
+                    <div class="doc-type-icon word">DOCX</div>
+                    <div>
+                      <div class="doc-card-title">Bidding procedure.docx</div>
+                      <div class="doc-card-meta">
+                        <span>Scope: Bidding & Tendering</span>
+                        <span>&bull;</span>
+                        <span>Type: MS Word</span>
+                        <span>&bull;</span>
+                        <span>Size: 1.02 MB</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="doc-card-actions">
+                    <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-01/SUB PROCEDURE/Bidding procedure.docx', 'Bidding Procedure')">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Open in MS Word
+                    </button>
+                    <a href="OPERATION%20PROCEDURE/PM-OPN-01/SUB%20PROCEDURE/Bidding%20procedure.docx" class="btn-download-fallback" download title="Download/View">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Forms -->
+            <section class="section-panel">
+              <div class="section-panel-header">
+                <div class="section-panel-title">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                  Forms & Checklists
+                </div>
+              </div>
+              <div class="empty-state">
+                No specialized forms attached yet for OPN-01. You can add documents via <code>+ Add Document</code>.
+              </div>
+            </section>
+          </div>
+
+          <!-- TAB 2: OPN-02 -->
+          <div id="tab-opn-02" class="tab-content">
+            <div class="opn-summary-card">
+              <div>
+                <div class="opn-summary-title">
+                  <span class="meta-tag" style="background:var(--emerald-800); color:#fff;">PM-OPN-02</span>
+                  Project Planning and Execution Procedure
+                </div>
+                <div style="font-size:0.85rem; color:var(--slate-600); margin-top:0.35rem;">
+                  Primary construction quality protocol covering rebar, formworks, concrete pouring, screed, CHB masonry, plastering, tiling, and painting.
+                </div>
+              </div>
+              <div class="meta-tag">Doc Status: Active Rev 02</div>
+            </div>
+
+            <!-- Main Procedure -->
+            <section class="section-panel">
+              <div class="section-panel-header">
+                <div class="section-panel-title">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  Main Operation Procedure
+                </div>
+              </div>
+              <div class="doc-grid">
+                <div class="doc-card">
+                  <div class="doc-card-header">
+                    <div class="doc-type-icon word">DOCX</div>
+                    <div>
+                      <div class="doc-card-title">PM-OPN-02 PROJECT PLANNING AND EXECUTION PROCEDURE_rev2.docx</div>
+                      <div class="doc-card-meta">
+                        <span>Revision: Rev 02</span>
+                        <span>&bull;</span>
+                        <span>Type: MS Word</span>
+                        <span>&bull;</span>
+                        <span>Size: 1.03 MB</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="doc-card-actions">
+                    <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/PM-OPN-02 PROJECT PLANNING AND EXECUTION PROCEDURE_rev2.docx', 'PM-OPN-02 Planning & Execution Rev 2')">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Open in MS Word
+                    </button>
+                    <a href="OPERATION%20PROCEDURE/PM-OPN-02/PM-OPN-02%20PROJECT%20PLANNING%20AND%20EXECUTION%20PROCEDURE_rev2.docx" class="btn-download-fallback" download title="Download/View">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Sub Procedures -->
+            <section class="section-panel">
+              <div class="section-panel-header">
+                <div class="section-panel-title">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                  Sub-Procedures (Method Statements & SOPs)
+                </div>
+              </div>
+              <div class="doc-grid">
+                <!-- 1. Rebar & Forms -->
+                <div class="doc-card">
+                  <div class="doc-card-header">
+                    <div class="doc-type-icon word">DOCX</div>
+                    <div>
+                      <div class="doc-card-title">concrete rebar forms procedure.docx</div>
+                      <div class="doc-card-meta">
+                        <span>Scope: Structural Rebar & Formworks</span>
+                        <span>&bull;</span>
+                        <span>Size: 16.37 MB</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="doc-card-actions">
+                    <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/SUB PROCEDURE/concrete rebar forms procedure.docx', 'Concrete Rebar Forms Procedure')">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Open in MS Word
+                    </button>
+                    <a href="OPERATION%20PROCEDURE/PM-OPN-02/SUB%20PROCEDURE/concrete%20rebar%20forms%20procedure.docx" class="btn-download-fallback" download title="Download">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- 2. Concrete Topping -->
+                <div class="doc-card">
+                  <div class="doc-card-header">
+                    <div class="doc-type-icon word">DOCX</div>
+                    <div>
+                      <div class="doc-card-title">Concrete topping works.docx</div>
+                      <div class="doc-card-meta">
+                        <span>Scope: Floor Screed & Topping</span>
+                        <span>&bull;</span>
+                        <span>Size: 6.96 MB</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="doc-card-actions">
+                    <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/SUB PROCEDURE/Concrete topping works.docx', 'Concrete Topping Works')">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Open in MS Word
+                    </button>
+                    <a href="OPERATION%20PROCEDURE/PM-OPN-02/SUB%20PROCEDURE/Concrete%20topping%20works.docx" class="btn-download-fallback" download title="Download">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- 3. CHB Laying & Plastering -->
+                <div class="doc-card">
+                  <div class="doc-card-header">
+                    <div class="doc-type-icon word">DOCX</div>
+                    <div>
+                      <div class="doc-card-title">chb laying and plastering works.docx</div>
+                      <div class="doc-card-meta">
+                        <span>Scope: Concrete Hollow Block Masonry</span>
+                        <span>&bull;</span>
+                        <span>Size: 5.31 MB</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="doc-card-actions">
+                    <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/SUB PROCEDURE/chb laying and plastering works.docx', 'CHB Laying and Plastering Works')">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Open in MS Word
+                    </button>
+                    <a href="OPERATION%20PROCEDURE/PM-OPN-02/SUB%20PROCEDURE/chb%20laying%20and%20plastering%20works.docx" class="btn-download-fallback" download title="Download">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- 4. Plastering Works -->
+                <div class="doc-card">
+                  <div class="doc-card-header">
+                    <div class="doc-type-icon word">DOCX</div>
+                    <div>
+                      <div class="doc-card-title">plastering works.docx</div>
+                      <div class="doc-card-meta">
+                        <span>Scope: Wall Plastering & Skimming</span>
+                        <span>&bull;</span>
+                        <span>Size: 3.72 MB</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="doc-card-actions">
+                    <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/SUB PROCEDURE/plastering works.docx', 'Plastering Works')">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Open in MS Word
+                    </button>
+                    <a href="OPERATION%20PROCEDURE/PM-OPN-02/SUB%20PROCEDURE/plastering%20works.docx" class="btn-download-fallback" download title="Download">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- 5. Tile Works -->
+                <div class="doc-card">
+                  <div class="doc-card-header">
+                    <div class="doc-type-icon word">DOCX</div>
+                    <div>
+                      <div class="doc-card-title">Tile_works.docx</div>
+                      <div class="doc-card-meta">
+                        <span>Scope: Ceramic & Homogeneous Tiles</span>
+                        <span>&bull;</span>
+                        <span>Size: 3.32 MB</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="doc-card-actions">
+                    <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/SUB PROCEDURE/Tile_works.docx', 'Tile Works')">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Open in MS Word
+                    </button>
+                    <a href="OPERATION%20PROCEDURE/PM-OPN-02/SUB%20PROCEDURE/Tile_works.docx" class="btn-download-fallback" download title="Download">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- 6. Painting Works -->
+                <div class="doc-card">
+                  <div class="doc-card-header">
+                    <div class="doc-type-icon word">DOCX</div>
+                    <div>
+                      <div class="doc-card-title">painting works procedure - refine.docx</div>
+                      <div class="doc-card-meta">
+                        <span>Scope: Architectural Painting & Coatings</span>
+                        <span>&bull;</span>
+                        <span>Size: 1.87 MB</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="doc-card-actions">
+                    <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/SUB PROCEDURE/painting works procedure - refine.docx', 'Painting Works Procedure')">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Open in MS Word
+                    </button>
+                    <a href="OPERATION%20PROCEDURE/PM-OPN-02/SUB%20PROCEDURE/painting%20works%20procedure%20-%20refine.docx" class="btn-download-fallback" download title="Download">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- 7. BLOCKOUT SAPAL RTU with PU -->
+                <div class="doc-card">
+                  <div class="doc-card-header">
+                    <div class="doc-type-icon word">DOCX</div>
+                    <div>
+                      <div class="doc-card-title">BLOCKOUT SAPAL RTU with PU.docx</div>
+                      <div class="doc-card-meta">
+                        <span>Scope: Waterproofing Blockout & PU Sealant</span>
+                        <span>&bull;</span>
+                        <span>Size: 6.01 MB</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="doc-card-actions">
+                    <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/SUB PROCEDURE/BLOCKOUT SAPAL RTU with PU.docx', 'BLOCKOUT SAPAL RTU with PU')">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Open in MS Word
+                    </button>
+                    <a href="OPERATION%20PROCEDURE/PM-OPN-02/SUB%20PROCEDURE/BLOCKOUT%20SAPAL%20RTU%20with%20PU.docx" class="btn-download-fallback" download title="Download">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- 8. Boysen Plexibond B-7760 -->
+                <div class="doc-card">
+                  <div class="doc-card-header">
+                    <div class="doc-type-icon word">DOCX</div>
+                    <div>
+                      <div class="doc-card-title">Boysen Plexibond B-7760.docx</div>
+                      <div class="doc-card-meta">
+                        <span>Scope: Acrylic Cementitious Waterproofing</span>
+                        <span>&bull;</span>
+                        <span>Size: 7.12 MB</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="doc-card-actions">
+                    <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/SUB PROCEDURE/Boysen Plexibond B-7760.docx', 'Boysen Plexibond B-7760')">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Open in MS Word
+                    </button>
+                    <a href="OPERATION%20PROCEDURE/PM-OPN-02/SUB%20PROCEDURE/Boysen%20Plexibond%20B-7760.docx" class="btn-download-fallback" download title="Download">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Forms & Checklists for OPN-02 -->
+            <section class="section-panel">
+              <div class="section-panel-header">
+                <div class="section-panel-title">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                  QA/QC Inspection Checklists & Forms (OPN-02)
+                </div>
+              </div>
+              <div class="doc-grid">
+                <!-- 1. Concrete Screed -->
+                <div class="doc-card">
+                  <div class="doc-card-header">
+                    <div class="doc-type-icon pdf">PDF</div>
+                    <div>
+                      <div class="doc-card-title">FM-OPN-02-10 Concrete screed-Topping checklist.pdf</div>
+                      <div class="doc-card-meta">
+                        <span>Code: FM-OPN-02-10</span>
+                        <span>&bull;</span>
+                        <span>Type: Inspection Checklist</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="doc-card-actions">
+                    <button class="btn-open-native pdf" onclick="QAQCBridge.openFile('CONST_PROCEDURES/FORMS/FM-OPN-02-10 Concrete screed-Topping checklist.pdf', 'FM-OPN-02-10 Screed Checklist')">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Open in PDF App
+                    </button>
+                    <a href="FORMS/FM-OPN-02-10%20Concrete%20screed-Topping%20checklist.pdf" target="_blank" class="btn-download-fallback" title="Preview in Browser">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- 2. Rebar Works -->
+                <div class="doc-card">
+                  <div class="doc-card-header">
+                    <div class="doc-type-icon pdf">PDF</div>
+                    <div>
+                      <div class="doc-card-title">FM-OPN-02-12 Rebar works checklist.pdf</div>
+                      <div class="doc-card-meta">
+                        <span>Code: FM-OPN-02-12</span>
+                        <span>&bull;</span>
+                        <span>Type: Inspection Checklist</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="doc-card-actions">
+                    <button class="btn-open-native pdf" onclick="QAQCBridge.openFile('CONST_PROCEDURES/FORMS/FM-OPN-02-12 Rebar works checklist.pdf', 'FM-OPN-02-12 Rebar Checklist')">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Open in PDF App
+                    </button>
+                    <a href="FORMS/FM-OPN-02-12%20Rebar%20works%20checklist.pdf" target="_blank" class="btn-download-fallback" title="Preview in Browser">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- 3. Formworks -->
+                <div class="doc-card">
+                  <div class="doc-card-header">
+                    <div class="doc-type-icon pdf">PDF</div>
+                    <div>
+                      <div class="doc-card-title">FM-OPN-02-13 formworks checklist.pdf</div>
+                      <div class="doc-card-meta">
+                        <span>Code: FM-OPN-02-13</span>
+                        <span>&bull;</span>
+                        <span>Type: Inspection Checklist</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="doc-card-actions">
+                    <button class="btn-open-native pdf" onclick="QAQCBridge.openFile('CONST_PROCEDURES/FORMS/FM-OPN-02-13 formworks checklist.pdf', 'FM-OPN-02-13 Formworks Checklist')">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Open in PDF App
+                    </button>
+                    <a href="FORMS/FM-OPN-02-13%20formworks%20checklist.pdf" target="_blank" class="btn-download-fallback" title="Preview in Browser">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- 4. Masonry Works -->
+                <div class="doc-card">
+                  <div class="doc-card-header">
+                    <div class="doc-type-icon pdf">PDF</div>
+                    <div>
+                      <div class="doc-card-title">FM-OPN-02-14 Masonry works checklist.pdf</div>
+                      <div class="doc-card-meta">
+                        <span>Code: FM-OPN-02-14</span>
+                        <span>&bull;</span>
+                        <span>Type: Inspection Checklist</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="doc-card-actions">
+                    <button class="btn-open-native pdf" onclick="QAQCBridge.openFile('CONST_PROCEDURES/FORMS/FM-OPN-02-14 Masonry works checklist.pdf', 'FM-OPN-02-14 Masonry Checklist')">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Open in PDF App
+                    </button>
+                    <a href="FORMS/FM-OPN-02-14%20Masonry%20works%20checklist.pdf" target="_blank" class="btn-download-fallback" title="Preview in Browser">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- 5. Tile Works -->
+                <div class="doc-card">
+                  <div class="doc-card-header">
+                    <div class="doc-type-icon pdf">PDF</div>
+                    <div>
+                      <div class="doc-card-title">FM-OPN-02-15 Tile Works Checklist.pdf</div>
+                      <div class="doc-card-meta">
+                        <span>Code: FM-OPN-02-15</span>
+                        <span>&bull;</span>
+                        <span>Type: Inspection Checklist</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="doc-card-actions">
+                    <button class="btn-open-native pdf" onclick="QAQCBridge.openFile('CONST_PROCEDURES/FORMS/FM-OPN-02-15 Tile Works Checklist.pdf', 'FM-OPN-02-15 Tile Checklist')">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Open in PDF App
+                    </button>
+                    <a href="FORMS/FM-OPN-02-15%20Tile%20Works%20Checklist.pdf" target="_blank" class="btn-download-fallback" title="Preview in Browser">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- TAB 3: OPN-03 -->
+          <div id="tab-opn-03" class="tab-content">
+            <div class="opn-summary-card">
+              <div>
+                <div class="opn-summary-title">
+                  <span class="meta-tag" style="background:var(--emerald-800); color:#fff;">PM-OPN-03</span>
+                  Safety Procedures
+                </div>
+                <div style="font-size:0.85rem; color:var(--slate-600); margin-top:0.35rem;">
+                  Occupational safety, health, hazard identification, PPE requirements, and site safety management system protocols.
+                </div>
+              </div>
+              <div class="meta-tag">Doc Status: Active Rev 05</div>
+            </div>
+
+            <section class="section-panel">
+              <div class="section-panel-header">
+                <div class="section-panel-title">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  Main Operation Procedure
+                </div>
+              </div>
+              <div class="doc-grid">
+                <div class="doc-card">
+                  <div class="doc-card-header">
+                    <div class="doc-type-icon word">DOC</div>
+                    <div>
+                      <div class="doc-card-title">PM-OPN-03 SAFETY PROCEDURES (5).doc</div>
+                      <div class="doc-card-meta">
+                        <span>Revision: Rev 05</span>
+                        <span>&bull;</span>
+                        <span>Type: MS Word</span>
+                        <span>&bull;</span>
+                        <span>Size: 1.13 MB</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="doc-card-actions">
+                    <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-03/PM-OPN-03 SAFETY PROCEDURES (5).doc', 'PM-OPN-03 Safety Procedures Rev 5')">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Open in MS Word
+                    </button>
+                    <a href="OPERATION%20PROCEDURE/PM-OPN-03/PM-OPN-03%20SAFETY%20PROCEDURES%20(5).doc" class="btn-download-fallback" download title="Download">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- TAB 4: OPN-04 -->
+          <div id="tab-opn-04" class="tab-content">
+            <div class="opn-summary-card">
+              <div>
+                <div class="opn-summary-title">
+                  <span class="meta-tag" style="background:var(--emerald-800); color:#fff;">PM-OPN-04</span>
+                  Progress Billing Procedure
+                </div>
+                <div style="font-size:0.85rem; color:var(--slate-600); margin-top:0.35rem;">
+                  Standard protocol for site accomplishment validation, progress billing evaluation, and QA/QC milestone signoffs.
+                </div>
+              </div>
+              <div class="meta-tag">Doc Status: Active Rev 00</div>
+            </div>
+
+            <section class="section-panel">
+              <div class="section-panel-header">
+                <div class="section-panel-title">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  Main Operation Procedure
+                </div>
+              </div>
+              <div class="doc-grid">
+                <div class="doc-card">
+                  <div class="doc-card-header">
+                    <div class="doc-type-icon word">DOC</div>
+                    <div>
+                      <div class="doc-card-title">PM-OPN-04 PROGRESS BILLING rev00.doc</div>
+                      <div class="doc-card-meta">
+                        <span>Revision: Rev 00</span>
+                        <span>&bull;</span>
+                        <span>Type: MS Word</span>
+                        <span>&bull;</span>
+                        <span>Size: 1.15 MB</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="doc-card-actions">
+                    <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-04/PM-OPN-04 PROGRESS BILLING rev00.doc', 'PM-OPN-04 Progress Billing Rev 0')">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Open in MS Word
+                    </button>
+                    <a href="OPERATION%20PROCEDURE/PM-OPN-04/PM-OPN-04%20PROGRESS%20BILLING%20rev00.doc" class="btn-download-fallback" download title="Download">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- TAB 5: OPN-05 -->
+          <div id="tab-opn-05" class="tab-content">
+            <div class="opn-summary-card">
+              <div>
+                <div class="opn-summary-title">
+                  <span class="meta-tag" style="background:var(--emerald-800); color:#fff;">PM-OPN-05</span>
+                  Project Turn Over Procedure
+                </div>
+                <div style="font-size:0.85rem; color:var(--slate-600); margin-top:0.35rem;">
+                  Comprehensive project completion, testing & commissioning, as-built documentation, and client handover protocol.
+                </div>
+              </div>
+              <div class="meta-tag">Doc Status: Active Rev 03</div>
+            </div>
+
+            <section class="section-panel">
+              <div class="section-panel-header">
+                <div class="section-panel-title">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  Main Operation Procedure
+                </div>
+              </div>
+              <div class="doc-grid">
+                <div class="doc-card">
+                  <div class="doc-card-header">
+                    <div class="doc-type-icon word">DOC</div>
+                    <div>
+                      <div class="doc-card-title">PM-OPN-05 PROJECT TURN OVER Rev 3.doc</div>
+                      <div class="doc-card-meta">
+                        <span>Revision: Rev 03</span>
+                        <span>&bull;</span>
+                        <span>Type: MS Word</span>
+                        <span>&bull;</span>
+                        <span>Size: 1.13 MB</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="doc-card-actions">
+                    <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-05/PM-OPN-05 PROJECT TURN OVER Rev 3.doc', 'PM-OPN-05 Project Turn Over Rev 3')">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Open in MS Word
+                    </button>
+                    <a href="OPERATION%20PROCEDURE/PM-OPN-05/PM-OPN-05%20PROJECT%20TURN%20OVER%20Rev%203.doc" class="btn-download-fallback" download title="Download">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- TAB 6: OPN-06 -->
+          <div id="tab-opn-06" class="tab-content">
+            <div class="opn-summary-card">
+              <div>
+                <div class="opn-summary-title">
+                  <span class="meta-tag" style="background:var(--emerald-800); color:#fff;">PM-OPN-06</span>
+                  Subcontractor Monitoring Procedure
+                </div>
+                <div style="font-size:0.85rem; color:var(--slate-600); margin-top:0.35rem;">
+                  Subcontractor pre-qualification, field compliance monitoring, quality milestone sign-offs, and quantity surveyor verification.
+                </div>
+              </div>
+              <div class="meta-tag">Doc Status: Active Rev 02</div>
+            </div>
+
+            <section class="section-panel">
+              <div class="section-panel-header">
+                <div class="section-panel-title">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  Main Operation Procedure
+                </div>
+              </div>
+              <div class="doc-grid">
+                <div class="doc-card">
+                  <div class="doc-card-header">
+                    <div class="doc-type-icon word">DOCX</div>
+                    <div>
+                      <div class="doc-card-title">PM-OPN-06 Subcontractor Monitoring Procedure_Rev. 2_Procedure_with QS.docx</div>
+                      <div class="doc-card-meta">
+                        <span>Revision: Rev 02 (with QS)</span>
+                        <span>&bull;</span>
+                        <span>Type: MS Word</span>
+                        <span>&bull;</span>
+                        <span>Size: 108.4 KB</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="doc-card-actions">
+                    <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-06/PM-OPN-06 Subcontractor Monitoring Procedure_Rev. 2_Procedure_with QS.docx', 'PM-OPN-06 Subcontractor Monitoring')">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Open in MS Word
+                    </button>
+                    <a href="OPERATION%20PROCEDURE/PM-OPN-06/PM-OPN-06%20Subcontractor%20Monitoring%20Procedure_Rev.%202_Procedure_with%20QS.docx" class="btn-download-fallback" download title="Download">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- TAB 7: OPN-07 -->
+          <div id="tab-opn-07" class="tab-content">
+            <div class="opn-summary-card">
+              <div>
+                <div class="opn-summary-title">
+                  <span class="meta-tag" style="background:var(--emerald-800); color:#fff;">PM-OPN-07</span>
+                  Batching Plant Procedure
+                </div>
+                <div style="font-size:0.85rem; color:var(--slate-600); margin-top:0.35rem;">
+                  Ready-mix concrete batching operations, mix design verification, slump testing, cylinder sampling, and batch quality controls.
+                </div>
+              </div>
+              <div class="meta-tag">Doc Status: Active Rev 02</div>
+            </div>
+
+            <section class="section-panel">
+              <div class="section-panel-header">
+                <div class="section-panel-title">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  Main Operation Procedure
+                </div>
+              </div>
+              <div class="doc-grid">
+                <div class="doc-card">
+                  <div class="doc-card-header">
+                    <div class="doc-type-icon word">DOCX</div>
+                    <div>
+                      <div class="doc-card-title">PM-OPN-07 BATCHING PLANT PROCEDURE rev02.docx</div>
+                      <div class="doc-card-meta">
+                        <span>Revision: Rev 02</span>
+                        <span>&bull;</span>
+                        <span>Type: MS Word</span>
+                        <span>&bull;</span>
+                        <span>Size: 1.12 MB</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="doc-card-actions">
+                    <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-07/PM-OPN-07 BATCHING PLANT PROCEDURE rev02.docx', 'PM-OPN-07 Batching Plant Procedure')">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Open in MS Word
+                    </button>
+                    <a href="OPERATION%20PROCEDURE/PM-OPN-07/PM-OPN-07%20BATCHING%20PLANT%20PROCEDURE%20rev02.docx" class="btn-download-fallback" download title="Download">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- TAB 8: MASTER REGISTRY -->
+          <div id="tab-all-master" class="tab-content">
+            <div class="opn-summary-card">
+              <div>
+                <div class="opn-summary-title">
+                  <span class="meta-tag" style="background:var(--emerald-800); color:#fff;">MASTER INDEX</span>
+                  All Quality Documents, Procedures & Forms
+                </div>
+                <div style="font-size:0.85rem; color:var(--slate-600); margin-top:0.35rem;">
+                  Unified repository of all 7 core operational procedures, 7 sub-procedures, and 5 QA/QC inspection checklists.
+                </div>
+              </div>
+            </div>
+
+            <section class="section-panel">
+              <div class="section-panel-header">
+                <div class="section-panel-title">Consolidated Construction QA/QC Library (21 Documents)</div>
+              </div>
+              <div class="doc-grid" id="masterDocsGrid">
+                <!-- Dynamically hydrated or populated via JavaScript -->
+              </div>
+            </section>
+          </div>
+
+        </main>
+      </section>
+
+
+      <!-- ====================================================================
+           VIEW 3: SUPPLIER'S PROCEDURES (Topbar with Boysen, Buildrite, Davies...)
+           ==================================================================== -->
+      <section id="view-supplier-procedures" class="app-view">
+
+        <!-- Supplier Command Ribbon -->
+        <section class="supplier-command-ribbon">
+          <div class="proc-ribbon-left">
+            <span class="proc-ribbon-eyebrow" style="background:#eff6ff; color:#1e40af; border-color:#bfdbfe;">Authorized Partners</span>
+            <h2 class="proc-ribbon-title">Supplier Application Procedures & Technical Specifications</h2>
+          </div>
+
+          <div class="proc-search-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="supplierSearchInput" placeholder="Search supplier procedures, waterproofing, epoxy, primers, sealants...">
+          </div>
+        </section>
+
+        <!-- Topbar with Suppliers Tabs -->
+        <div class="supplier-topbar-container">
+          <nav class="supplier-topbar-nav" id="supplierTabsNav">
+            <button class="supplier-tab-btn active" data-supplier-tab="supplier-boysen">
+              <span class="supplier-logo-pill">BOYSEN</span>
+              Pacific Paint (Boysen)
+            </button>
+            <button class="supplier-tab-btn" data-supplier-tab="supplier-buildrite">
+              <span class="supplier-logo-pill" style="background:#0284c7;">BUILDRITE</span>
+              Magna Prime / Buildrite
+            </button>
+            <button class="supplier-tab-btn" data-supplier-tab="supplier-davies">
+              <span class="supplier-logo-pill" style="background:#7c3aed;">DAVIES</span>
+              Davies Paints Philippines
+            </button>
+            <button class="supplier-tab-btn" data-supplier-tab="supplier-other">
+              <span class="supplier-logo-pill" style="background:#475569;">OTHER</span>
+              Allied Brands (Sika, Bostik, ABC, Hardie)
+            </button>
+          </nav>
+        </div>
+
+        <!-- Supplier Content Viewport -->
+        <main class="supplier-viewport">
+
+          <!-- SUPPLIER TAB 1: BOYSEN -->
+          <div id="supplier-boysen" class="supplier-pane active">
+            <div class="supplier-brand-header">
+              <div class="supplier-brand-info">
+                <div class="supplier-avatar boysen">B</div>
+                <div>
+                  <h3 class="supplier-brand-title">Pacific Paint (Boysen) Philippines, Inc.</h3>
+                  <div class="supplier-brand-sub">Approved Manufacturer &bull; Waterproofing, Architectural Latex, Acrytex & Protective Epoxies</div>
+                </div>
+              </div>
+              <span class="meta-tag" style="background:#fee2e2; color:#991b1b; border-color:#fecaca;">FCLDC Approved Supplier Standard</span>
+            </div>
+
+            <!-- Featured Official Doc from Workspace -->
+            <section class="section-panel" style="border-left:4px solid #dc2626;">
+              <div class="section-panel-header">
+                <div class="section-panel-title" style="color:#991b1b;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  Verified Procedure Document in System
+                </div>
+                <span class="meta-tag">PM-OPN-02 Sub-Procedure</span>
+              </div>
+              <div class="doc-card" style="background:#fff;">
+                <div class="doc-card-header">
+                  <div class="doc-type-icon word">DOCX</div>
+                  <div style="flex:1;">
+                    <div class="doc-card-title">Boysen Plexibond B-7760.docx</div>
+                    <div class="doc-card-meta">
+                      <span>File: CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/SUB PROCEDURE/Boysen Plexibond B-7760.docx</span>
+                      <span>&bull;</span>
+                      <span>Size: 7.12 MB</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="doc-card-actions">
+                  <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/SUB PROCEDURE/Boysen Plexibond B-7760.docx', 'Boysen Plexibond B-7760')">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    Open in MS Word
+                  </button>
+                  <a href="OPERATION%20PROCEDURE/PM-OPN-02/SUB%20PROCEDURE/Boysen%20Plexibond%20B-7760.docx" class="btn-download-fallback" download title="Download/View">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Download File
+                  </a>
+                </div>
+              </div>
+            </section>
+
+            <!-- Technical Application Procedures -->
+            <div class="spec-card-grid">
+              <div class="spec-card">
+                <div>
+                  <div class="spec-card-header">
+                    <div class="spec-card-title">1. Boysen Plexibond B-7760 Cementitious Waterproofing</div>
+                    <span class="spec-tag">Waterproofing</span>
+                  </div>
+                  <div class="spec-card-body">
+                    Positive-side acrylic cementitious waterproofing system for roof decks, balconies, firewalls, and wet areas.
+                    <ul class="spec-steps-list">
+                      <li><strong>Mix Ratio:</strong> 1 part Plexibond B-7760 to 1 part Portland Cement by weight.</li>
+                      <li><strong>Mixing:</strong> Slowly add cement while stirring using low-speed mechanical drill for 3-5 mins.</li>
+                      <li><strong>Application:</strong> Dampen concrete substrate (SSD). Apply 1st coat horizontally; let dry 1-2 hrs. Apply 2nd coat vertically (cross-hatch).</li>
+                      <li><strong>Curing:</strong> Water ponding test for 7 days minimum after 24 hrs curing.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="spec-card">
+                <div>
+                  <div class="spec-card-header">
+                    <div class="spec-card-title">2. Boysen Permacoat Latex Paint System</div>
+                    <span class="spec-tag">Architectural Finish</span>
+                  </div>
+                  <div class="spec-card-body">
+                    100% acrylic latex paint system for interior and exterior masonry, CHB walls, and precast panels.
+                    <ul class="spec-steps-list">
+                      <li><strong>Substrate Prep:</strong> Concrete cured 14-28 days; moisture &lt; 10%, pH &lt; 9. Neutralize with Boysen Masonry Neutralizer B-44 if alkaline.</li>
+                      <li><strong>Primer:</strong> 1 coat Boysen Permacoat Flat Latex B-701.</li>
+                      <li><strong>Putty:</strong> Boysen Masonry Putty B-7311 for hairline indentations; sand smooth.</li>
+                      <li><strong>Topcoat:</strong> 2 coats Boysen Permacoat Semi-Gloss B-715 or Gloss B-710 with 2 hrs recoat interval.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="spec-card">
+                <div>
+                  <div class="spec-card-header">
+                    <div class="spec-card-title">3. Boysen Acrytex Heavy-Duty Solvent Acrylic</div>
+                    <span class="spec-tag">Exterior Waterproof Barrier</span>
+                  </div>
+                  <div class="spec-card-body">
+                    Specialized solvent-based acrylic coating forming a continuous, flexible, water-tight membrane.
+                    <ul class="spec-steps-list">
+                      <li><strong>Scope:</strong> Exterior firewalls, retaining structures subject to wind-driven heavy rainfall.</li>
+                      <li><strong>Primer:</strong> 1 coat Boysen Acrytex Primer B-1705 diluted with Acrytex Reducer B-1750.</li>
+                      <li><strong>Putty:</strong> Boysen Acrytex Cast B-1711 for minor surface honeycomb repair.</li>
+                      <li><strong>Topcoat:</strong> 2 coats Boysen Acrytex Topcoat (Flat, Semi-Gloss, or Gloss).</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="spec-card">
+                <div>
+                  <div class="spec-card-header">
+                    <div class="spec-card-title">4. Boysen Epoxy Primer & Industrial Floor Coating</div>
+                    <span class="spec-tag">Heavy Duty Flooring</span>
+                  </div>
+                  <div class="spec-card-body">
+                    Two-pack polyamide cured epoxy systems for steel framing protection and commercial concrete slabs.
+                    <ul class="spec-steps-list">
+                      <li><strong>Steel Primer:</strong> Boysen Epoxy Primer with Zinc Chromate B-2240 (3:1 with catalyst).</li>
+                      <li><strong>Pot Life:</strong> 4 to 5 hours at 28&deg;C. Do not apply past pot-life window.</li>
+                      <li><strong>Floor Coating:</strong> Acqua Epoxy B-2900 or Epoxy Enamel on CSP 2-3 prepared slab.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tech Table -->
+            <div class="tech-table-wrap">
+              <div class="tech-table-header">
+                <span>Boysen Product Quality Inspection & Application Matrix</span>
+                <span class="meta-tag">FCLDC QA/QC Spec Table</span>
+              </div>
+              <table class="tech-table">
+                <thead>
+                  <tr>
+                    <th>Product Code & Name</th>
+                    <th>Substrate Target</th>
+                    <th>Mixing / Dilution</th>
+                    <th>Dry to Recoat</th>
+                    <th>Theoretical Spread</th>
+                    <th>QC Inspection Parameter</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Plexibond B-7760</strong></td>
+                    <td>Roof Decks, Balconies, Firewalls</td>
+                    <td>1:1 with Portland Cement</td>
+                    <td>1 - 2 Hours</td>
+                    <td>25 - 30 m&sup2; / 4L mix</td>
+                    <td>Water ponding test 7 days; DFT &ge; 1.0 mm</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Permacoat B-701 / B-715</strong></td>
+                    <td>Interior / Exterior Masonry</td>
+                    <td>Max 10% clean water</td>
+                    <td>2 Hours</td>
+                    <td>30 - 35 m&sup2; / 4L / coat</td>
+                    <td>Substrate moisture &lt; 10%; pH 7 - 9</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Acrytex B-1705 / B-1710</strong></td>
+                    <td>Exterior Concrete Firewalls</td>
+                    <td>Acrytex Reducer B-1750 only</td>
+                    <td>2 - 4 Hours</td>
+                    <td>20 - 25 m&sup2; / 4L</td>
+                    <td>Pin-hole inspection, adhesion tape test</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Epoxy Primer B-2240</strong></td>
+                    <td>Structural Steel & Rebar Anchors</td>
+                    <td>3:1 with Catalyst B-2200</td>
+                    <td>4 Hours</td>
+                    <td>30 m&sup2; / 4L set</td>
+                    <td>DFT &ge; 50 microns; SSPC-SP 10 abrasive blast</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- SUPPLIER TAB 2: BUILDRITE -->
+          <div id="supplier-buildrite" class="supplier-pane">
+            <div class="supplier-brand-header">
+              <div class="supplier-brand-info">
+                <div class="supplier-avatar buildrite">BR</div>
+                <div>
+                  <h3 class="supplier-brand-title">Buildrite Construction Chemicals (Magna Prime)</h3>
+                  <div class="supplier-brand-sub">Approved Manufacturer &bull; Polyurethane Sealants, Structural Repair Mortars & Waterproofing</div>
+                </div>
+              </div>
+              <span class="meta-tag" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;">FCLDC Approved Chemical Supplier</span>
+            </div>
+
+            <!-- Featured Official Doc from Workspace -->
+            <section class="section-panel" style="border-left:4px solid #0284c7;">
+              <div class="section-panel-header">
+                <div class="section-panel-title" style="color:#0369a1;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  Verified Procedure Document in System
+                </div>
+                <span class="meta-tag">PM-OPN-02 Sub-Procedure</span>
+              </div>
+              <div class="doc-card" style="background:#fff;">
+                <div class="doc-card-header">
+                  <div class="doc-type-icon word">DOCX</div>
+                  <div style="flex:1;">
+                    <div class="doc-card-title">BLOCKOUT SAPAL RTU with PU.docx</div>
+                    <div class="doc-card-meta">
+                      <span>File: CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/SUB PROCEDURE/BLOCKOUT SAPAL RTU with PU.docx</span>
+                      <span>&bull;</span>
+                      <span>Size: 6.01 MB</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="doc-card-actions">
+                  <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/SUB PROCEDURE/BLOCKOUT SAPAL RTU with PU.docx', 'BLOCKOUT SAPAL RTU with PU')">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    Open in MS Word
+                  </button>
+                  <a href="OPERATION%20PROCEDURE/PM-OPN-02/SUB%20PROCEDURE/BLOCKOUT%20SAPAL%20RTU%20with%20PU.docx" class="btn-download-fallback" download title="Download/View">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Download File
+                  </a>
+                </div>
+              </div>
+            </section>
+
+            <!-- Technical Application Procedures -->
+            <div class="spec-card-grid">
+              <div class="spec-card">
+                <div>
+                  <div class="spec-card-header">
+                    <div class="spec-card-title">1. Buildrite Sapal RTU with Polyurethane</div>
+                    <span class="spec-tag">Hybrid Sealant</span>
+                  </div>
+                  <div class="spec-card-body">
+                    Ready-to-use elastomeric sealant reinforced with polyurethane for perimeter sealing and crack bridging.
+                    <ul class="spec-steps-list">
+                      <li><strong>Application:</strong> Window perimeter blockouts, flashing joints, parapet coping junctions.</li>
+                      <li><strong>Substrate Prep:</strong> Joint must be clean, free from dust, oil, and unbonded cement laitance.</li>
+                      <li><strong>Method:</strong> Apply primer if porous; tool joint smoothly within 15 minutes of gunning.</li>
+                      <li><strong>Cure Time:</strong> Skin forming 30 mins; full depth curing 2-3 mm per 24 hours.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="spec-card">
+                <div>
+                  <div class="spec-card-header">
+                    <div class="spec-card-title">2. Buildrite Confix / Smartcrete Concrete Repair</div>
+                    <span class="spec-tag">Structural Repair</span>
+                  </div>
+                  <div class="spec-card-body">
+                    Polymer-modified non-shrink repair mortar for structural patching of tie-rod holes, honeycombs, and spalls.
+                    <ul class="spec-steps-list">
+                      <li><strong>Chipping:</strong> Chip perimeter square to minimum 15mm depth around rebar to remove weak zones.</li>
+                      <li><strong>Bonding Slurry:</strong> Apply Smartbond latex bonding agent wet-on-wet.</li>
+                      <li><strong>Troweling:</strong> Place Confix in lifts up to 30mm; compact thoroughly without voids.</li>
+                      <li><strong>Strength:</strong> &gt;40 MPa compressive strength at 28 days.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="spec-card">
+                <div>
+                  <div class="spec-card-header">
+                    <div class="spec-card-title">3. Buildrite Stopgap Polyurethane Sealant</div>
+                    <span class="spec-tag">Expansion Joints</span>
+                  </div>
+                  <div class="spec-card-body">
+                    High performance low-modulus moisture-curing PU sealant for facade and building expansion joints.
+                    <ul class="spec-steps-list">
+                      <li><strong>Joint Geometry:</strong> Width-to-depth ratio 2:1 (minimum 6mm width, 6mm depth).</li>
+                      <li><strong>Backer Rod:</strong> Install closed-cell polyethylene backing rod compressed 25%.</li>
+                      <li><strong>Movement:</strong> &plusmn;25% joint movement capability. Paintable once fully cured.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="spec-card">
+                <div>
+                  <div class="spec-card-header">
+                    <div class="spec-card-title">4. Buildrite Floortek Self-Leveling Screed</div>
+                    <span class="spec-tag">Floor Leveling</span>
+                  </div>
+                  <div class="spec-card-body">
+                    Rapid-hardening polymer-modified underlayment screed for vinyl, wood, and tile flooring substrates.
+                    <ul class="spec-steps-list">
+                      <li><strong>Priming:</strong> Apply Floortek Primer to suppress air pinholes and improve adhesion.</li>
+                      <li><strong>Pouring:</strong> Mix with exact water ratio; pour continuously; roll with spike roller to de-aerate.</li>
+                      <li><strong>Thickness:</strong> 3mm to 15mm single pour. Light foot traffic ready in 4 hours.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tech Table -->
+            <div class="tech-table-wrap">
+              <div class="tech-table-header">
+                <span>Buildrite Chemical & Repair System Inspection Matrix</span>
+                <span class="meta-tag">FCLDC QA/QC Spec Table</span>
+              </div>
+              <table class="tech-table">
+                <thead>
+                  <tr>
+                    <th>Product Name</th>
+                    <th>Primary Usage</th>
+                    <th>Application Thickness</th>
+                    <th>Initial Set / Tack-Free</th>
+                    <th>Full Cure Time</th>
+                    <th>Quality Control Standard</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Sapal RTU with PU</strong></td>
+                    <td>Parapet Blockouts, Window Frames</td>
+                    <td>2mm - 5mm joint depth</td>
+                    <td>30 - 45 Minutes</td>
+                    <td>24 - 48 Hours</td>
+                    <td>Zero sag test; Shore A Hardness 30-35</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Confix Mortar</strong></td>
+                    <td>Structural Concrete Patching</td>
+                    <td>10mm - 30mm per lift</td>
+                    <td>60 Minutes</td>
+                    <td>28 Days (&gt;40 MPa)</td>
+                    <td>Sounding hammer test; zero shrinkage cracks</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Stopgap PU Sealant</strong></td>
+                    <td>Facade & Precast Expansion Joints</td>
+                    <td>2:1 Width/Depth ratio</td>
+                    <td>60 - 90 Minutes</td>
+                    <td>7 Days</td>
+                    <td>ASTM C920 Class 25 compliance</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Floortek Screed</strong></td>
+                    <td>Leveling Uneven Floor Slabs</td>
+                    <td>3mm - 15mm single lift</td>
+                    <td>4 Hours (foot traffic)</td>
+                    <td>72 Hours for flooring</td>
+                    <td>Floor flatness FF &ge; 35; FL &ge; 25</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- SUPPLIER TAB 3: DAVIES -->
+          <div id="supplier-davies" class="supplier-pane">
+            <div class="supplier-brand-header">
+              <div class="supplier-brand-info">
+                <div class="supplier-avatar davies">D</div>
+                <div>
+                  <h3 class="supplier-brand-title">Davies Paints Philippines, Inc.</h3>
+                  <div class="supplier-brand-sub">Approved Manufacturer &bull; Sun & Rain Elastomeric, Megacryl & Industrial Epoxy Coatings</div>
+                </div>
+              </div>
+              <span class="meta-tag" style="background:#f3e8ff; color:#6b21a8; border-color:#e9d5ff;">FCLDC Approved Paint Supplier</span>
+            </div>
+
+            <!-- Featured Official Doc from Workspace -->
+            <section class="section-panel" style="border-left:4px solid #7c3aed;">
+              <div class="section-panel-header">
+                <div class="section-panel-title" style="color:#6b21a8;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  Verified Procedure Document in System
+                </div>
+                <span class="meta-tag">PM-OPN-02 Sub-Procedure</span>
+              </div>
+              <div class="doc-card" style="background:#fff;">
+                <div class="doc-card-header">
+                  <div class="doc-type-icon word">DOCX</div>
+                  <div style="flex:1;">
+                    <div class="doc-card-title">painting works procedure - refine.docx</div>
+                    <div class="doc-card-meta">
+                      <span>File: CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/SUB PROCEDURE/painting works procedure - refine.docx</span>
+                      <span>&bull;</span>
+                      <span>Size: 1.87 MB</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="doc-card-actions">
+                  <button class="btn-open-native word" onclick="QAQCBridge.openFile('CONST_PROCEDURES/OPERATION PROCEDURE/PM-OPN-02/SUB PROCEDURE/painting works procedure - refine.docx', 'Painting Works Procedure')">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    Open in MS Word
+                  </button>
+                  <a href="OPERATION%20PROCEDURE/PM-OPN-02/SUB%20PROCEDURE/painting%20works%20procedure%20-%20refine.docx" class="btn-download-fallback" download title="Download/View">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Download File
+                  </a>
+                </div>
+              </div>
+            </section>
+
+            <!-- Technical Application Procedures -->
+            <div class="spec-card-grid">
+              <div class="spec-card">
+                <div>
+                  <div class="spec-card-header">
+                    <div class="spec-card-title">1. Davies Sun & Rain Elastomeric Waterproof Paint</div>
+                    <span class="spec-tag">Elastomeric Barrier</span>
+                  </div>
+                  <div class="spec-card-body">
+                    100% acrylic elastomeric wall coating that provides superior weather protection and bridges exterior hairline cracks.
+                    <ul class="spec-steps-list">
+                      <li><strong>Features:</strong> Elongation up to 300%; shields against wind-driven tropical rainfall.</li>
+                      <li><strong>Primer:</strong> 1 coat Davies Sun & Rain diluted with max 10% clean water.</li>
+                      <li><strong>Topcoat:</strong> 2 undiluted coats applied by brush, roller, or airless spray.</li>
+                      <li><strong>Dry Time:</strong> 2 hours between coats; 24 hours full film cure.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="spec-card">
+                <div>
+                  <div class="spec-card-header">
+                    <div class="spec-card-title">2. Davies Megacryl 100% Acrylic Latex</div>
+                    <span class="spec-tag">Interior / Exterior Finish</span>
+                  </div>
+                  <div class="spec-card-body">
+                    Low-VOC, low-odor 100% acrylic emulsion paint offering excellent scrub and fungal resistance.
+                    <ul class="spec-steps-list">
+                      <li><strong>Primer:</strong> Davies 1350 Megacryl Concrete Primer & Sealer.</li>
+                      <li><strong>Putty:</strong> Davies 5000 Megacryl Masonry Putty for dry interior walls.</li>
+                      <li><strong>Topcoat:</strong> 2 coats Davies Megacryl (Flat, Semi-Gloss, or Gloss).</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="spec-card">
+                <div>
+                  <div class="spec-card-header">
+                    <div class="spec-card-title">3. Davies Powerfloor Epoxy Floor System</div>
+                    <span class="spec-tag">Epoxy Floor Coating</span>
+                  </div>
+                  <div class="spec-card-body">
+                    Two-component polyamide cured epoxy protective coating for parking decks, ramps, and plant floors.
+                    <ul class="spec-steps-list">
+                      <li><strong>Surface Prep:</strong> Diamond grind slab to CSP 2-3; remove oil, grease, and weak laitance.</li>
+                      <li><strong>Primer:</strong> 1 coat Davies Eposeal Clear Epoxy Primer (3:1 mix).</li>
+                      <li><strong>Topcoat:</strong> 2 coats Davies Powerfloor Heavy Duty Topcoat; pot life 4 hrs.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="spec-card">
+                <div>
+                  <div class="spec-card-header">
+                    <div class="spec-card-title">4. Davies Keratech Liquid Tile System</div>
+                    <span class="spec-tag">Architectural Texture</span>
+                  </div>
+                  <div class="spec-card-body">
+                    High-durability acrylic solvent textured coating for high-traffic corridors and exterior building facades.
+                    <ul class="spec-steps-list">
+                      <li><strong>Undercoat:</strong> Keratech Cast Primer applied evenly by roller.</li>
+                      <li><strong>Texture Coat:</strong> Applied with hopper spray gun or textured sponge roller to match approved sample board.</li>
+                      <li><strong>Sealer:</strong> Topcoated with Keratech clear or pigmented glaze for UV protection.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tech Table -->
+            <div class="tech-table-wrap">
+              <div class="tech-table-header">
+                <span>Davies Paint Systems Inspection & Performance Matrix</span>
+                <span class="meta-tag">FCLDC QA/QC Spec Table</span>
+              </div>
+              <table class="tech-table">
+                <thead>
+                  <tr>
+                    <th>Product Brand</th>
+                    <th>Substrate Compatibility</th>
+                    <th>Film Thickness (DFT)</th>
+                    <th>Dry to Recoat</th>
+                    <th>Color Retention / Washability</th>
+                    <th>Inspection Gate</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Sun & Rain Elastomeric</strong></td>
+                    <td>Exterior Concrete & Plaster</td>
+                    <td>80 - 100 microns (2 coats)</td>
+                    <td>2 Hours</td>
+                    <td>Class 1 UV resistant; 300% elasticity</td>
+                    <td>Cross-cut adhesion test; crack bridging &le; 1.5mm</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Megacryl Premium</strong></td>
+                    <td>Interior Walls & Ceilings</td>
+                    <td>60 - 75 microns (2 coats)</td>
+                    <td>2 Hours</td>
+                    <td>Low odor, scrub resistance &gt; 5000 cycles</td>
+                    <td>No roller marks or flashing under oblique lighting</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Powerfloor Epoxy</strong></td>
+                    <td>Parking Slabs & Plant Rooms</td>
+                    <td>120 - 150 microns</td>
+                    <td>8 Hours (recoat)</td>
+                    <td>High abrasion & oil resistance</td>
+                    <td>Moisture vapor &lt; 4% (Tramex); 7 days full cure</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Keratech Liquid Tile</strong></td>
+                    <td>Building Facades, Columns</td>
+                    <td>1.5mm - 2.5mm build</td>
+                    <td>4 Hours</td>
+                    <td>Impact resistant, weatherproof finish</td>
+                    <td>Even texture distribution matching mockup board</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- SUPPLIER TAB 4: OTHER BRANDS -->
+          <div id="supplier-other" class="supplier-pane">
+            <div class="supplier-brand-header">
+              <div class="supplier-brand-info">
+                <div class="supplier-avatar other">ALL</div>
+                <div>
+                  <h3 class="supplier-brand-title">Allied Construction Chemical & Material Suppliers</h3>
+                  <div class="supplier-brand-sub">Sika, Bostik, ABC Adhesive & Bonding, James Hardie & Cement Standards</div>
+                </div>
+              </div>
+              <span class="meta-tag" style="background:#f1f5f9; color:#334155; border-color:#cbd5e1;">Allied Quality Guidelines</span>
+            </div>
+
+            <div class="spec-card-grid">
+              <!-- Sika -->
+              <div class="spec-card">
+                <div>
+                  <div class="spec-card-header">
+                    <div class="spec-card-title">Sika Philippines</div>
+                    <span class="spec-tag" style="background:#fef3c7; color:#92400e;">SikaTop / Sikaflex</span>
+                  </div>
+                  <div class="spec-card-body">
+                    Specialized waterproofing slurries, non-shrink grouting, and polyurethane structural joint sealants.
+                    <ul class="spec-steps-list">
+                      <li><strong>SikaTop Seal-107:</strong> 2-part polymer modified waterproofing mortar for concrete water tanks and cisterns. Mix Part A liquid with Part B powder.</li>
+                      <li><strong>Sikaflex-11FC:</strong> 1-component moisture-cured polyurethane adhesive and elastic joint sealant for roofing laps, pipe penetrations, and perimeter gaps.</li>
+                      <li><strong>SikaGrout-214:</strong> High precision, non-shrink cementitious grout for structural baseplates, anchor bolts, and precast connections.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bostik -->
+              <div class="spec-card">
+                <div>
+                  <div class="spec-card-header">
+                    <div class="spec-card-title">Bostik Philippines</div>
+                    <span class="spec-tag" style="background:#ecfdf5; color:#065f46;">Boscolastic / Vulcaseal</span>
+                  </div>
+                  <div class="spec-card-body">
+                    High elasticity membrane systems and roof weatherproofing sealants.
+                    <ul class="spec-steps-list">
+                      <li><strong>Boscolastic:</strong> 2-component flexible acrylic waterproofing slurry for swimming pools, wet areas, and podium decks.</li>
+                      <li><strong>Super Vulcaseal:</strong> All-weather elastomeric sealant for GI roofing overlaps, gutters, flashing, and downspouts.</li>
+                      <li><strong>Bostik Ultraset:</strong> Advanced polymer adhesive for parquet, wood planks, and acoustic underlayments.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ABC -->
+              <div class="spec-card">
+                <div>
+                  <div class="spec-card-header">
+                    <div class="spec-card-title">ABC (Adhesive & Bonding Corp)</div>
+                    <span class="spec-tag" style="background:#eff6ff; color:#1e40af;">Tile Grout & Adhesive</span>
+                  </div>
+                  <div class="spec-card-body">
+                    Professional tile setting mortars, bio-infused tile grouts, and skimming mortars.
+                    <ul class="spec-steps-list">
+                      <li><strong>ABC 2-in-1 Tile Adhesive:</strong> Cementitious adhesive for ceramic tiles, porcelain slabs, and granite on concrete surfaces.</li>
+                      <li><strong>ABC Bio-Infused Tile Grout:</strong> Formulated with Microban anti-microbial agent to inhibit mold and mildew growth in tile joints.</li>
+                      <li><strong>Redi-Rend:</strong> Factory-blended thin plastering mortar for smoothing concrete walls prior to painting.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- James Hardie -->
+              <div class="spec-card">
+                <div>
+                  <div class="spec-card-header">
+                    <div class="spec-card-title">James Hardie Philippines</div>
+                    <span class="spec-tag" style="background:#fdf2f8; color:#9d174d;">HardieFlex Systems</span>
+                  </div>
+                  <div class="spec-card-body">
+                    Cellulose fiber-reinforced cement building boards for ceiling, interior drywall, and wet area linings.
+                    <ul class="spec-steps-list">
+                      <li><strong>Ceiling (4.5mm):</strong> Screw at 200mm centers along perimeter, 300mm centers in intermediate framing.</li>
+                      <li><strong>Drywall (6.0mm & 9.0mm):</strong> Stagger boards, leave 2mm joint gap, tape with HardieFlex Perforated Paper Tape.</li>
+                      <li><strong>Jointing Compound:</strong> Apply 3 coats of HardieFlex Compound feathering edges 250mm wide.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cement Specification Standards -->
+            <div class="tech-table-wrap">
+              <div class="tech-table-header">
+                <span>Portland & Pozzolan Cement Material Standards (Holcim / Republic)</span>
+                <span class="meta-tag">PNS 07 / ASTM C150</span>
+              </div>
+              <table class="tech-table">
+                <thead>
+                  <tr>
+                    <th>Cement Type</th>
+                    <th>Standard Specification</th>
+                    <th>Target Construction Application</th>
+                    <th>Min 28-Day Strength</th>
+                    <th>Water/Cement Ratio Limit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Type I Ordinary Portland (OPC)</strong></td>
+                    <td>ASTM C150 / PNS 07 Type I</td>
+                    <td>Structural Columns, Beams, Suspended Slabs, Shear Walls</td>
+                    <td>&ge; 28.0 MPa</td>
+                    <td>Max 0.45 - 0.50</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Type 1P Pozzolan / Blended Cement</strong></td>
+                    <td>ASTM C595 / PNS 63 Type 1P</td>
+                    <td>CHB Masonry Laying, Wall Plastering, Floor Screeds</td>
+                    <td>&ge; 21.0 MPa</td>
+                    <td>Max 0.55</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Masonry Cement (Type M / S)</strong></td>
+                    <td>ASTM C91</td>
+                    <td>Non-structural Mortars, Decorative Plaster Finishes</td>
+                    <td>&ge; 15.0 MPa</td>
+                    <td>Workability tuned</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+
+        </main>
+      </section>
+
+    </div><!-- /views-wrapper -->
+
+    <!-- Cockpit Footer -->
+    <footer class="cockpit-footer">
+      <div>
+        <strong>FCLaranang Dev Corp QA/QC System</strong> &bull; ISO 9001:2015 Compliance &bull; Operation Procedures Series
+      </div>
+      <div>
+        &copy; 2026 FCLaranang Development Corporation. All Rights Reserved.
+      </div>
+    </footer>
+
+  </div><!-- /app-main -->
+
+</div><!-- /app-layout -->
+
+<!-- ========================================================================
+     UPLOAD / ADD DOCUMENT MODAL DIALOG
+     ======================================================================== -->
+<div class="modal-overlay" id="uploadDocModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        Add Construction Document / Procedure
+      </h3>
+      <button class="modal-close-btn" id="btnCloseUploadModal" title="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-form-row">
+        <label class="modal-label" for="uploadOpnSelect">Target Procedure Section</label>
+        <select id="uploadOpnSelect" class="modal-select">
+          <option value="OPN-01">PM-OPN-01 &bull; Cost Proposal & Project Cost Estimate</option>
+          <option value="OPN-02" selected>PM-OPN-02 &bull; Project Planning & Execution</option>
+          <option value="OPN-03">PM-OPN-03 &bull; Safety Procedures</option>
+          <option value="OPN-04">PM-OPN-04 &bull; Progress Billing Procedure</option>
+          <option value="OPN-05">PM-OPN-05 &bull; Project Turn Over Procedure</option>
+          <option value="OPN-06">PM-OPN-06 &bull; Subcontractor Monitoring</option>
+          <option value="OPN-07">PM-OPN-07 &bull; Batching Plant Procedure</option>
+          <option value="__GLOBAL_FORMS__">General Forms Library (CONST_PROCEDURES/FORMS)</option>
+          <option value="__NEW__">+ Create New Procedure Category...</option>
+        </select>
+      </div>
+
+      <div class="modal-form-row" id="newOpnFolderRow" style="display:none;">
+        <label class="modal-label" for="newOpnFolderName">New Procedure Folder Name</label>
+        <input type="text" id="newOpnFolderName" class="modal-input" placeholder="e.g. PM-OPN-08 SPECIAL WORKS">
+      </div>
+
+      <div class="modal-form-row" id="uploadCategoryRow">
+        <label class="modal-label" for="uploadCategorySelect">Document Category</label>
+        <select id="uploadCategorySelect" class="modal-select">
+          <option value="sub_procs">Sub-Procedure (Method Statement / SOP)</option>
+          <option value="main_docs">Main Operation Procedure (Root)</option>
+          <option value="forms">Inspection Checklist / Form</option>
+        </select>
+      </div>
+
+      <div class="modal-form-row">
+        <label class="modal-label">Select Document File</label>
+        <div class="dropzone-box" id="docDropzone">
+          <input type="file" id="docFileInput" accept=".docx,.doc,.xlsx,.xls,.xlsm,.pdf" style="display:none;">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--emerald-600);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <div class="dropzone-text">Click to browse or drag & drop document here</div>
+          <div class="dropzone-sub">Supported: Word (.docx, .doc), Excel (.xlsx, .xls, .xlsm), PDF (.pdf)</div>
+        </div>
+        <div id="selectedFileInfo" style="display:none; margin-top:0.4rem;"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="proc-btn-secondary" id="btnCancelUpload">Cancel</button>
+      <button type="button" class="proc-btn-primary" id="btnSubmitUpload" disabled>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Upload & Add to Library
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- External scripts with safe fallbacks -->
+<script src="../shared/js/procedures-data.js"></script>
+<script src="../shared/js/qaqc-bridge.js"></script>
+
+<script>
+  // =========================================================================
+  // Robust QAQCBridge Fallback & Standalone Helper
+  // =========================================================================
+  if (typeof window.QAQCBridge === 'undefined') {
+    window.QAQCBridge = {
+      isStandalone: true,
+      openFile: function(relPath, title) {
+        const url = encodeURI(relPath);
+        window.open(url, '_blank');
+        this.showToast(`Opening ${title || 'document'}...`, 'info');
+      },
+      resolveLocalUrl: function(relPath) {
+        return relPath;
+      },
+      bindSearch: function(inputId, itemSelector) {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+        input.addEventListener('input', (e) => {
+          const q = e.target.value.toLowerCase().trim();
+          document.querySelectorAll(itemSelector).forEach(el => {
+            const text = el.textContent.toLowerCase();
+            el.style.display = text.includes(q) ? '' : 'none';
+          });
+        });
+      },
+      showToast: function(message, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+        const toast = document.createElement('div');
+        toast.className = `toast-notification ${type}`;
+        toast.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            ${type === 'success' ? '<polyline points="20 6 9 17 4 12"/>' : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>'}
+          </svg>
+          <span>${message}</span>
+        `;
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(10px)';
+          toast.style.transition = 'all 0.25s ease';
+          setTimeout(() => toast.remove(), 250);
+        }, 3500);
+      },
+      fetchStructure: async function() {
+        try {
+          const res = await fetch('/api/structure');
+          if (res.ok) return await res.json();
+        } catch (e) {
+          // Local/offline static mode
+        }
+        return null;
+      },
+      getApiUrl: function(path) {
+        return path;
+      }
+    };
+  }
+
+  // =========================================================================
+  // VIEW SWITCHING & SIDEBAR CONTROLLER
+  // =========================================================================
+  const VIEW_TITLES = {
+    'view-home': 'Home Overview',
+    'view-operation-procedures': 'Operation Procedures (7 OPN)',
+    'view-supplier-procedures': "Supplier's Procedures"
+  };
+
+  function switchView(viewId, targetOpnTab = null, targetSupplierTab = null) {
+    // 1. Update app views
+    document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
+    const targetView = document.getElementById(viewId);
+    if (targetView) targetView.classList.add('active');
+
+    // 2. Update sidebar buttons
+    document.querySelectorAll('.sidebar-nav-btn').forEach(b => {
+      b.classList.toggle('active', b.getAttribute('data-view-target') === viewId);
+    });
+
+    // 3. Update breadcrumb
+    const crumbCurrentView = document.getElementById('crumbCurrentView');
+    if (crumbCurrentView) {
+      crumbCurrentView.textContent = VIEW_TITLES[viewId] || 'Overview';
+    }
+
+    // 4. Activate specific OPN tab if provided
+    if (targetOpnTab) {
+      const opnBtn = document.querySelector(`#opnTabsNav [data-tab="${targetOpnTab}"]`);
+      if (opnBtn) opnBtn.click();
+    }
+
+    // 5. Activate specific Supplier tab if provided
+    if (targetSupplierTab) {
+      const supBtn = document.querySelector(`#supplierTabsNav [data-supplier-tab="${targetSupplierTab}"]`);
+      if (supBtn) supBtn.click();
+    }
+
+    // Close mobile menu if open
+    const sidebar = document.getElementById('appSidebar');
+    if (sidebar && sidebar.classList.contains('mobile-open')) {
+      sidebar.classList.remove('mobile-open');
+    }
+  }
+
+  // Setup Sidebar primary buttons
+  document.querySelectorAll('.sidebar-nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetView = btn.getAttribute('data-view-target');
+      if (targetView) switchView(targetView);
+    });
+  });
+
+  // Sidebar toggle width button
+  const btnToggleSidebar = document.getElementById('btnToggleSidebar');
+  const appSidebar = document.getElementById('appSidebar');
+  if (btnToggleSidebar && appSidebar) {
+    btnToggleSidebar.addEventListener('click', () => {
+      appSidebar.classList.toggle('collapsed');
+    });
+  }
+
+  // Mobile menu button
+  const btnMobileMenu = document.getElementById('btnMobileMenu');
+  if (btnMobileMenu && appSidebar) {
+    btnMobileMenu.addEventListener('click', () => {
+      appSidebar.classList.toggle('mobile-open');
+    });
+  }
+
+  // Helper for opening checklists directly
+  function openChecklist(relPath) {
+    QAQCBridge.openFile('CONST_PROCEDURES/' + relPath, relPath.split('/').pop());
+  }
+
+  // =========================================================================
+  // SUPPLIER TOPBAR TABS CONTROLLER
+  // =========================================================================
+  function setupSupplierTabs() {
+    const tabs = document.querySelectorAll('#supplierTabsNav .supplier-tab-btn');
+    tabs.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabs.forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.supplier-pane').forEach(p => p.classList.remove('active'));
+
+        btn.classList.add('active');
+        const targetId = btn.getAttribute('data-supplier-tab');
+        const pane = document.getElementById(targetId);
+        if (pane) pane.classList.add('active');
+      });
+    });
+  }
+
+  // =========================================================================
+  // OPERATION PROCEDURES (OPN) TABS CONTROLLER
+  // =========================================================================
+  function setupOpnTabs() {
+    const tabs = document.querySelectorAll('#opnTabsNav .tab-btn');
+    tabs.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabs.forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('#view-operation-procedures .tab-content').forEach(c => c.classList.remove('active'));
+
+        btn.classList.add('active');
+        const targetId = btn.getAttribute('data-tab');
+        const targetContent = document.getElementById(targetId);
+        if (targetContent) targetContent.classList.add('active');
+      });
+    });
+  }
+
+  // =========================================================================
+  // MASTER REGISTRY AGGREGATION & SEARCH
+  // =========================================================================
+  const BASELINE_FILES = new Set([
+    "PM-OPN-01 COST PROPOSAL & PROJECT COST ESTIMATE Rev 04.doc",
+    "Bidding procedure.docx",
+    "PM-OPN-02 PROJECT PLANNING AND EXECUTION PROCEDURE_rev2.docx",
+    "concrete rebar forms procedure.docx",
+    "Concrete topping works.docx",
+    "chb laying and plastering works.docx",
+    "plastering works.docx",
+    "Tile_works.docx",
+    "painting works procedure - refine.docx",
+    "BLOCKOUT SAPAL RTU with PU.docx",
+    "Boysen Plexibond B-7760.docx",
+    "FM-OPN-02-10 Concrete screed-Topping checklist.pdf",
+    "FM-OPN-02-12 Rebar works checklist.pdf",
+    "FM-OPN-02-13 formworks checklist.pdf",
+    "FM-OPN-02-14 Masonry works checklist.pdf",
+    "FM-OPN-02-15 Tile Works Checklist.pdf",
+    "PM-OPN-03 SAFETY PROCEDURES (5).doc",
+    "PM-OPN-04 PROGRESS BILLING rev00.doc",
+    "PM-OPN-05 PROJECT TURN OVER Rev 3.doc",
+    "PM-OPN-06 Subcontractor Monitoring Procedure_Rev. 2_Procedure_with QS.docx",
+    "PM-OPN-07 BATCHING PLANT PROCEDURE rev02.docx"
+  ]);
+
+  function populateMasterRegistry() {
+    const masterGrid = document.getElementById('masterDocsGrid');
+    if (!masterGrid) return;
+
+    // Collect all doc-cards from OPN tabs 1 through 7
+    const cards = document.querySelectorAll('#view-operation-procedures .tab-content:not(#tab-all-master) .doc-card');
+    const seenTitles = new Set();
+    const uniqueCardsHTML = [];
+
+    cards.forEach(card => {
+      const titleEl = card.querySelector('.doc-card-title');
+      const title = titleEl ? titleEl.textContent.trim() : '';
+      if (title && !seenTitles.has(title)) {
+        seenTitles.add(title);
+        uniqueCardsHTML.push(card.outerHTML);
+      }
+    });
+
+    masterGrid.innerHTML = uniqueCardsHTML.join('');
+    const countBadge = document.getElementById('masterBadgeCount');
+    if (countBadge) countBadge.textContent = `All ${seenTitles.size} Files`;
+  }
+
+  // =========================================================================
+  // DYNAMIC BACKEND HYDRATION (Optional local server)
+  // =========================================================================
+  async function loadLibrary(isUserRefresh = false) {
+    const refreshBtn = document.getElementById('btnRefreshLibrary');
+    if (refreshBtn) refreshBtn.classList.add('rotating');
+
+    try {
+      const structure = await QAQCBridge.fetchStructure();
+      if (structure && structure.procedures) {
+        // Backend available!
+        const totalFiles = structure.stats ? structure.stats.total_files : 21;
+        const totalOpns = structure.stats ? structure.stats.total_opn : 7;
+        const titleEl = document.getElementById('procRibbonTitle');
+        if (titleEl) {
+          titleEl.innerHTML = `Construction Operations Procedures & Quality Checklists (${totalOpns} Procedures &bull; ${totalFiles} Docs)`;
+        }
+        const sideBadge = document.getElementById('sideBadgeOpnCount');
+        if (sideBadge) {
+          sideBadge.innerHTML = `${totalOpns} OPN &bull; ${totalFiles} Docs`;
+        }
+        if (isUserRefresh) QAQCBridge.showToast(`Library synchronized: ${totalFiles} files across ${totalOpns} procedures.`, 'success');
+      } else {
+        if (isUserRefresh) QAQCBridge.showToast('21 Procedures & Quality Docs active in catalog.', 'info');
+      }
+    } catch (e) {
+      console.warn("Could not load dynamic structure:", e);
+    } finally {
+      if (refreshBtn) setTimeout(() => refreshBtn.classList.remove('rotating'), 600);
+    }
+  }
+
+  // =========================================================================
+  // UPLOAD MODAL CONTROLLER
+  // =========================================================================
+  const modal = document.getElementById('uploadDocModal');
+  const btnOpenModal = document.getElementById('btnOpenUploadModal');
+  const btnCloseModal = document.getElementById('btnCloseUploadModal');
+  const btnCancelModal = document.getElementById('btnCancelUpload');
+  const btnSubmit = document.getElementById('btnSubmitUpload');
+  const dropzone = document.getElementById('docDropzone');
+  const fileInput = document.getElementById('docFileInput');
+  const selectedFileInfo = document.getElementById('selectedFileInfo');
+  const opnSelect = document.getElementById('uploadOpnSelect');
+  const newFolderRow = document.getElementById('newOpnFolderRow');
+  let selectedUploadFile = null;
+
+  function openUploadModal() {
+    if (modal) modal.classList.add('active');
+  }
+
+  function closeUploadModal() {
+    if (modal) modal.classList.remove('active');
+    selectedUploadFile = null;
+    if (fileInput) fileInput.value = '';
+    if (selectedFileInfo) selectedFileInfo.style.display = 'none';
+    if (btnSubmit) btnSubmit.disabled = true;
+  }
+
+  if (btnOpenModal) btnOpenModal.addEventListener('click', openUploadModal);
+  if (btnCloseModal) btnCloseModal.addEventListener('click', closeUploadModal);
+  if (btnCancelModal) btnCancelModal.addEventListener('click', closeUploadModal);
+
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeUploadModal();
+    });
+  }
+
+  if (opnSelect && newFolderRow) {
+    opnSelect.addEventListener('change', () => {
+      newFolderRow.style.display = (opnSelect.value === '__NEW__') ? 'flex' : 'none';
+    });
+  }
+
+  if (dropzone && fileInput) {
+    dropzone.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        selectedUploadFile = e.target.files[0];
+        selectedFileInfo.style.display = 'block';
+        selectedFileInfo.innerHTML = `
+          <div style="background:var(--emerald-50); border:1px solid var(--emerald-200); padding:0.4rem 0.65rem; border-radius:6px; font-size:0.75rem; color:var(--emerald-900); font-weight:600;">
+            Selected: ${selectedUploadFile.name} (${(selectedUploadFile.size / 1024 / 1024).toFixed(2)} MB)
+          </div>
+        `;
+        btnSubmit.disabled = false;
+      }
+    });
+
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        selectedUploadFile = e.dataTransfer.files[0];
+        selectedFileInfo.style.display = 'block';
+        selectedFileInfo.innerHTML = `
+          <div style="background:var(--emerald-50); border:1px solid var(--emerald-200); padding:0.4rem 0.65rem; border-radius:6px; font-size:0.75rem; color:var(--emerald-900); font-weight:600;">
+            Selected: ${selectedUploadFile.name} (${(selectedUploadFile.size / 1024 / 1024).toFixed(2)} MB)
+          </div>
+        `;
+        btnSubmit.disabled = false;
+      }
+    });
+  }
+
+  if (btnSubmit) {
+    btnSubmit.addEventListener('click', async () => {
+      if (!selectedUploadFile) return;
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = 'Uploading...';
+      try {
+        const reader = new FileReader();
+        reader.onload = async function (evt) {
+          const base64Content = evt.target.result.split(',')[1];
+          const res = await fetch('/api/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              folder: 'CONST_PROCEDURES/OPERATION PROCEDURE/' + opnSelect.value,
+              filename: selectedUploadFile.name,
+              content: base64Content
+            })
+          });
+          if (res.ok) {
+            QAQCBridge.showToast(`Document '${selectedUploadFile.name}' added successfully!`, 'success');
+            closeUploadModal();
+            loadLibrary(true);
+          } else {
+            QAQCBridge.showToast('Upload note: Server is static or standalone.', 'info');
+            closeUploadModal();
+          }
+        };
+        reader.readAsDataURL(selectedUploadFile);
+      } catch (e) {
+        QAQCBridge.showToast('Document registered locally.', 'info');
+        closeUploadModal();
+      }
+    });
+  }
+
+  const btnRefresh = document.getElementById('btnRefreshLibrary');
+  if (btnRefresh) {
+    btnRefresh.addEventListener('click', () => loadLibrary(true));
+  }
+
+  // =========================================================================
+  // INITIALIZATION ON LOAD
+  // =========================================================================
+  document.addEventListener('DOMContentLoaded', () => {
+    setupOpnTabs();
+    setupSupplierTabs();
+    populateMasterRegistry();
+
+    // Bind Search Bars
+    QAQCBridge.bindSearch('procSearchInput', '#view-operation-procedures .doc-card');
+    QAQCBridge.bindSearch('supplierSearchInput', '#view-supplier-procedures .spec-card, #view-supplier-procedures .doc-card');
+
+    // Run dynamic check
+    loadLibrary(false);
+  });
+
+  if (document.readyState !== 'loading') {
+    setupOpnTabs();
+    setupSupplierTabs();
+    populateMasterRegistry();
+    QAQCBridge.bindSearch('procSearchInput', '#view-operation-procedures .doc-card');
+    QAQCBridge.bindSearch('supplierSearchInput', '#view-supplier-procedures .spec-card, #view-supplier-procedures .doc-card');
+    loadLibrary(false);
+  }
+</script>
+
+</body>
+</html>
