@@ -66,10 +66,16 @@
         if (res.ok) {
           const data = await res.json();
           this.isServerOnline = true;
+          this.serverData = data;
           if (badge) {
             badge.className = "status-badge";
-            badge.innerHTML = `<span class="status-indicator-dot"></span> Backend Active (Native App Launch Ready)`;
-            badge.title = `Connected to FCLDC Server at ${data.workspace}`;
+            badge.style.cursor = "pointer";
+            badge.innerHTML = `<span class="status-indicator-dot"></span> Backend Active (Hidden Service)`;
+            badge.title = `Local Server active in background. Click for controls.`;
+            if (!badge.hasAttribute("data-listener")) {
+              badge.setAttribute("data-listener", "true");
+              badge.addEventListener("click", () => this.showServerMenu());
+            }
           }
           return true;
         }
@@ -77,11 +83,91 @@
         this.isServerOnline = false;
         if (badge) {
           badge.className = "status-badge offline";
+          badge.style.cursor = "default";
           badge.innerHTML = `<span class="status-indicator-dot"></span> Browser Direct Mode`;
           badge.title = "Local backend not detected. Files will open in browser tabs or download.";
         }
         return false;
       }
+    },
+
+    /**
+     * Show compact in-app server controls popover
+     */
+    showServerMenu: function () {
+      let menu = document.getElementById("server-control-popover");
+      if (menu) {
+        menu.remove();
+        return;
+      }
+
+      menu = document.createElement("div");
+      menu.id = "server-control-popover";
+      menu.style.position = "fixed";
+      menu.style.top = "54px";
+      menu.style.right = "1.25rem";
+      menu.style.background = "#ffffff";
+      menu.style.border = "1px solid var(--emerald-300, #10b981)";
+      menu.style.borderRadius = "8px";
+      menu.style.boxShadow = "0 10px 25px rgba(0, 0, 0, 0.15)";
+      menu.style.padding = "0.75rem 1rem";
+      menu.style.zIndex = "10000";
+      menu.style.width = "280px";
+      menu.style.fontSize = "0.75rem";
+      menu.style.color = "#1e293b";
+
+      menu.innerHTML = `
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.5rem; border-bottom:1px solid #e2e8f0; padding-bottom:0.35rem;">
+          <strong style="color:#065f46; font-size:0.8rem; display:flex; align-items:center; gap:0.35rem;">
+            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981;"></span>
+            QA/QC Background Server
+          </strong>
+          <button id="close-server-popover" style="background:none; border:none; color:#94a3b8; cursor:pointer; font-size:1rem; line-height:1;">&times;</button>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:0.35rem; color:#475569; margin-bottom:0.75rem;">
+          <div><strong>Process:</strong> Hidden Background (pythonw)</div>
+          <div><strong>Status:</strong> Active &bull; Port 8000</div>
+          <div><strong>Launcher:</strong> Native Word, Excel, Acrobat</div>
+        </div>
+        <div style="display:flex; gap:0.45rem;">
+          <button id="btn-stop-backend" style="flex:1; padding:0.3rem 0.6rem; font-size:0.72rem; font-weight:700; color:#dc2626; background:#fee2e2; border:1px solid #fca5a5; border-radius:5px; cursor:pointer;">
+            Stop Server
+          </button>
+          <button id="btn-rescan-backend" style="flex:1; padding:0.3rem 0.6rem; font-size:0.72rem; font-weight:700; color:#065f46; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:5px; cursor:pointer;">
+            Check Status
+          </button>
+        </div>
+      `;
+
+      document.body.appendChild(menu);
+
+      document.getElementById("close-server-popover").onclick = () => menu.remove();
+      document.getElementById("btn-rescan-backend").onclick = () => {
+        this.checkServer();
+        this.showToast("Backend connection verified active.", "success");
+        menu.remove();
+      };
+      document.getElementById("btn-stop-backend").onclick = async () => {
+        if (confirm("Stop the background QA/QC server?")) {
+          try {
+            await fetch("/api/shutdown", { method: "POST" });
+            this.showToast("Backend server stopped.", "info");
+          } catch (e) {
+            this.showToast("Server stopped.", "info");
+          }
+          menu.remove();
+          setTimeout(() => this.checkServer(), 800);
+        }
+      };
+
+      // Close when clicking outside
+      const outsideClick = (e) => {
+        if (!menu.contains(e.target) && e.target.id !== "server-status-badge") {
+          menu.remove();
+          document.removeEventListener("click", outsideClick);
+        }
+      };
+      setTimeout(() => document.addEventListener("click", outsideClick), 100);
     },
 
     /**

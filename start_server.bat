@@ -1,18 +1,26 @@
 @echo off
-title FCLaranang Dev Corp QA/QC Executive Management System
-echo ======================================================================
-echo   FCLaranang Dev Corp QA/QC Executive Management System
-echo   Starting Dynamic Local Backend Server...
-echo ======================================================================
-echo.
-
 cd /d "%~dp0"
-python server.py
+title QA/QC System Background Starter
 
-if %ERRORLEVEL% NEQ 0 (
-    echo.
-    echo [ERROR] Python was not found or failed to start.
-    echo Please make sure Python 3.8+ is installed on your computer.
-    echo.
-    pause
+:: Detect pythonw executable
+where pythonw >nul 2>nul
+if %ERRORLEVEL% EQU 0 (
+    start "" pythonw server.py --app
+    exit
 )
+
+if exist "C:\Python314\pythonw.exe" (
+    start "" "C:\Python314\pythonw.exe" server.py --app
+    exit
+)
+
+where python >nul 2>nul
+if %ERRORLEVEL% EQU 0 (
+    start "" python server.py --app
+    exit
+)
+
+echo [ERROR] Python / pythonw was not found on your system.
+echo Please ensure Python 3.8+ is installed.
+pause
+exit /b 1

@@ -16,6 +16,12 @@ import time
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 
+# Ensure stdout/stderr exist when running via pythonw.exe (windowless background service)
+if sys.stdout is None:
+    sys.stdout = open(os.devnull, "w", encoding="utf-8")
+if sys.stderr is None:
+    sys.stderr = open(os.devnull, "w", encoding="utf-8")
+
 # Ensure root directory is the current folder of this script
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
@@ -34,6 +40,40 @@ mimetypes.add_type("text/css", ".css")
 mimetypes.add_type("image/x-icon", ".ico")
 
 
+def format_size(num_bytes):
+    """Format byte count into human-readable string."""
+    if num_bytes < 1024:
+        return f"{num_bytes} B"
+    elif num_bytes < 1024 * 1024:
+        return f"{num_bytes / 1024:.1f} KB"
+    else:
+        return f"{num_bytes / (1024 * 1024):.2f} MB"
+
+
+def is_valid_doc_file(p):
+    """Check if file is a valid document and not a temporary/lock file."""
+    if not p.is_file():
+        return False
+    name = p.name
+    # Exclude Office lock files (~$...), hidden files, and desktop thumbnail caches
+    if name.startswith("~$") or name.startswith(".") or name.lower() == "thumbs.db":
+        return False
+    return True
+
+
+def make_file_meta(f):
+    """Build standardized file metadata dictionary."""
+    stat = f.stat()
+    return {
+        "name": f.name,
+        "rel_path": str(f.relative_to(BASE_DIR)).replace("\\", "/"),
+        "size": stat.st_size,
+        "size_formatted": format_size(stat.st_size),
+        "ext": f.suffix.lower(),
+        "modified": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(stat.st_mtime))
+    }
+
+
 def get_file_structure():
     """Dynamically scan folders and return structured metadata."""
     structure = {
@@ -41,106 +81,158 @@ def get_file_structure():
         "governance": [],
         "executive": [],
         "capa": [],
-        "punchlist": []
+        "punchlist": [],
+        "global_forms": [],
+        "stats": {
+            "total_opn": 0,
+            "total_main_docs": 0,
+            "total_sub_procs": 0,
+            "total_forms": 0,
+            "total_files": 0
+        }
     }
 
     # 1. Scan CONST_PROCEDURES
     const_proc_dir = BASE_DIR / "CONST_PROCEDURES"
+    all_proc_files = set()
+
     if const_proc_dir.exists():
-        # Global forms
+        # Global forms directory
         forms_dir = const_proc_dir / "FORMS"
         global_forms = []
         if forms_dir.exists():
-            for f in sorted(forms_dir.glob("*")):
-                if f.is_file():
-                    global_forms.append({
-                        "name": f.name,
-                        "rel_path": str(f.relative_to(BASE_DIR)).replace("\\", "/"),
-                        "size": f.stat().st_size,
-                        "ext": f.suffix.lower(),
-                        "modified": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(f.stat().st_mtime))
-                    })
+            for f in sorted(forms_dir.iterdir()):
+                if is_valid_doc_file(f):
+                    meta = make_file_meta(f)
+                    global_forms.append(meta)
+                    all_proc_files.add(meta["rel_path"])
         structure["global_forms"] = global_forms
 
-        # Operation procedures OPN-01 to OPN-07
+        # Operation procedures OPN-01 to OPN-07+
         op_dir = const_proc_dir / "OPERATION PROCEDURE"
         if op_dir.exists():
-            for opn_folder in sorted(op_dir.glob("PM-OPN-*")):
-                if opn_folder.is_dir():
-                    opn_key = opn_folder.name.replace("PM-", "")
-                    main_docs = []
-                    sub_procs = []
-                    forms = []
+            # Scan all directories in OPERATION PROCEDURE
+            opn_folders = [
+                d for d in op_dir.iterdir()
+                if d.is_dir() and not d.name.startswith(".")
+            ]
 
-                    # Main docs in root of OPN folder
-                    for item in sorted(opn_folder.glob("*")):
-                        if item.is_file():
-                            main_docs.append({
-                                "name": item.name,
-                                "rel_path": str(item.relative_to(BASE_DIR)).replace("\\", "/"),
-                                "size": item.stat().st_size,
-                                "ext": item.suffix.lower(),
-                                "modified": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(item.stat().st_mtime))
-                            })
+            # Natural sort key so PM-OPN-01, PM-OPN-02... PM-OPN-10 order properly
+            def opn_sort_key(folder):
+                name = folder.name
+                import re
+                nums = re.findall(r'\d+', name)
+                return (int(nums[0]) if nums else 999, name)
 
-                    # Sub procedures
-                    sub_dir = opn_folder / "SUB PROCEDURE"
-                    if sub_dir.exists():
-                        for item in sorted(sub_dir.glob("*")):
-                            if item.is_file():
-                                sub_procs.append({
-                                    "name": item.name,
-                                    "rel_path": str(item.relative_to(BASE_DIR)).replace("\\", "/"),
-                                    "size": item.stat().st_size,
-                                    "ext": item.suffix.lower(),
-                                    "modified": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(item.stat().st_mtime))
-                                })
+            opn_folders.sort(key=opn_sort_key)
 
-                    # Forms in OPN folder
-                    opn_forms_dir = opn_folder / "FORMS"
-                    if opn_forms_dir.exists():
-                        for item in sorted(opn_forms_dir.glob("*")):
-                            if item.is_file():
-                                forms.append({
-                                    "name": item.name,
-                                    "rel_path": str(item.relative_to(BASE_DIR)).replace("\\", "/"),
-                                    "size": item.stat().st_size,
-                                    "ext": item.suffix.lower(),
-                                    "modified": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(item.stat().st_mtime))
-                                })
+            for opn_folder in opn_folders:
+                # Standardize OPN key: PM-OPN-01 -> OPN-01
+                opn_key = opn_folder.name
+                if opn_key.startswith("PM-"):
+                    opn_key = opn_key[3:]
 
-                    structure["procedures"][opn_key] = {
-                        "folder_name": opn_folder.name,
-                        "main_docs": main_docs,
-                        "sub_procs": sub_procs,
-                        "forms": forms
-                    }
+                main_docs = []
+                sub_procs = []
+                forms = []
+
+                # Main docs directly in root of OPN folder
+                for item in sorted(opn_folder.iterdir()):
+                    if is_valid_doc_file(item):
+                        meta = make_file_meta(item)
+                        main_docs.append(meta)
+                        all_proc_files.add(meta["rel_path"])
+
+                # Sub-procedures folder (support variations: SUB PROCEDURE, SUB PROCEDURES, etc.)
+                sub_dirs = [
+                    d for d in opn_folder.iterdir()
+                    if d.is_dir() and "sub" in d.name.lower() and not d.name.startswith(".")
+                ]
+                for s_dir in sub_dirs:
+                    for item in sorted(s_dir.rglob("*")):
+                        if is_valid_doc_file(item):
+                            meta = make_file_meta(item)
+                            sub_procs.append(meta)
+                            all_proc_files.add(meta["rel_path"])
+
+                # Forms folder inside OPN folder (support FORMS, Checklists, etc.)
+                opn_form_dirs = [
+                    d for d in opn_folder.iterdir()
+                    if d.is_dir() and ("form" in d.name.lower() or "checklist" in d.name.lower()) and not d.name.startswith(".")
+                ]
+                for f_dir in opn_form_dirs:
+                    for item in sorted(f_dir.rglob("*")):
+                        if is_valid_doc_file(item):
+                            meta = make_file_meta(item)
+                            forms.append(meta)
+                            all_proc_files.add(meta["rel_path"])
+
+                # Any other subdirectories in OPN folder (e.g. custom subfolders)
+                other_dirs = [
+                    d for d in opn_folder.iterdir()
+                    if d.is_dir() and not d.name.startswith(".")
+                    and d not in sub_dirs and d not in opn_form_dirs
+                ]
+                for o_dir in other_dirs:
+                    for item in sorted(o_dir.rglob("*")):
+                        if is_valid_doc_file(item):
+                            meta = make_file_meta(item)
+                            sub_procs.append(meta)
+                            all_proc_files.add(meta["rel_path"])
+
+                # Also automatically link relevant checklists from global FORMS
+                # e.g. FM-OPN-02-12 matches OPN-02
+                for gf in global_forms:
+                    gf_name_upper = gf["name"].upper()
+                    # Check if filename contains OPN-01, OPN-02, etc.
+                    clean_key = opn_key.upper().replace("-", "")
+                    clean_name = gf_name_upper.replace("-", "")
+                    if opn_key.upper() in gf_name_upper or clean_key in clean_name:
+                        # Add to forms if not already present by relative path
+                        if not any(f["rel_path"] == gf["rel_path"] for f in forms):
+                            forms.append(gf)
+
+                structure["procedures"][opn_key] = {
+                    "folder_name": opn_folder.name,
+                    "opn_key": opn_key,
+                    "main_docs": main_docs,
+                    "sub_procs": sub_procs,
+                    "forms": forms,
+                    "all_count": len(main_docs) + len(sub_procs) + len(forms)
+                }
+
+        # Calculate live stats
+        total_opn = len(structure["procedures"])
+        total_main_docs = sum(len(p["main_docs"]) for p in structure["procedures"].values())
+        total_sub_procs = sum(len(p["sub_procs"]) for p in structure["procedures"].values())
+        # Total unique forms
+        total_forms = len(global_forms)
+        for p in structure["procedures"].values():
+            for f in p["forms"]:
+                if f["rel_path"] not in [gf["rel_path"] for gf in global_forms]:
+                    total_forms += 1
+
+        structure["stats"] = {
+            "total_opn": total_opn,
+            "total_main_docs": total_main_docs,
+            "total_sub_procs": total_sub_procs,
+            "total_forms": total_forms,
+            "total_files": len(all_proc_files)
+        }
 
     # 2. Scan QAQC_GOVERNANCE
     gov_dir = BASE_DIR / "QAQC_GOVERNANCE"
     if gov_dir.exists():
         for f in sorted(gov_dir.rglob("*")):
-            if f.is_file():
-                structure["governance"].append({
-                    "name": f.name,
-                    "rel_path": str(f.relative_to(BASE_DIR)).replace("\\", "/"),
-                    "size": f.stat().st_size,
-                    "ext": f.suffix.lower(),
-                    "modified": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(f.stat().st_mtime))
-                })
+            if is_valid_doc_file(f):
+                structure["governance"].append(make_file_meta(f))
 
     # 3. Scan EXECUTIVE_REPORT
     exec_dir = BASE_DIR / "EXECUTIVE_REPORT"
     if exec_dir.exists():
         for f in sorted(exec_dir.rglob("*")):
-            if f.is_file():
-                structure["executive"].append({
-                    "name": f.name,
-                    "rel_path": str(f.relative_to(BASE_DIR)).replace("\\", "/"),
-                    "size": f.stat().st_size,
-                    "ext": f.suffix.lower(),
-                    "modified": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(f.stat().st_mtime))
-                })
+            if is_valid_doc_file(f):
+                structure["executive"].append(make_file_meta(f))
 
     return structure
 
@@ -174,6 +266,15 @@ class QAQCRequestHandler(SimpleHTTPRequestHandler):
                 "workspace": str(BASE_DIR),
                 "serverTime": time.strftime("%Y-%m-%d %H:%M:%S")
             })
+            return
+
+        if path == "/api/shutdown":
+            self.send_json({"success": True, "message": "QA/QC Backend server shutting down."})
+            def _shutdown():
+                time.sleep(0.5)
+                print("[SHUTDOWN] Server terminated via web request.")
+                os._exit(0)
+            threading.Thread(target=_shutdown, daemon=True).start()
             return
 
         if path == "/api/structure":
@@ -294,13 +395,25 @@ class QAQCRequestHandler(SimpleHTTPRequestHandler):
             try:
                 with open(dest_file, "wb") as f:
                     f.write(base64.b64decode(content_base64))
+                file_meta = make_file_meta(dest_file)
                 self.send_json({
                     "success": True,
                     "message": f"Uploaded {filename} successfully.",
+                    "file": file_meta,
                     "rel_path": str(dest_file.relative_to(BASE_DIR)).replace("\\", "/")
                 })
             except Exception as e:
                 self.send_json({"success": False, "error": str(e)}, status=500)
+            return
+
+        # 4. Shutdown Endpoint
+        if path == "/api/shutdown":
+            self.send_json({"success": True, "message": "QA/QC Backend server shutting down."})
+            def _shutdown():
+                time.sleep(0.5)
+                print("[SHUTDOWN] Server terminated via web application request.")
+                os._exit(0)
+            threading.Thread(target=_shutdown, daemon=True).start()
             return
 
         self.send_json({"error": "Endpoint not found"}, status=404)
@@ -314,8 +427,46 @@ class QAQCRequestHandler(SimpleHTTPRequestHandler):
         self.wfile.write(body)
 
     def log_message(self, format, *args):
-        # Clean logging
-        sys.stderr.write(f"[HTTP {time.strftime('%H:%M:%S')}] {format % args}\n")
+        # Clean logging (safe for pythonw windowless mode)
+        if sys.stderr:
+            try:
+                sys.stderr.write(f"[HTTP {time.strftime('%H:%M:%S')}] {format % args}\n")
+            except Exception:
+                pass
+
+
+def is_server_already_running(port=8000):
+    """Check if an instance of our QA/QC server is already online."""
+    import urllib.request
+    try:
+        req = urllib.request.urlopen(f"http://127.0.0.1:{port}/api/status", timeout=0.8)
+        if req.status == 200:
+            data = json.loads(req.read().decode("utf-8"))
+            if "QA/QC" in data.get("system", ""):
+                return True
+    except Exception:
+        pass
+    return False
+
+
+def open_client_window(url, app_mode=False):
+    """Open the application in standalone desktop app window or default browser."""
+    if app_mode:
+        browser_paths = [
+            r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+            r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
+            r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+            r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+        ]
+        for b_path in browser_paths:
+            if os.path.exists(b_path):
+                try:
+                    subprocess.Popen([b_path, f"--app={url}"])
+                    return
+                except Exception:
+                    pass
+    # Fallback to standard default browser
+    webbrowser.open(url)
 
 
 def find_available_port(start_port=8000, max_attempts=20):
@@ -331,7 +482,15 @@ def find_available_port(start_port=8000, max_attempts=20):
     return start_port
 
 
-def start_server(port=8000, open_browser=True):
+def start_server(port=8000, open_browser=True, app_mode=False):
+    # Single-instance check: if server is already running, just open the client and exit cleanly!
+    if is_server_already_running(port):
+        url = f"http://localhost:{port}/index.html"
+        print(f"[ATTACHED] QA/QC server is already running in the background at {url}")
+        if open_browser:
+            open_client_window(url, app_mode=app_mode)
+        return
+
     actual_port = find_available_port(port)
     server_address = ("127.0.0.1", actual_port)
     httpd = HTTPServer(server_address, QAQCRequestHandler)
@@ -350,8 +509,8 @@ def start_server(port=8000, open_browser=True):
 
     if open_browser:
         def _open():
-            time.sleep(1.0)
-            webbrowser.open(url)
+            time.sleep(0.8)
+            open_client_window(url, app_mode=app_mode)
         threading.Thread(target=_open, daemon=True).start()
 
     try:
@@ -364,4 +523,5 @@ def start_server(port=8000, open_browser=True):
 
 if __name__ == "__main__":
     auto_open = "--no-browser" not in sys.argv
-    start_server(8000, open_browser=auto_open)
+    is_app = "--app" in sys.argv
+    start_server(8000, open_browser=auto_open, app_mode=is_app)
