@@ -3133,7 +3133,7 @@ input[type="checkbox"]:checked + .switch-slider::before {
 .compiler-page-sheet.compiler-continuous-sheet {
   height: auto !important;
   max-height: none !important;
-  min-height: 800px;
+  min-height: 0 !important;
   overflow: visible !important;
   box-shadow: 0 16px 45px rgba(0, 0, 0, 0.5);
   border: 1px solid #cbd5e1;
@@ -3157,15 +3157,15 @@ input[type="checkbox"]:checked + .switch-slider::before {
 .compiler-page-sheet.paper-a3-landscape { width: 420mm; height: 297mm; min-height: 297mm; max-height: 297mm; }
 .compiler-page-sheet.paper-a3-portrait { width: 297mm; height: 420mm; min-height: 420mm; max-height: 420mm; }
 
-/* Width-only enforcement in continuous mode */
-.compiler-page-sheet.compiler-continuous-sheet.paper-a4-landscape { width: 297mm; height: auto !important; max-height: none !important; min-height: 400px; }
-.compiler-page-sheet.compiler-continuous-sheet.paper-a4-portrait { width: 210mm; height: auto !important; max-height: none !important; min-height: 400px; }
-.compiler-page-sheet.compiler-continuous-sheet.paper-letter-landscape { width: 11in; height: auto !important; max-height: none !important; min-height: 400px; }
-.compiler-page-sheet.compiler-continuous-sheet.paper-letter-portrait { width: 8.5in; height: auto !important; max-height: none !important; min-height: 400px; }
-.compiler-page-sheet.compiler-continuous-sheet.paper-legal-landscape { width: 14in; height: auto !important; max-height: none !important; min-height: 400px; }
-.compiler-page-sheet.compiler-continuous-sheet.paper-legal-portrait { width: 8.5in; height: auto !important; max-height: none !important; min-height: 400px; }
-.compiler-page-sheet.compiler-continuous-sheet.paper-a3-landscape { width: 420mm; height: auto !important; max-height: none !important; min-height: 400px; }
-.compiler-page-sheet.compiler-continuous-sheet.paper-a3-portrait { width: 297mm; height: auto !important; max-height: none !important; min-height: 400px; }
+/* Width-only enforcement in continuous mode - zero artificial min-height to eliminate trailing blank space */
+.compiler-page-sheet.compiler-continuous-sheet.paper-a4-landscape { width: 297mm; height: auto !important; max-height: none !important; min-height: 0 !important; }
+.compiler-page-sheet.compiler-continuous-sheet.paper-a4-portrait { width: 210mm; height: auto !important; max-height: none !important; min-height: 0 !important; }
+.compiler-page-sheet.compiler-continuous-sheet.paper-letter-landscape { width: 11in; height: auto !important; max-height: none !important; min-height: 0 !important; }
+.compiler-page-sheet.compiler-continuous-sheet.paper-letter-portrait { width: 8.5in; height: auto !important; max-height: none !important; min-height: 0 !important; }
+.compiler-page-sheet.compiler-continuous-sheet.paper-legal-landscape { width: 14in; height: auto !important; max-height: none !important; min-height: 0 !important; }
+.compiler-page-sheet.compiler-continuous-sheet.paper-legal-portrait { width: 8.5in; height: auto !important; max-height: none !important; min-height: 0 !important; }
+.compiler-page-sheet.compiler-continuous-sheet.paper-a3-landscape { width: 420mm; height: auto !important; max-height: none !important; min-height: 0 !important; }
+.compiler-page-sheet.compiler-continuous-sheet.paper-a3-portrait { width: 297mm; height: auto !important; max-height: none !important; min-height: 0 !important; }
 
 .page-sheet-header-strip {
   display: flex;
@@ -3203,8 +3203,9 @@ input[type="checkbox"]:checked + .switch-slider::before {
 }
 
 .compiler-continuous-sheet .page-sheet-body {
+  display: block !important;
   overflow: visible !important;
-  gap: 16px;
+  gap: 0 !important;
 }
 
 .page-sheet-footer-strip {
@@ -3219,6 +3220,12 @@ input[type="checkbox"]:checked + .switch-slider::before {
   color: #64748b;
   text-transform: uppercase;
   flex-shrink: 0;
+}
+
+/* In continuous single-sheet mode, the footer strip sits directly after the last section with a tight margin instead of margin-top: auto */
+.compiler-continuous-sheet .page-sheet-footer-strip {
+  margin-top: 12px !important;
+  margin-bottom: 0 !important;
 }
 
 /* Page Break Divider between sheets */
@@ -4269,15 +4276,13 @@ body.printing-report-compiler .compiler-page-sheet:not(.compiler-continuous-shee
 body.printing-report-compiler .compiler-page-sheet:not(.compiler-continuous-sheet).paper-a3-landscape { width: 420mm !important; height: 297mm !important; min-height: 297mm !important; max-height: 297mm !important; }
 body.printing-report-compiler .compiler-page-sheet:not(.compiler-continuous-sheet).paper-a3-portrait { width: 297mm !important; height: 420mm !important; min-height: 420mm !important; max-height: 420mm !important; }
 
-/* Continuous PDF Mode - strictly 1 single unbroken page */
+/* Continuous PDF Mode - strictly 1 single unbroken page with exact paper width */
 body.printing-report-compiler .compiler-page-sheet.compiler-continuous-sheet {
   display: block !important;
-  width: 100% !important;
-  max-width: 100% !important;
   height: auto !important;
   max-height: none !important;
   min-height: 0 !important;
-  margin: 0 !important;
+  margin: 0 auto !important;
   border-radius: 0 !important;
   box-shadow: none !important;
   border: 0 !important;
@@ -4292,14 +4297,22 @@ body.printing-report-compiler .compiler-page-sheet.compiler-continuous-sheet {
   background: #ffffff !important;
 }
 
-body.printing-report-compiler .compiler-continuous-sheet,
-body.printing-report-compiler .compiler-continuous-sheet * {
-  page-break-after: auto !important;
-  break-after: auto !important;
-  page-break-before: auto !important;
-  break-before: auto !important;
-  page-break-inside: auto !important;
-  break-inside: auto !important;
+body.printing-report-compiler .compiler-page-sheet.compiler-continuous-sheet.paper-a4-landscape { width: 297mm !important; max-width: 297mm !important; }
+body.printing-report-compiler .compiler-page-sheet.compiler-continuous-sheet.paper-a4-portrait { width: 210mm !important; max-width: 210mm !important; }
+body.printing-report-compiler .compiler-page-sheet.compiler-continuous-sheet.paper-letter-landscape { width: 11in !important; max-width: 11in !important; }
+body.printing-report-compiler .compiler-page-sheet.compiler-continuous-sheet.paper-letter-portrait { width: 8.5in !important; max-width: 8.5in !important; }
+body.printing-report-compiler .compiler-page-sheet.compiler-continuous-sheet.paper-legal-landscape { width: 14in !important; max-width: 14in !important; }
+body.printing-report-compiler .compiler-page-sheet.compiler-continuous-sheet.paper-legal-portrait { width: 8.5in !important; max-width: 8.5in !important; }
+body.printing-report-compiler .compiler-page-sheet.compiler-continuous-sheet.paper-a3-landscape { width: 420mm !important; max-width: 420mm !important; }
+body.printing-report-compiler .compiler-page-sheet.compiler-continuous-sheet.paper-a3-portrait { width: 297mm !important; max-width: 297mm !important; }
+
+body.printing-report-compiler .compiler-continuous-sheet {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+  page-break-after: avoid !important;
+  break-after: avoid !important;
+  page-break-before: avoid !important;
+  break-before: avoid !important;
 }
 
 body.printing-report-compiler .compiler-continuous-sheet .page-sheet-body {
@@ -4312,7 +4325,8 @@ body.printing-report-compiler .compiler-continuous-sheet .page-sheet-body {
 }
 
 body.printing-report-compiler .compiler-continuous-sheet .page-sheet-footer-strip {
-  margin-top: 16px !important;
+  margin-top: 12px !important;
+  margin-bottom: 0 !important;
   display: flex !important;
   justify-content: space-between !important;
 }
@@ -8370,24 +8384,8 @@ body.printing-report-compiler .table-wrap {
         } else if (typeof renderReportCompiler === "function") {
           renderReportCompiler();
         }
-        if (docMode === "continuous") {
-          const sheetEl = document.querySelector("#compilerReportContainer .compiler-continuous-sheet");
-          const coverPaper = document.getElementById("compilerCoverPaperSize") ? document.getElementById("compilerCoverPaperSize").value : "a4";
-          const coverOrient = document.getElementById("compilerCoverOrientation") ? document.getElementById("compilerCoverOrientation").value : "landscape";
-          if (sheetEl) {
-            const widthMm = getCompilerPaperWidthMm(coverPaper, coverOrient);
-            const pxHeight = Math.max(sheetEl.offsetHeight, sheetEl.scrollHeight, sheetEl.getBoundingClientRect().height);
-            const totalHeightMm = Math.ceil((pxHeight * 25.4) / 96) + 12;
-            let styleEl = document.getElementById("compilerDynamicPrintStyle");
-            if (styleEl) {
-              styleEl.textContent = `
-                @page {
-                  size: ${widthMm}mm ${totalHeightMm}mm !important;
-                  margin: 0 !important;
-                }
-              `;
-            }
-          }
+        if (docMode === "continuous" && typeof updateContinuousDocumentHeight === "function") {
+          updateContinuousDocumentHeight();
         }
       }
 
@@ -8439,6 +8437,12 @@ body.printing-report-compiler .table-wrap {
       const openPreview = () => {
         if (sheet === "kanban" && typeof prepareKanbanA4PrintLayout === "function") {
           prepareKanbanA4PrintLayout();
+        }
+        if (sheet === "reportCompiler") {
+          const docMode = document.getElementById("compilerDocMode") ? document.getElementById("compilerDocMode").value : "paginated";
+          if (docMode === "continuous" && typeof updateContinuousDocumentHeight === "function") {
+            updateContinuousDocumentHeight();
+          }
         }
         window.addEventListener("afterprint", cleanupPrintClasses, { once: true });
         setTimeout(() => {
@@ -8583,6 +8587,112 @@ body.printing-report-compiler .table-wrap {
       return widthMap[paperSize] || 297;
     }
 
+    function updateContinuousDocumentHeight() {
+      const docMode = document.getElementById("compilerDocMode") ? document.getElementById("compilerDocMode").value : "paginated";
+      if (docMode !== "continuous") return;
+
+      const sheetEl = document.querySelector("#compilerReportContainer .compiler-continuous-sheet");
+      const coverPaper = document.getElementById("compilerCoverPaperSize") ? document.getElementById("compilerCoverPaperSize").value : "a4";
+      const coverOrient = document.getElementById("compilerCoverOrientation") ? document.getElementById("compilerCoverOrientation").value : "landscape";
+      const widthMm = getCompilerPaperWidthMm(coverPaper, coverOrient);
+
+      let styleEl = document.getElementById("compilerDynamicPrintStyle");
+      if (!styleEl) {
+        styleEl = document.createElement("style");
+        styleEl.id = "compilerDynamicPrintStyle";
+        document.head.appendChild(styleEl);
+      }
+
+      if (!sheetEl) return;
+
+      const bodyZoom = parseFloat(window.getComputedStyle(document.body).zoom) || 1;
+      const rect = sheetEl.getBoundingClientRect();
+      let maxBottomPx = rect.height / bodyZoom;
+
+      const footerStrip = sheetEl.querySelector(".page-sheet-footer-strip");
+      if (footerStrip) {
+        const footerRect = footerStrip.getBoundingClientRect();
+        const footerBottom = (footerRect.bottom - rect.top) / bodyZoom;
+        if (footerBottom > maxBottomPx) maxBottomPx = footerBottom;
+      }
+
+      const allDescendants = sheetEl.querySelectorAll(".page-sheet-body, .page-sheet-footer-strip, .compiled-signoff-card, .compiled-section, table, .signoff-fields");
+      allDescendants.forEach(el => {
+        const r = el.getBoundingClientRect();
+        const bottomFromSheetTop = (r.bottom - rect.top) / bodyZoom;
+        if (bottomFromSheetTop > maxBottomPx) {
+          maxBottomPx = bottomFromSheetTop;
+        }
+      });
+
+      const sheetPaddingBottom = (parseFloat(window.getComputedStyle(sheetEl).paddingBottom) || 0) / bodyZoom;
+      const visualHeightPx = maxBottomPx + sheetPaddingBottom;
+
+      // Add a 50mm buffer so print subpixel antialiasing/font glyph metrics never trigger an accidental 2nd page or clip bottom signatures
+      const totalHeightMm = Math.max(50, Math.ceil((visualHeightPx * 25.4) / 96) + 50);
+
+      styleEl.textContent = `
+        @media print {
+          @page {
+            size: ${widthMm}mm ${totalHeightMm}mm;
+            margin: 0;
+          }
+          html, body {
+            width: ${widthMm}mm !important;
+            height: auto !important;
+            min-height: 0 !important;
+            max-height: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: #ffffff !important;
+            overflow: visible !important;
+          }
+          * {
+            page-break-inside: auto !important;
+            break-inside: auto !important;
+            page-break-before: auto !important;
+            break-before: auto !important;
+            page-break-after: auto !important;
+            break-after: auto !important;
+          }
+          body.printing-report-compiler .compiler-page-sheet.compiler-continuous-sheet {
+            width: ${widthMm}mm !important;
+            max-width: ${widthMm}mm !important;
+            height: auto !important;
+            min-height: 0 !important;
+            max-height: none !important;
+            margin: 0 auto !important;
+            box-sizing: border-box !important;
+            overflow: visible !important;
+          }
+        }
+      `;
+
+      const badge = document.getElementById("compilerPageCounter");
+      if (badge) {
+        badge.textContent = `1 Continuous Page (${widthMm} × ${totalHeightMm} mm)`;
+      }
+
+      sheetEl.querySelectorAll("img").forEach(img => {
+        if (!img.complete) {
+          img.addEventListener("load", () => {
+            updateContinuousDocumentHeight();
+          }, { once: true });
+        }
+      });
+
+      return { widthMm, totalHeightMm };
+    }
+
+    window.addEventListener("beforeprint", () => {
+      const docMode = document.getElementById("compilerDocMode") ? document.getElementById("compilerDocMode").value : "paginated";
+      if (document.body.classList.contains("printing-report-compiler") || (document.getElementById("reportCompilerSheet") && document.getElementById("reportCompilerSheet").classList.contains("active"))) {
+        if (docMode === "continuous" && typeof updateContinuousDocumentHeight === "function") {
+          updateContinuousDocumentHeight();
+        }
+      }
+    });
+
     function updateCompilerPageSetup() {
       const docMode = document.getElementById("compilerDocMode") ? document.getElementById("compilerDocMode").value : "paginated";
       const coverPaper = document.getElementById("compilerCoverPaperSize") ? document.getElementById("compilerCoverPaperSize").value : "a4";
@@ -8633,33 +8743,15 @@ body.printing-report-compiler .table-wrap {
       }
 
       if (docMode === "continuous") {
-        const calculateContinuousHeight = () => {
-          const sheetEl = document.querySelector("#compilerReportContainer .compiler-continuous-sheet");
-          const widthMm = getCompilerPaperWidthMm(coverPaper, coverOrient);
-          let totalHeightMm = 800;
-          if (sheetEl) {
-            const rect = sheetEl.getBoundingClientRect();
-            totalHeightMm = Math.ceil((rect.height * 25.4) / 96) + 4;
-          }
-          styleEl.textContent = `
-            @page {
-              size: ${widthMm}mm ${totalHeightMm}mm !important;
-              margin: 0 !important;
-            }
-          `;
-          const badge = document.getElementById("compilerPageCounter");
-          if (badge) {
-            badge.textContent = `1 Continuous Page (${widthMm} × ${totalHeightMm} mm)`;
-          }
-        };
-
-        calculateContinuousHeight();
-        setTimeout(calculateContinuousHeight, 50);
+        updateContinuousDocumentHeight();
+        setTimeout(updateContinuousDocumentHeight, 50);
       } else {
         styleEl.textContent = `
-          @page {
-            size: ${primaryPaper} ${primaryOrient} !important;
-            margin: 0 !important;
+          @media print {
+            @page {
+              size: ${primaryPaper} ${primaryOrient};
+              margin: 0;
+            }
           }
         `;
       }
@@ -10739,30 +10831,11 @@ body.printing-report-compiler .table-wrap {
         `;
         container.innerHTML = finalHtml;
 
-        const updateContinuousSize = () => {
-          const sheetEl = container.querySelector(".compiler-continuous-sheet");
-          if (sheetEl) {
-            const widthMm = getCompilerPaperWidthMm(coverPaper, coverOrient);
-            const rect = sheetEl.getBoundingClientRect();
-            const totalHeightMm = Math.ceil((rect.height * 25.4) / 96) + 4;
-            if (counterEl) {
-              counterEl.textContent = `1 Continuous Page (${widthMm} × ${totalHeightMm} mm)`;
-            }
-
-            let styleEl = document.getElementById("compilerDynamicPrintStyle");
-            if (styleEl) {
-              styleEl.textContent = `
-                @page {
-                  size: ${widthMm}mm ${totalHeightMm}mm !important;
-                  margin: 0 !important;
-                }
-              `;
-            }
-          }
-        };
-
-        updateContinuousSize();
-        setTimeout(updateContinuousSize, 50);
+        if (typeof updateContinuousDocumentHeight === "function") {
+          updateContinuousDocumentHeight();
+          requestAnimationFrame(updateContinuousDocumentHeight);
+          setTimeout(updateContinuousDocumentHeight, 60);
+        }
 
       } else {
         // WYSIWYG Paginated Sheets Output
