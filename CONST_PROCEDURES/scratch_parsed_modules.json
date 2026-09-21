@@ -1,0 +1,1287 @@
+[
+  {
+    "title_fld": {
+      "displayName": "Product Name",
+      "systemField": false,
+      "sortable": true,
+      "isDeleted": false,
+      "index": 0,
+      "type": "text",
+      "plugins": {}
+    },
+    "description_fld": {
+      "displayName": "Product Descriptor",
+      "systemField": false,
+      "sortable": true,
+      "isDeleted": false,
+      "index": 1,
+      "type": "text",
+      "plugins": {}
+    },
+    "image_fld": {
+      "displayName": "Product Photo",
+      "systemField": false,
+      "sortable": true,
+      "isDeleted": false,
+      "index": 2,
+      "type": "image",
+      "plugins": {}
+    },
+    "imagealttext_fld": {
+      "displayName": "Image Alt Text",
+      "systemField": false,
+      "sortable": true,
+      "isDeleted": false,
+      "index": 3,
+      "type": "text",
+      "plugins": {}
+    },
+    "_id": {
+      "displayName": "ID",
+      "systemField": true,
+      "sortable": true,
+      "isDeleted": false,
+      "index": 4,
+      "type": "text",
+      "plugins": {}
+    },
+    "_createdDate": {
+      "displayName": "Created Date",
+      "systemField": true,
+      "sortable": true,
+      "isDeleted": false,
+      "index": 5,
+      "type": "datetime",
+      "plugins": {}
+    },
+    "_updatedDate": {
+      "displayName": "Updated Date",
+      "systemField": true,
+      "sortable": true,
+      "isDeleted": false,
+      "index": 6,
+      "type": "datetime",
+      "plugins": {}
+    },
+    "_owner": {
+      "displayName": "Owner",
+      "systemField": true,
+      "sortable": true,
+      "isDeleted": false,
+      "index": 7,
+      "type": "text",
+      "plugins": {}
+    },
+    "productDescription": {
+      "displayName": "Product Description",
+      "systemField": false,
+      "sortable": true,
+      "isDeleted": false,
+      "index": 8,
+      "type": "text",
+      "plugins": {}
+    },
+    "customerBenefits": {
+      "displayName": "Customer Benefits",
+      "systemField": false,
+      "sortable": true,
+      "isDeleted": false,
+      "index": 9,
+      "type": "text",
+      "plugins": {}
+    },
+    "recommendedFor": {
+      "displayName": "Recommended For",
+      "systemField": false,
+      "sortable": true,
+      "isDeleted": false,
+      "index": 10,
+      "type": "text",
+      "plugins": {}
+    },
+    "safetyDataSheet": {
+      "displayName": "Safety Data Sheet",
+      "systemField": false,
+      "sortable": true,
+      "isDeleted": false,
+      "index": 11,
+      "type": "url",
+      "plugins": {}
+    },
+    "technicalDataSheet": {
+      "displayName": "Technical Data Sheet",
+      "systemField": false,
+      "sortable": true,
+      "isDeleted": false,
+      "index": 12,
+      "type": "url",
+      "plugins": {}
+    },
+    "youTube": {
+      "displayName": "YouTube",
+      "systemField": false,
+      "sortable": true,
+      "isDeleted": false,
+      "index": 13,
+      "type": "url",
+      "plugins": {}
+    },
+    "link-concrete-title_fld": {
+      "displayName": "Concrete (Item)",
+      "systemField": true,
+      "sortable": false,
+      "isDeleted": false,
+      "index": 14,
+      "queryOperators": [
+        "eq",
+        "ne",
+        "lt",
+        "gt",
+        "lte",
+        "gte",
+        "exists"
+      ],
+      "calculator": {
+        "config": {
+          "lowercase": true,
+          "pattern": "/concrete/{title_fld}"
+        }
+      },
+      "linkedRouterPage": "yw9xh",
+      "readOnly": false,
+      "type": "pagelink",
+      "plugins": {},
+      "pageLinkType": "COLLECTION_DEFINED"
+    },
+    "_publishStatus": {
+      "displayName": "Status",
+      "systemField": true,
+      "sortable": false,
+      "isDeleted": false,
+      "index": 15,
+      "type": "text",
+      "plugins": {}
+    },
+    "_publishDate": {
+      "displayName": "Publish Date",
+      "systemField": true,
+      "sortable": true,
+      "isDeleted": false,
+      "index": 16,
+      "type": "datetime",
+      "plugins": {}
+    },
+    "_draftDate": {
+      "displayName": "Unpublish Date",
+      "systemField": true,
+      "sortable": true,
+      "isDeleted": false,
+      "index": 17,
+      "type": "datetime",
+      "plugins": {}
+    }
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=wunZ8XNAZS0",
+    "_publishDate": {
+      "$date": "2026-05-18T08:47:03.014Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_5c788f88de9842209563f726c099465c~mv2.jpg/BUILDRITE_MACROFIBER_DEFAULT.jpg#originWidth=1800&originHeight=1800",
+    "recommendedFor": "\u2022 Pavements\n\u2022 Concrete bridge decks\n\u2022 Cast-in-place concrete\n\u2022 Wet precast concrete",
+    "_id": "2a6a3b7c-79e5-4124-a406-569c7a77c4c5",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2026-05-18T08:55:17.499Z"
+    },
+    "description_fld": "Polypropylene Macrofiber for Concrete",
+    "safetyDataSheet": "https://www.buildrite.ph/technicaldatasafetydata",
+    "_updatedDate": {
+      "$date": "2026-05-18T09:08:40.058Z"
+    },
+    "technicalDataSheet": "https://www.buildrite.ph/technicaldatasafetydata",
+    "link-concrete-title_fld": "/concrete/reforce-macrofiber",
+    "productDescription": "REFORCE MACROFIBER is extruded from a natural polypropylene homopolymer and formed into a flat profile with a textured surface for a better anchor in the cementitious matrix. It enhances the toughness and ductility of the concrete.",
+    "customerBenefits": "\u2022 Good dispersion in concrete without water absorption\n\u2022 Fatigue resistance, corrosion resistance, chemical resistance\n\u2022 Designed as an alternative to rebar reinforcement for slab-on-grade applications\n\u2022 Improves post-crack load-bearing capacity\n\u2022 High resistance to acid and alkali attack.",
+    "title_fld": "Reforce Macrofiber ",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=NMkS5lq6UFs",
+    "_publishDate": {
+      "$date": "2026-05-18T04:31:28.869Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_44b52604fd6c49a3be1bf51c9c3fd9b5~mv2.jpg/BUILDRITE_CARBON%20FIBER%20PLATE%20&%20FABRIC_DEFAULT.jpg#originWidth=1800&originHeight=1800",
+    "recommendedFor": "\u2022 Reinforcement for structural strengthening\n\u2022 Shear and punching shear reinforcement\n\u2022 Impact resistance\n\u2022 Strengthen against tensile stresses and bending\n\u2022 Circular and square members",
+    "_id": "58c03239-1eb6-47aa-b8c1-67f1defb92d9",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2026-05-18T04:32:20.556Z"
+    },
+    "description_fld": "High-Performance Carbon Fiber Sheet for Structural Strengthening",
+    "safetyDataSheet": "https://www.buildrite.ph/technicaldatasafetydata",
+    "_updatedDate": {
+      "$date": "2026-05-18T04:42:51.606Z"
+    },
+    "technicalDataSheet": "https://www.buildrite.ph/technicaldatasafetydata",
+    "link-concrete-title_fld": "/concrete/confix-carbon-fiber-fabric",
+    "productDescription": "BUILDRITE CARBON FIBER FABRIC is a unidirectional carbon fiber sheet for structural reinforcement, manual wrap lamination, and tensile strength reinforcement to structural members.",
+    "customerBenefits": "\u2022 Lightweight and easy to apply\n\u2022 High strength-to-weight ratio\n\u2022 Minimal applied thickness\n\u2022 Highly flexible and easy to mold to the application site, even around complex shapes.\n\u2022 Corrosion resistant\n\u2022 Control crack propagation",
+    "title_fld": "Confix Carbon Fiber Fabric",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?time_continue=1&v=I7OQ3SuTWqs&embeds_referring_euri=https%3A%2F%2Fshop.magnaprime.com.ph%2F&source_ve_path=Mjg2NjY",
+    "_publishDate": {
+      "$date": "2026-01-17T01:27:23.439Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_096611f234944305bff3e97fa3fe062d~mv2.jpg/Surfix%20Hardcrete%20Fix.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 For bonding cementitious floor toppings, renders and repair mortars\n\u2022 Resurfacing, renovation, surface restoration\n\u2022 Repair cracks and holes in cementitious structures",
+    "_id": "16036d2f-028d-4861-9161-177b2630d982",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2026-01-17T01:42:09.340Z"
+    },
+    "description_fld": "Hi-Performance Concrete Bonding Agent for Screed Topping and Repair Mortar",
+    "safetyDataSheet": "https://drive.google.com/file/d/1iyXL4nW1p7yOocVSCzM3O9wEPw-ex53L/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2026-01-17T01:42:09.340Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1K37BzzTziAvBXmIv8UB_Bxw_nRZF6oQw/view?usp=sharing",
+    "link-concrete-title_fld": "/concrete/surfix-hardcrete-fix",
+    "productDescription": "SURFIX HARDCRETE FIX is a polymer-based bonding agent for cementitious systems like floor toppings, renders, and repair mortars. It is a water-based, non-toxic, medium-viscosity, and ready-to-use emulsion.",
+    "customerBenefits": "\u2022 Easy to use \u2013 can be applied by brush, roller, or spray\n\u2022 Excellent bond to concrete, masonry, and plasters\n\u2022 Non-toxic\n\u2022 Improved flexibility",
+    "title_fld": "Surfix Hardcrete Fix",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=wunZ8XNAZS0",
+    "_publishDate": {
+      "$date": "2026-01-02T07:18:51.414Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_7d4a4019fb224196a2c453071628a45b~mv2.jpg/Buildrite%20Readycrete%20UW%206K.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Underwater foundation of bridge\n\u2022 Breakwaters and near sea construction\n\u2022 Impossible site of tamping\n\u2022 Marine construction\n\u2022 Column footings in high water table areas\n\u2022 Column repair of forts and jetties",
+    "_id": "b10a3724-ebd1-410b-b7dd-b34df3a00435",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2026-01-02T08:00:14.748Z"
+    },
+    "description_fld": "Ready Mix Concrete (6,000 psi) for Underwater Application",
+    "_updatedDate": {
+      "$date": "2026-01-02T08:00:14.748Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1tL-rDSRePnzES4XyWBbH7Yh_rddpjYLo/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/readycrete-uw-6k",
+    "productDescription": "READYCRETE UW 6K is a pre-packed ready mix concrete for underwater application. It has increased cohesion of cementitious components in water and has anti-washout properties.",
+    "customerBenefits": "\u2022 Increased cohesiveness, which prevents washout, and does not cloud the water and reduce visibility during placement\n\u2022 Stabilized formula that prevents water separation\n\u2022 Self-compacting",
+    "title_fld": "Readycrete UW 6K",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=wunZ8XNAZS0",
+    "_publishDate": {
+      "$date": "2026-01-02T07:18:51.414Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_9796829f1dcd420486a172ac0de82b9a~mv2.jpg/Buildrite%20Readycrete%20UW%204K.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Underwater foundation of bridge\n\u2022 Breakwaters and near sea construction\n\u2022 Impossible site of tamping\n\u2022 Marine construction\n\u2022 Column footings in high water table areas\n\u2022 Column repair of forts and jetties",
+    "_id": "9dd41958-e07e-4f4a-913d-6d3507cdbb54",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2026-01-02T07:53:28.967Z"
+    },
+    "description_fld": "Ready Mix Concrete (4,000 psi) for Underwater Application",
+    "_updatedDate": {
+      "$date": "2026-01-25T14:53:52.824Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1NnRBjmFDqLOUzGFnBwyTwdNjRxcoBMXK/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/readycrete-uw-4k",
+    "productDescription": "READYCRETE UW 4K is a pre-packed ready mix concrete for underwater application. It has increased cohesion of cementitious components in water and has anti-washout properties.",
+    "customerBenefits": "\u2022 Increased cohesiveness, which prevents washout, and does not cloud the water and reduce visibility during placement\n\u2022 Stabilized formula that prevents water separation\n\u2022 Self-compacting",
+    "title_fld": "Readycrete UW 4K",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=wunZ8XNAZS0",
+    "_publishDate": {
+      "$date": "2026-01-02T07:18:51.414Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_6a8d0afe4f51498f8460a9ab248658ee~mv2.jpg/Buildrite%20Hardcrete%20NM.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Factories\n\u2022 Showrooms\n\u2022 Loading bays\n\u2022 Repair workshops\n\u2022 Warehouses\n\u2022 Industrial and commercial floor surfaces",
+    "_id": "1c42b247-80f9-4d66-bf2a-fdbc3f99e46a",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2026-01-02T07:39:51.311Z"
+    },
+    "description_fld": "Non-Metallic Surface Hardener",
+    "_updatedDate": {
+      "$date": "2026-01-02T07:44:18.217Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1Tpq5T1v0RyPFYFQ_g1Bfmwgj6V-9V6OG/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/hardcrete-nm",
+    "productDescription": "HARDCRETE NM is a pre-mixed, nonmetallic, ready-to-use Non-Metallic Surface Hardener. It is designed to be applied as a dry shake over freshly floated concrete to provide a hard-wearing and durable monolithic floor.\n\nHARDCRETE NM contains hard-wearing graded aggregates, Portland cement, and other proprietary ingredients to improve workability.\n\nHARDCRETE NM is available in natural (concrete gray) color as standard. Special colors will be produced on request for large orders.",
+    "customerBenefits": "\u2022 Durable, hard-wearing surface with good abrasion resistance\n\u2022 Provides a good impact resistance\n\u2022 Provides a heavy-duty finish for longer serviceable life than plain concrete\n\u2022 Easier to clean resulting in low maintenance costs\n\u2022 Resistance to oil and grease penetration\n\u2022  Dense surface, reduces dusting\n\u2022  Easy and economical to apply",
+    "title_fld": "Hardcrete NM",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=e43poR7rJ_0",
+    "_publishDate": {
+      "$date": "2026-01-02T07:18:51.414Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_4608c5ebc4854c1aa2fb03185b9904bf~mv2.jpg/Buildrite%20Elastocrete.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Steel\n\u2022 Galvanized steel\n\u2022 Aluminum\n\u2022 Concrete/cement-based stone\n\u2022 Ceramics\n\u2022 Plywood boards substrate as underlayment prior to the application of covering materials.",
+    "_id": "6f77a533-129c-4de5-ae34-8bbd22f3f3f7",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2026-01-02T07:29:51.188Z"
+    },
+    "description_fld": "Flexible Self-Levelling Mortar",
+    "_updatedDate": {
+      "$date": "2026-01-02T07:29:51.188Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1vkRwfNC4KO-xmAZSzp1S6o67G4Q9SoDW/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/elastocrete",
+    "productDescription": "ELASTOCRETE is a cement-based, flexible, fiber-reinforced self-leveling mortar for concrete floors, steel, galvanized steel, and aluminum decks.\n\nELASTOCRETE contains a combination of specially selected cement, graded aggregates, synthetic flexible polymers, and a unique set control system. It requires only the addition of a measured quantity of water to produce a smooth free-flowing and self-leveling\nmaterial which can be applied 3 \u2013 5mm in one application. The material quickly attains a high surface strength and is walkable after 5-6 hours.",
+    "customerBenefits": "\u2022 Ready to use \u2013 one-pack product, simply mix with water on site\n\u2022 High Elasticity\n\u2022  Very good workability and flowability\n\u2022 Very good mechanical and bonding strength\n\u2022 High surface strength\n\u2022 Quick, easy laying and fast hardening\n\u2022 Can be feather-edged to provide a smooth finish",
+    "title_fld": "Elastocrete",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=I7OQ3SuTWqs",
+    "_publishDate": {
+      "$date": "2026-01-02T06:52:06.478Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_fe5cb67547f84c1a9193d6b9175fd8b0~mv2.jpg/Buildrite%20Surfix%20FSE.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "(Details Soon)\n\nMagna Prime as one of the first companies to establish the construction chemical category, boasts a comprehensive construction chemical product line that addresses the critical needs of the industry. This includes over tiling, waterproofing, roof garden waterproofing, repair solutions for weak concrete, injectable concrete repairs, insulating mortars, flexible tile adhesives, and other requirements for infrastructure.",
+    "_id": "23f98a0f-7599-40d2-b084-318bf0e67689",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2026-01-02T07:17:34.653Z"
+    },
+    "description_fld": "Fast Setting Epoxy",
+    "_updatedDate": {
+      "$date": "2026-01-02T07:32:32.907Z"
+    },
+    "link-concrete-title_fld": "/concrete/surfix-fse",
+    "productDescription": "(Details Soon)\n\nMagna Prime as one of the first companies to establish the construction chemical category, boasts a comprehensive construction chemical product line that addresses the critical needs of the industry. This includes over tiling, waterproofing, roof garden waterproofing, repair solutions for weak concrete, injectable concrete repairs, insulating mortars, flexible tile adhesives, and other requirements for infrastructure.",
+    "customerBenefits": "(Details Soon)\n\nMagna Prime as one of the first companies to establish the construction chemical category, boasts a comprehensive construction chemical product line that addresses the critical needs of the industry. This includes over tiling, waterproofing, roof garden waterproofing, repair solutions for weak concrete, injectable concrete repairs, insulating mortars, flexible tile adhesives, and other requirements for infrastructure.",
+    "title_fld": "Surfix FSE",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=wunZ8XNAZS0",
+    "_publishDate": {
+      "$date": "2026-01-02T06:52:06.478Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_9f6bcad1816d40b7bb5669fe903fcd91~mv2.jpg/Buildrite%20Surfix%20PE.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Concrete sealer applications: Its primary use is as an epoxy coating for sealing concrete surfaces.",
+    "_id": "cce6d15c-a623-415c-b4f6-ecfecf193f1a",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2026-01-02T06:53:06.731Z"
+    },
+    "description_fld": "Two Component Penetrating Epoxy",
+    "_updatedDate": {
+      "$date": "2026-01-02T07:18:25.981Z"
+    },
+    "link-concrete-title_fld": "/concrete/surfix-pe",
+    "productDescription": "SURFIX PE is a two-component epoxy coating specially formulated for concrete sealer applications. It is low viscous that seeps thoroughly to concrete surface providing an effective line barrier against water and other liquid intrusions.",
+    "customerBenefits": "\u2022 Effective Sealing: It effectively seals concrete surfaces, preventing the penetration of water and other liquids.\n\u2022 Low Viscosity: Its low viscosity allows it to seep thoroughly into the concrete surface, ensuring comprehensive protection.\n\u2022 Protective Barrier: It provides a reliable barrier that helps protect the integrity of the concrete. ",
+    "title_fld": "Surfix PE",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "_publishDate": {
+      "$date": "2026-01-02T06:04:06.727Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_17148faade73427c8c3dfc2b6381d68c~mv2.jpg/Confix%20UW%201.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "Buildrite Confix UW is highly recommended for applications involving underwater and wet condition concrete structural repairs. Specific recommended uses include: \n\u2022 Underwater foundations: Repairing concrete structures that are submerged.\n\u2022 Marine environments: Fixing piers, barges, and other marine infrastructure.\n\u2022 Tanks and reservoirs: Lining or repairing storage tanks and concrete reservoirs to prevent leaks and corrosion.\n\u2022 Areas with constant moisture: General structural repairs in locations that are permanently damp or wet, where other epoxies or cement-based products may not adhere properly. ",
+    "_id": "77ab656d-ac86-4ebb-ac8a-ea7fa128118c",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2026-01-02T06:41:27.501Z"
+    },
+    "description_fld": "Underwater Epoxy Putty for Damp or Wet Concrete",
+    "_updatedDate": {
+      "$date": "2026-01-02T06:53:40.765Z"
+    },
+    "link-concrete-title_fld": "/concrete/confix-uw-1",
+    "productDescription": "BUILDRITE CONFIX UW 1 is a specialized underwater epoxy putty designed for concrete repairs, used with Confix UW 2 for carbon/glass fiber applications, allowing strong bonding and patching of concrete even when wet or submerged, making it ideal for marine structures, pipelines, and submerged concrete elements. It's a two-part system that provides a durable, high-strength repair, effectively sealing against water intrusion and restoring structural integrity in underwater or damp conditions",
+    "customerBenefits": "\u2022 Effective in Wet and Underwater Conditions: It is specifically formulated to bond and cure even when submerged or exposed to constant moisture. \n\u2022 High Adhesion Strength: It is tested (ASTM D7234) for adhesion strength, ensuring a reliable and lasting bond to concrete substrates under tough conditions.\n\u2022 Durable and Tough Cure: The cured epoxy is durable and tough, capable of withstanding the demands of harsh environments like tanks, piers, and barges.\n\u2022 Structural Repair: It is part of a system designed to restore and strengthen concrete structures, often making the repaired section stronger than the original concrete.\n\u2022 Corrosion Prevention: By providing a tough barrier, it helps prevent corrosion in protected areas. ",
+    "title_fld": "Confix UW 1",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=wunZ8XNAZS0",
+    "_publishDate": {
+      "$date": "2026-01-02T05:54:11.335Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_a596d4d03a3a46dc8db8a0875098bbc5~mv2.jpg/Buildrite%20Bensoil.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Enhancing the efficiency of piling and directional drilling processes due to its high viscosity and good gel strength\n\u2022 Effective in minimizing water loss\n\u2022 Suitable for applications requiring a high liquid limit",
+    "_id": "bc1c78ed-e16f-4168-8756-36148a280ab2",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2026-01-02T06:01:57.305Z"
+    },
+    "description_fld": "Soil Stabilizer",
+    "_updatedDate": {
+      "$date": "2026-01-02T06:41:49.632Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1PIu0TeeR2FOg9ikJuevP_gzW3LEtrson/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/bensoil",
+    "productDescription": "BENSOIL is a selectively mined high montmorillonite sodium bentonite produced under controlled conditions. BENSOIL is a high-quality bentonite with well-balanced rheological properties, designed to fit with all necessities of diaphragm walling, piling, pipe jacking, tunneling, or drilling.",
+    "customerBenefits": "\u2022 Constant and controlled quality\n\u2022 High trench stability and productivity\n\u2022 Improved gelling capabilities, provides the best lubricity\n\u2022 Reduced consumption suitable for all kinds of soil surface\n\u2022 Good suspension capability",
+    "title_fld": "Bensoil",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=NMkS5lq6UFs",
+    "_publishDate": {
+      "$date": "2025-12-05T04:06:57.564Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_93e21b8f5a8146f699cc7da0a3f11a2f~mv2.jpg/Buildrite%20Reforce.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Improving seismic performance\n\u2022 Increasing the strength and ductility of civil structures\n\u2022 Correcting structural design or construction defects\n\u2022 Improving service life and durability\n\u2022 Structural upgradation\n\u2022 Increasing the loading capacity of structural elements",
+    "_id": "66269151-ef9d-4546-80d8-2937869a05e2",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-05T05:33:52.578Z"
+    },
+    "description_fld": "1.2mm (50mm*100meters)",
+    "_updatedDate": {
+      "$date": "2026-05-18T08:58:41.526Z"
+    },
+    "link-concrete-title_fld": "/concrete/reforce-p50",
+    "productDescription": "REFORCE P50 is characterized by high tensile modulus and high tensile strength. These epoxy- carbon composite strips are designed to strengthen existing concrete structures by bonding them to the substrate using an epoxy adhesive.",
+    "customerBenefits": "\u2022 Corrosion Resistant\n\u2022 Cost-effective\n\u2022 Easy to transport and install High-strength and stiffness-to-weight ratio Low overall thickness Outstanding fatigue resistant",
+    "title_fld": "Reforce P50",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=NMkS5lq6UFs",
+    "_publishDate": {
+      "$date": "2025-12-05T04:06:57.564Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_93e21b8f5a8146f699cc7da0a3f11a2f~mv2.jpg/Buildrite%20Reforce.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Reinforcement for structural strengthening Shear and punching shear reinforcement Impact resistance\n\u2022 Strengthen against tensile stresses and bending Circular and square members",
+    "_id": "fa855adc-a461-4de8-a255-114b7b6c5799",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-05T05:32:01.647Z"
+    },
+    "description_fld": "300gsm x 50cm x 100m",
+    "_updatedDate": {
+      "$date": "2026-05-18T08:58:58.480Z"
+    },
+    "link-concrete-title_fld": "/concrete/reforce-f300",
+    "productDescription": "REFORCE F300 is a unidirectional carbon fiber sheet for structural reinforcement, manual wrap lamination, and tensile strength reinforcement to structural members.",
+    "customerBenefits": "\u2022 Lightweight and easy to apply High strength-to-weight ratio Minimal applied thickness\n\u2022 Highly flexible and easy to mold to the application site, even around complex shapes.\n\u2022 Corrosion resistant\n\u2022 Control crack propagation\n\u2022 Impact and blast resistant",
+    "title_fld": "Reforce F300",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=K-gJAcjQENA",
+    "_publishDate": {
+      "$date": "2025-12-05T03:55:02.430Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_0c5dc9afd4144abb8b5926e041ab0509~mv2.jpg/Buildrite%20Solidcure.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 To provide heavy duty support beneath load bearing units \n\u2022 Grouting of precast wall panels \n\u2022 Anchor bolt fixing \n\u2022 Bedding bearing plates \n\u2022 Concrete repairs and pressure grouting ",
+    "_id": "2f073c35-76e1-4737-a88c-72f431c86da9",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-05T04:06:32.056Z"
+    },
+    "description_fld": "Non-Shrink Self Leveling Cementitious Grout ",
+    "_updatedDate": {
+      "$date": "2025-12-05T04:06:32.056Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1Z-ChKzONz7WTn9JNZMvkBP7lLiDvx82K/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/solidcure",
+    "productDescription": "SOLIDCURE is a non-shrink, cement-based, high-strength developing grout which is specially formulated for use in critical grouting operations and concrete spalling repair where positive expansion and self-leveling characteristics are required. \n\nSOLIDCURE is an economical and easy-to-use material requiring the addition of water to produce a free-flowing non-shrink grout. ",
+    "customerBenefits": "\u2022 Ease of applications \n\u2022 Positive expansion to ensure effective contact and support \n\u2022 Minimal downtime \n\u2022 Elimination of site batching errors \n\u2022 High early strength and low permeability \n\u2022 Elimination of staining or deterioration \n\u2022 Chloride-free permitting use in contact with reinforced steel ",
+    "title_fld": "Solidcure",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=utaZUDuqF2I&t=318s",
+    "_publishDate": {
+      "$date": "2025-12-05T03:25:45.426Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_63be6be34c304a38b32de190c180ec9a~mv2.jpg/Readycrete%206k.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Foundation walls and footings \n\u2022 Driveways and footpaths \n\u2022 Appliance and equipment platforms \n\u2022 Pipe and post footings \n\u2022 Floor slabs and patios \n\u2022 Pools, fish pools, stepping stones \n\u2022 Riprap and slope protection \n\u2022 Wall, floors and bases \n\u2022 Beams and columns ",
+    "_id": "0168ef58-cfbc-4546-8424-d98eb9a6a876",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-05T03:40:27.824Z"
+    },
+    "description_fld": "Ready Mix Concrete at 6,000 PSI",
+    "safetyDataSheet": "https://drive.google.com/file/d/1mvahTZelKD-_BMc4WH4JtL9ZsXFMou2L/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2025-12-05T03:40:27.824Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1Ukzquf7S8La8-9xnIzzPIZ3MZsCFxnxx/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/readycrete-6k",
+    "productDescription": "READYCRETE 6K is a pre-packed, fast setting ready mix concrete with a strength of 6,000 psi for general structural uses. It is a cost and time saving alternative to Ready-Mix Concrete (RMC) and Site-Mix Concrete, just add clean water on the proportioned concrete mix. ",
+    "customerBenefits": "\u2022 Pre-packed of commercial grade gravel, sand and cement \n\u2022 Fast setting and high early strength \n\u2022 Easy to mix and to apply\n\u2022 Cost saving \n\u2022 Eco-friendly \n\u2022 Less error in water-cement ratio mixing \n\u2022 No need to stock up gravel, sand and cement commercial-grade",
+    "title_fld": "Readycrete 6k",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=utaZUDuqF2I&t=318s",
+    "_publishDate": {
+      "$date": "2025-12-05T03:13:36.417Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_b96a5478d8374d33a0f7589bcfa6854e~mv2.jpg/Readycrete%204k.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Foundation walls and footings \n\u2022 Driveways and footpaths \n\u2022 Appliance and equipment platforms \n\u2022 Pipe and post footings \n\u2022 Floor slabs and patios \n\u2022 Pools, fish pools, stepping stones \n\u2022 Riprap and slope protection \n\u2022 Wall, floors and bases \n\u2022 Beams and columns ",
+    "_id": "a2801013-ccc6-4955-a015-5ab195b595c5",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-05T03:20:20.295Z"
+    },
+    "description_fld": "Ready Mix Concrete at 4,000 PSI",
+    "safetyDataSheet": "https://drive.google.com/file/d/1TZmGJHTVl_SIBKmlja1Q3yBKqlK3KWkC/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2025-12-05T03:42:57.594Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1kB7JpGbDx05k5GwKN4hTOKeCrTaITH6Q/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/readycrete-4k",
+    "productDescription": "READYCRETE 4K is a pre-packed, fast setting ready mix concrete for general structural uses. It is a cost and time saving alternative to Ready-Mix Concrete (RMC) and Site-Mix Concrete. ",
+    "customerBenefits": "\u2022 Pre-packed of commercial grade gravel, sand, and cement \n\u2022 Fast setting and high early strength\n\u2022 Easy to mix and to apply \n\u2022 Cost saving \n\u2022 Eco-friendly \n\u2022 Less error in water-cement ratio mixing \n\u2022 No need to stock up gravel, sand, and cement ",
+    "title_fld": "Readycrete 4k",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=RumAaaq52Y8&t=1s",
+    "_publishDate": {
+      "$date": "2025-12-05T02:55:36.619Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_02d6010df6134f9a80701e17b6fdef03~mv2.jpg/Buildrite%20Level%20Up!%20410.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "(Details Soon)\n\nMagna Prime as one of the first companies to establish the construction chemical category, boasts a comprehensive construction chemical product line that addresses the critical needs of the industry. This includes over tiling, waterproofing, roof garden waterproofing, repair solutions for weak concrete, injectable concrete repairs, insulating mortars, flexible tile adhesives, and other requirements for infrastructure.",
+    "_id": "3c30ad45-54ae-44c1-a6d3-f0f282c8259c",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-05T03:09:28.921Z"
+    },
+    "description_fld": "Self-Levelling Compound 10-25mm Thickness",
+    "safetyDataSheet": "https://drive.google.com/file/d/1KGx9Uafq48xzli32mKf1hHoBkD_o7sJ5/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2026-05-15T06:19:59.605Z"
+    },
+    "link-concrete-title_fld": "/concrete/level-up!-410",
+    "productDescription": "(Details Soon)\n\nMagna Prime as one of the first companies to establish the construction chemical category, boasts a comprehensive construction chemical product line that addresses the critical needs of the industry. This includes over tiling, waterproofing, roof garden waterproofing, repair solutions for weak concrete, injectable concrete repairs, insulating mortars, flexible tile adhesives, and other requirements for infrastructure.",
+    "customerBenefits": "(Details Soon)\n\nMagna Prime as one of the first companies to establish the construction chemical category, boasts a comprehensive construction chemical product line that addresses the critical needs of the industry. This includes over tiling, waterproofing, roof garden waterproofing, repair solutions for weak concrete, injectable concrete repairs, insulating mortars, flexible tile adhesives, and other requirements for infrastructure.",
+    "title_fld": "Level Up 410",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=Ve0te8AfkJo&t=1s",
+    "_publishDate": {
+      "$date": "2025-12-05T01:26:15.160Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_cf02d6b8a7524c36a86ce48fc0832a36~mv2.jpg/Buildrite%20Level%20Up!%20403.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Interior floors for houses and buildings prior to the application of covering materials. ",
+    "_id": "a14f9fda-8d79-4530-b80d-c3d0807d47d9",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-05T02:54:12.843Z"
+    },
+    "description_fld": "Self-leveling Compound 3-5mm Thickness at 4000 PSI",
+    "safetyDataSheet": "https://drive.google.com/file/d/1V0Bdb_UlQgta0RrHutaNktYdtvRWUfX1/view?usp=sharing",
+    "_updatedDate": {
+      "$date": "2026-05-15T06:18:18.324Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1Ue22kIKDBVmmWRQiDt16NU02gMxrzsvE/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/level-up!-403",
+    "productDescription": "LEVEL UP 403 is a ready-to-mix self-leveling underlayment mortar. It is used for leveling, smoothening, and repairing interior floors before the installation of the flooring system and coverings. \n\nLEVEL UP 403 contains a combination of specially selected cement, graded aggregates, synthetic polymers, and a unique set control system.  It requires only the addition of a measured quantity of water to produce a smooth free-flowing and self-leveling material, which can be applied up to 5mm in one application. ",
+    "customerBenefits": "\u2022 Ready-to-use \u2013 one pack product, simply mix with water on site \n\u2022 Very good workability and flowability \n\u2022 Very good mechanical and bonding strength     \n\u2022 Can be used directly onto concrete floors to provide a smooth surface without screeding \n\u2022 Quick, easy laying and fast hardening \n\u2022 Can be feather-edged to provide a smooth finish ",
+    "title_fld": "Level Up 403",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=ojYbH358t8g&t=973s",
+    "_publishDate": {
+      "$date": "2025-12-05T01:26:15.160Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_1e291b1e5ad846dbb69328b695da119c~mv2.jpg/Buildrite%20Surfix%20Epocoat%20MB%20White.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 For damp surfaces ",
+    "_id": "e525b16d-7a05-41c1-a15e-33b5bb001267",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-05T01:35:19.087Z"
+    },
+    "description_fld": "Moisture Barrier Primer for Floor Coatings ",
+    "safetyDataSheet": "https://drive.google.com/file/d/12dhKAKboISWVMUOq9vb1PcZ07w_8bm8h/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2026-05-15T06:20:13.731Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1ey_pGGFCuARIyWQCE96DIV06tk3hzSU8/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/surfix-epocoat-mb-white",
+    "productDescription": "SURFIX MB WHITE is a two-component, 100% solid epoxy specially formulated as a high-strength primer used in priming all concrete surface and steel prior to the application of any resin-based floor coatings and toppings.  ",
+    "customerBenefits": "\u2022 High-protective coating \n\u2022 Pigmented binder for seamless broadcast flooring system \n\u2022 High-quality concrete epoxy primer ",
+    "title_fld": "Surfix Epocoat MB",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=ojYbH358t8g",
+    "_publishDate": {
+      "$date": "2025-12-05T01:04:55.630Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_6765ff1561dc47a4bfd4db4162a6c51a~mv2.jpg/Buildrite%20Surfix%20SCA.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Tile over tile application \n\u2022 Polished floors ",
+    "_id": "e9b1cb0f-f1fc-49d0-96a4-86298d3d7fa0",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-05T01:23:30.043Z"
+    },
+    "description_fld": "Rendering Bonding Agent ",
+    "_updatedDate": {
+      "$date": "2025-12-05T01:23:30.043Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/13B9ZNcoUtD9oFwrz04CJ1efKVFCbOx0i/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/surfix-sca",
+    "productDescription": "SURFIX SCA is a 1K acrylic rendering bonding agent that contains aggregates to improve mechanical adhesion on substrates especially on smooth surfaces. The fine aggregates are suspended in a special type of acrylic polymer and applied easily using brush or roller.  \n\nSURFIX SCA reduces the porosity of the substrate and provides a mechanical key or adhesion from the fine aggregates suspended on the product. It is waterbased, non-toxic and ready to use.  ",
+    "customerBenefits": "\u2022 Ready to use \n\u2022 Easy to apply by brush or roller \n\u2022 Extra-grip rendering bonding agent \n\u2022 Improves adhesion on smooth surfaces \u2013 tiles, polished floors \n\u2022 Good open time ",
+    "title_fld": "Surfix SCA",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=ojYbH358t8g&t=633s",
+    "_publishDate": {
+      "$date": "2025-12-05T01:04:55.630Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_13bd0d28eccb4a4a8175776b7a292348~mv2.jpg/Buildrite%20Surfix%20WB.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Highly moisture substrates (e.g. pools, comfort rooms) \n\u2022 Enclosed area (e.g. cistern tanks) \n\u2022 Food processing facilities (e.g. kitchen)",
+    "_id": "8f5889cd-f7e5-4a5f-8a6f-8de12e70431f",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-05T01:14:45.016Z"
+    },
+    "description_fld": "Water-based Epoxy Primer for Concrete ",
+    "safetyDataSheet": "https://drive.google.com/file/d/1axhZqxIoXp5iiybt4NMrvfR9X_dM2Mmb/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2025-12-05T03:22:25.604Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1DszGD_wOoLCZgN4PE6gZRA0KxjbSsEJf/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/surfix-wb",
+    "productDescription": "SURFIX WB is a two-component water-based epoxy that acts as a multifunctional primer. It is a great choice to seal new and old concrete surfaces to prevent gassing out and air bubbles from transmitting through subsequent coatings. When applied in two or more coats, SURFIX WB produces a very durable sealer coat. ",
+    "customerBenefits": "\u2022 Cost Effective \n\u2022 Low odor during application and can be applied in occupied facilities \n\u2022 Very low viscosity provides deeper penetration into even the smallest voids in concrete",
+    "title_fld": "Surfix WB",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=ojYbH358t8g&t=587s",
+    "_publishDate": {
+      "$date": "2025-12-05T00:57:19.721Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_f5984c2aa692443a866dbb1e36d3881d~mv2.jpg/Buildrite%20Surfix%20DP.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Ideal for dust-proofing warehouses, car parks, garages, industrial plants, and shopping malls.",
+    "_id": "9512fe25-c88b-4707-bdd0-6e45ddc7e93a",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-05T01:03:13.423Z"
+    },
+    "description_fld": "Liquid Dust Proofer and Hardener and for Concrete ",
+    "safetyDataSheet": "https://drive.google.com/file/d/1jhXmQ59docFHoF40Mj-0sDhL_W36Baj0/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2025-12-05T01:03:13.423Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1sAuNeAn6m8k9gx3X2RVCN4aMSVbtQGGc/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/surfix-dp",
+    "productDescription": "SURFIX DP is a single-pack, concrete surface dust proofer and hardener for new and old concrete floors. \n\nSURFIX DP is based on sodium silicate, when applied to concrete reacts chemically to produce a hard, dustfree finish. It is supplied as a ready-to-use liquid. ",
+    "customerBenefits": "\u2022 Ready to use \n\u2022 Easy and economical to apply \n\u2022 Good penetration \n\u2022 Improves abrasion and wear resistance of concrete surfaces \n\u2022 Dust-free finish \u2013 chemical reaction eliminates dusting of treated concrete surface ",
+    "title_fld": "Surfix DP",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=ojYbH358t8g&t=2s",
+    "_publishDate": {
+      "$date": "2025-12-05T00:27:43.258Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_019ebbab52924d9eaec375bfe8a66925~mv2.jpg/Buildrite%20Surfix%20D.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 For concrete surface densifiers and hardeners for new and old concrete floors\n\u2022 Produce a hard and denser finish\n\u2022 It helps with surface strength improvement, increases durability, acts as a dust reducer and reduces concrete porosity. ",
+    "_id": "86cbc3ee-25be-480d-ad85-364ab1095fec",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-05T00:53:31.279Z"
+    },
+    "description_fld": "Concrete Surface Densifier ",
+    "safetyDataSheet": "https://drive.google.com/file/d/1kBpVj8Vn-y41RqN77m05GMeaKhCveySM/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2025-12-05T00:53:31.279Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1rqfAyp2VOAqK2XNe2XbYT2mYHUxsEqRN/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/surfix-d",
+    "productDescription": "SURFIX D is a proprietary blend of silicates formulated specifically for concrete surface densifiers and hardeners for new and old concrete floors.   \n\nSURFIX D is based on lithium silicate and other silicates, which when applied to concrete react chemically to produce a hard and denser finish. It is supplied as a clear liquid ready for use directly from the container. It helps with surface strength improvement, increases durability, acts as a dust reducer and reduces concrete porosity. ",
+    "customerBenefits": "\u2022 Ready to use \n\u2022 Easy and economical to apply \n\u2022 Good penetration \n\u2022 Improves abrasion and wear resistance of concrete surfaces ",
+    "title_fld": "Surfix D",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=wunZ8XNAZS0&t=5s",
+    "_publishDate": {
+      "$date": "2025-12-05T00:27:43.258Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_eda66882cf9f4b2ab7d4207efdddf8e7~mv2.jpg/Buildrite%20Hardcrete%20810.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Forms strong bonds on a wide variety of rigid materials\n\u2022 Used as a filler for hairline cracks up to 1.0mm wide on concrete\n\u2022 Used as a putting compound and as an adhesive",
+    "_id": "d50592e7-e0db-4cdc-b95a-57124f64515c",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-05T00:31:02.509Z"
+    },
+    "description_fld": "Filler Putty for Concrete Build up to 10mm Thickness 8000 PSI",
+    "imagealttext_fld": "",
+    "_updatedDate": {
+      "$date": "2025-12-05T00:45:51.495Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1VmbjfZt1VxUwNDBJl5XDU8FXR8GOlOm0/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/hardcrete-810",
+    "productDescription": "HARDCRETE 810 is a 100% solids thermosetting plastic compound that forms strong bonds on a wide variety of rigid materials; e.g., concrete, glass, metals, ceramics, wood, and some plastics (except polyethylene, soft PVC, and Teflon). It is used as a filler for hairline cracks up to 1.0mm wide on concrete. It is also used as a putting compound and as an adhesive. ",
+    "customerBenefits": "\u2022 Repairing and resurfacing of concrete floor and slabs \n\u2022 Gap sealer for concrete and wood joints for vertical and horizontal application \n\u2022 As putty (masilya) for concrete and wood \n\u2022 Water-resistant and serves as waterproofing with anti-corrosive properties when used in metal.",
+    "title_fld": "Hardcrete 810",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=wunZ8XNAZS0&t=5s",
+    "_publishDate": {
+      "$date": "2025-12-04T11:07:35.829Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_89b06df1b41e4b0eb087025f17f71209~mv2.jpg/Buildrite%20Hardcrete%20801.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "Used as a smoothening compound for thin application on concrete, as a putting compound, and an adhesive",
+    "_id": "0e58c63a-38ae-4ab7-a608-a3eb55cee160",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-04T11:40:55.759Z"
+    },
+    "description_fld": "Smoothening Epoxy Putty for Pin Holes 1mm Thickness at 8000 psi",
+    "safetyDataSheet": "https://drive.google.com/file/d/1feN2QL-3GNhqXPCRp47LptU3pgvQe2OB/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2025-12-04T11:40:55.759Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1nWsKODwYwzkxRTjB17bMVVmeoW40GmLf/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/hardcrete-801",
+    "productDescription": "HARDCRETE 801 is a two-component, low-viscosity putty compound that forms strong bonds on a wide variety of rigid materials. It is used as a smoothening compound for thin application on concrete, as a putting compound, and an adhesive.",
+    "customerBenefits": "\u2022 Repairing and resurfacing of concrete floor and slabs \n\u2022 Gapsealer for wood imperfections and joints \n\u2022 Repairing or restorations of wooden boat \n\u2022 As putty (masilya) for concrete and wood \n\u2022 Water-resistant and serve as waterproofing with anti-corrosive properties when used in metal",
+    "title_fld": "Hardcrete 801",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=d-XpO3kCNTA&t=440s",
+    "_publishDate": {
+      "$date": "2025-12-04T11:07:35.829Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_5a9d71f7dbc6465fa1b3eff6b7f06c68~mv2.jpg/Buildrite%20Hardcrete.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 General patching repair work \n\u2022 Patching and repairing damaged concrete surfaces. \n\u2022 Resurfacing of worn-out concrete floors \n\u2022 Topping of new and old concrete floors \n\u2022 Ideal repair works for driveways, warehouses, car parks, loading bays, concrete roads, etc.  ",
+    "_id": "a0aeec2e-8600-44dc-894f-5ed81ec9f315",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-04T11:20:22.912Z"
+    },
+    "description_fld": "Cementitious Compound for Re-instatement of Concrete Pavements  20mm Thickness at 6000 PSI",
+    "safetyDataSheet": "https://drive.google.com/file/d/1tTKqh_DO7BLI6GagSZbYVjW949TC6rQ8/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2025-12-05T00:32:03.005Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/13ZFfNUuZgym0VabxBPuZvSRbqwy5cuFo/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/hardcrete-620",
+    "productDescription": "HARDCRETE 620 is a cementitious pre-packed repair mortar specially designed for resurfacing, patching, and repairing large areas of concrete.  It is supplied as a single component powder that only needs mixing with a specific quantity of water to produce a non-shrink and rapid strength-gain mortar. It is a blend of special cement, special fillers, and modifying additives to control the rate of setting and strength gain plus hardwearing aggregates. \n\nThe cured mortar is durable and weather resistant and is ideal for use in heavily trafficked areas where a rapid return to service in 2 \u2013 3 hours is critical. ",
+    "customerBenefits": "\u2022 Pre-packed - easy to mix and apply \n\u2022 Shrinkage compensated \n\u2022 Special formulation accelerates strength development \n\u2022 Abrasion and weather resistant ",
+    "title_fld": "Hardcrete 620",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=d-XpO3kCNTA&t=440s",
+    "_publishDate": {
+      "$date": "2025-12-04T11:07:35.829Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_5a9d71f7dbc6465fa1b3eff6b7f06c68~mv2.jpg/Buildrite%20Hardcrete.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 General patching repair work \n\u2022 Patching and repairing damaged concrete surfaces \n\u2022 Resurfacing of worn-out concrete floors  \n\u2022 Topping of new and old concrete floors \n\u2022 Ideal repair works for driveways, warehouses, car parks, loading bays, concrete roads, etc. \n\u2022 Recommended for a minimum thickness of 10mm.",
+    "_id": "62fa0e6e-97dc-4f57-8af9-d2e47b4ca519",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-04T11:13:12.866Z"
+    },
+    "description_fld": "Cementitious Compound for Re-instatement of Concrete Pavements  10mm Thickness at 5000 PSI",
+    "safetyDataSheet": "https://drive.google.com/file/d/1VecJkGJjKy6Hg9IXcFHUExDyGKTJQzK3/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2025-12-05T00:32:10.623Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1N14XBJm02NMR3xYIv7VkbAbgL9E05LiA/view?usp=sharing",
+    "link-concrete-title_fld": "/concrete/hardcrete-510",
+    "productDescription": "HARDCRETE 510 is a cementitious pre-packed repair mortar specially designed for resurfacing, patching, and repairing large areas of concrete at a minimum thickness of 10mm.  It is supplied as a single component powder, which only needs mixing with a specific quantity of water to produce a non-shrink and rapid strength-gain mortar.  It is based on a blend of special cement, modifying additives to control the rate of setting and strength gain, and selected hardwearing aggregates.",
+    "customerBenefits": "\u2022 Pre-packed - easy to mix and apply \n\u2022 Shrinkage compensated \n\u2022 Special formulation accelerates strength development. \n\u2022 Abrasion and weather resistant ",
+    "title_fld": "Hardcrete 510",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=d-XpO3kCNTA",
+    "_publishDate": {
+      "$date": "2025-12-04T10:58:11.408Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_5a9d71f7dbc6465fa1b3eff6b7f06c68~mv2.jpg/Buildrite%20Hardcrete.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 General patching repair work \n\u2022 Patching and repairing damaged concrete surfaces \n\u2022 Resurfacing of worn-out concrete floors  \n\u2022 Topping of new and old concrete floors \n\u2022 Ideal repair works for driveways, warehouses, car parks, loading bays, concrete roads, etc.   \n\u2022 Recommended for a minimum thickness of 10mm ",
+    "_id": "683855d4-4e7d-4a53-957e-6579f5bafdba",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-04T11:04:16.633Z"
+    },
+    "description_fld": "Cementitious Compound for Re-instatement of Concrete Pavements 10mm Thickness at 3000 PSI",
+    "safetyDataSheet": "https://drive.google.com/file/d/1NprTF_2lswddpn23jIvx42lyRAjeAim_/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2025-12-05T00:32:17.540Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1aVxCWH2Pr9NyhYLC2Z290W-mhe9O02b1/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/hardcrete-310",
+    "productDescription": "HARDCRETE 310 is a cementitious pre-packed repair mortar specially designed for resurfacing, patching, and repairing large areas of concrete at a minimum thickness of 10mm. It is supplied as a single component powder, which only needs mixing with a specific quantity of water to produce a non-shrink and rapid strength-gain mortar.  It is based on a blend of special cement, modifying additives to control the rate of setting and strength gain, and selected hardwearing aggregates.  ",
+    "customerBenefits": "\u2022 Pre-packed - easy to mix and apply \n\u2022 Shrinkage compensated \n\u2022 Special formulation accelerates strength development. \n\u2022 Abrasion and weather resistant ",
+    "title_fld": "Hardcrete 310",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=NSXtg13Nn0g",
+    "_publishDate": {
+      "$date": "2025-12-04T10:44:19.128Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_97675a7564884ec8bcef1a6033079e74~mv2.jpg/Buildrite%20Hardcrete%20303.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Thin plastering of interior and exterior walls and ceiling \n\u2022 Filling pinholes prior to overcoating \n\u2022 General re-profiling over large areas of concrete up to 3 mm.",
+    "_id": "33b4f7dc-d839-4b5f-bfaf-2b2a001769ec",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-04T10:57:46.557Z"
+    },
+    "description_fld": "Skim Mortar Screed 3mm Thickness at 3000 PSI",
+    "safetyDataSheet": "https://drive.google.com/file/d/1_vYm3SYEybTjH087EvX_ygFZiIZfMzUz/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2025-12-05T00:32:24.504Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1zThGk3V_3OOZIoueQihm-j4UKsOeNvyy/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/hardcrete-303",
+    "productDescription": "HARDCRETE 303 is a two-component, skimsmoothing ultra-paste compound specially formulated to be mixed with a select cement blend for rendering and finishing uneven concrete surfaces and pre-cast concrete panels.  When mixed with cement blend, the product exhibits very good trowelability application and excellent bond to the concrete surface.  It is designed for indoor and outdoor use as a skim smoothing up to 3 mm for walls and light traffic floors. ",
+    "customerBenefits": "\u2022 Excellent bond to the concrete substrate \n\u2022 Application thickness up to 3 mm \n\u2022 Good trowel ability \n\u2022 Smooth finish \u2013 important for the application of decorative finish \n\u2022 Serves as an initial coat for painting purposes  \n\u2022 Yields homogeneous paste that eliminates surface crack lines ",
+    "title_fld": "Hardcrete 303",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "_publishDate": {
+      "$date": "2025-12-04T10:35:41.637Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_c6f1b31fb41549c095146b457e635541~mv2.jpg/Buildrite%20Concrete%20Patch%20H.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 General patching repair work \n\u2022 Emergency reinstatement of deteriorated concrete \n\u2022 For repair of runways and apron \n\u2022 Areas where wheeled traffic requires a fast return to service\n\u2022 Ideal repair works for driveways, bridges, seaports, loading bays, parking decks, etc.",
+    "_id": "b73f19c4-f83d-4d9c-989e-2df3cc08d0c4",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-04T10:41:13.868Z"
+    },
+    "description_fld": "Rapid Setting Repair Mortar for Pavements and Floors ",
+    "safetyDataSheet": "https://drive.google.com/file/d/1CPESX7-iM_3bD0uCt1dzX6N70JhQ2mb-/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2025-12-04T10:43:08.653Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1ftH81_85_VAeMl0BqOEVIsNfHGxtx1GC/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/concrete-patch-h",
+    "productDescription": "CONCRETE PATCH H is a cementitious pre-packed repair mortar with shrinkage compensation properties.  It is supplied as a single component powder that only needs mixing with a specific quantity of water to produce a non-shrink, free-flowing, fast-setting, and high-strength mortar. It is a blend of inorganic cement, special fillers, and chemical additives to control the rate of strength gain. \n\nThe cured mortar is durable and weather-resistant and is ideal for use in heavily trafficked areas where a rapid return to service in 2 \u2013 3 hours is critical. ",
+    "customerBenefits": "\u2022 Easy to apply \n\u2022 Shrinkage compensated \n\u2022 High strength \n\u2022 Abrasion and weather resistant \n\u2022 Excellent adhesion to concrete \n\u2022 Rapid strength gain \u2013 will accept vehicular traffic within 2 to 3 hours.",
+    "title_fld": "Concrete Patch H",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=bpYOViHXJnw",
+    "_publishDate": {
+      "$date": "2025-12-04T10:23:50.674Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_61d42bdc9e3a4f79919540c6155dead5~mv2.jpg/Buildrite%20Concrete%20Patch%20V.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 General patching repair work \n\u2022 Filling voids \n\u2022 For repair of runways and apron  \n\u2022 Horizontal, vertical, and overhead applications ",
+    "_id": "33cecc90-7c8e-48a2-ad32-b31140e49377",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-04T10:34:39.924Z"
+    },
+    "description_fld": "Non-Sag Repair Mortar for Vertical Application",
+    "safetyDataSheet": "https://drive.google.com/file/d/13_DblSQdugsyVnZ8xBkx1eWWHa35kgO-/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2025-12-04T10:34:39.924Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1Q82xI1Jydn9GTRce2me3YLDAThf9PfTH/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/concrete-patch-v",
+    "productDescription": "CONCRETE PATCH V is a cementitious pre-packed repair mortar with shrinkage compensation properties.  It is supplied as a single component powder which only needs mixing with a specific quantity of water to produce a non-shrink mortar allowing vertical application of 40mm thickness in a single layer without the use of formwork. ",
+    "customerBenefits": "\u2022 Easy to apply \n\u2022 Shrinkage compensated \n\u2022 Medium to high build on prepared vertical surfaces \n\u2022 Composition ensures excellent adhesion \n\u2022 Water tightness \u2013 special additives ensure optimum density and water repellency of cured surfaces ",
+    "title_fld": "Concrete Patch V",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=pr-eggrbzb0&t=5s",
+    "_publishDate": {
+      "$date": "2025-12-04T10:08:27.864Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_79da60a114eb412eb784147eb52622f2~mv2.jpg/Buildrite%20Confix%20EC.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "As a temporary moisture barrier (min. 2 mm thick) allowing the application of epoxy, polyurethane, and resin floors requiring dry substrates, over high moisture content substrate, even in green concrete, for a lasting solution. ",
+    "_id": "10010525-507d-44d8-b394-af959d0db0eb",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-04T10:22:35.612Z"
+    },
+    "description_fld": "3-Part Cement and Epoxy Combination Mortar for Self-smoothing Floor Screed of 1.5 to 3mm Thickness ",
+    "safetyDataSheet": "https://drive.google.com/file/d/1Cl6IvptjjdmGLmGq_4CAY9cblaFEUZIQ/view?usp=sharing",
+    "_updatedDate": {
+      "$date": "2025-12-04T10:22:35.612Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1ibN_UhceA1OOtq7QkO73_3CDaEHtBFc3/view?usp=sharing",
+    "link-concrete-title_fld": "/concrete/confix-ec",
+    "productDescription": "CONFIX EC is a three-part, epoxy-modified cementitious, fine-textured mortar for self-smoothing floor screeds in thin layers of 1.5 to 3 mm.  It is easy and quick to apply and forms an ideal substrate for the application of self-leveling coatings. \n\nCONFIX EC can be coated with epoxy polyurethane system after just 24 hours even when applied to concrete that is damp, not fully cured or exposed to rising moisture. It helps prevent and ensure proper adhesion of resin coatings. \n\nCONFIX EC is a solvent-free product supplied in predosed packaging and is easy to apply to form a flat, smooth finish. \n\nThe final performance characteristics of CONFIX EC guarantee an excellent bond with hardened concrete, even when not fully cured and still damp. \n\nThe product is highly durable and offers excellent resistance to a wide range of chemicals.  CONFIX EC offers excellent resistance to water and oil, and resists attacks from de-icing salts. It has improved chemical resistance over plain concrete in aggressive environments but is not designed as chemical protection.    ",
+    "customerBenefits": "\u2022 Fast and easy application to form a smooth finish, for internal and external use. \n\u2022 Protective action against attack from de-icing salts. \n\u2022 Can be coated after just 24 hours with epoxy or polyurethane resin \n\u2022 Excellent adhesion to concrete \n\u2022 Promotes good adhesion with successive resin coatings \n\u2022 Reduces the risk of blisters and/or detachment of successive waterproof coatings, even if applied on damp substrates \n\u2022 Excellent mechanical strength \n\u2022 Solvent-free \n\u2022 Good leveling properties",
+    "title_fld": "Confix EC",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=NMkS5lq6UFs",
+    "_publishDate": {
+      "$date": "2025-12-04T09:37:03.835Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_a15703fd21554277b7b1a26f4baede23~mv2.jpg/Buildrite%20Confix%20Carbon%20Fiber%20Fabric%20Epoxy.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Reinforcement for structural strengthening \n\u2022 Shear and punching shear reinforcement \n\u2022 Impact-resistance \n\u2022 Strengthen against tensile stresses and bending \n\u2022 Circular and square members impact resistance",
+    "_id": "7625e8d5-77de-499f-b8de-b86f23a23797",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-04T10:02:39.050Z"
+    },
+    "description_fld": "High-Performance Carbon Fiber Sheet for Structural Strengthening",
+    "safetyDataSheet": "https://drive.google.com/file/d/1W891iz_KZFl27-eh7Zh7EhQMuQ8OAv8f/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2026-05-18T08:59:55.120Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1B5MQEze6h3LqPUxiQgOtg5zAHLQgcazM/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/confix-carbon-fiber-fabric-epoxy",
+    "productDescription": "BUILDRITE CARBON FIBER FABRIC is a unidirectional carbon fiber sheet for structural reinforcement, manual wrap lamination, and tensile strength reinforcement to structural members.",
+    "customerBenefits": "\u2022 Lightweight and easy to apply \n\u2022 High strength-to-weight ratio \n\u2022 Minimal applied thickness \n\u2022 Highly flexible and easy to mold to the application site, even around complex shapes. \n\u2022 Corrosion-resistant \n\u2022 Control crack propagation \n\u2022 Impact and blast resistant",
+    "title_fld": "Confix Carbon Fiber Fabric Epoxy",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=NMkS5lq6UFs",
+    "_publishDate": {
+      "$date": "2025-12-04T09:28:29.514Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_db724cb574a4468f86dd72a4a7ade1c6~mv2.jpg/Buildrite%20Confix%20Carbon%20Fiber%20Plate%20Epoxy.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Improving seismic performance \n\u2022 Increasing the strength and ductility of civil structures \n\u2022 Correcting structural design or construction defects \n\u2022 Improving service life and durability \n\u2022 Structural upgradation \n\u2022 Increasing the loading capacity of structural elements ",
+    "_id": "83d12460-64b4-446d-838f-0c411749363f",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-04T09:35:49.702Z"
+    },
+    "description_fld": "Standard Modulus Carbon Plate Laminates ",
+    "_updatedDate": {
+      "$date": "2026-05-18T09:00:13.170Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1s0K54koLMDJc-PMMdavywKVHCvugcLth/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/confix-carbon-fiber-plate-epoxy",
+    "productDescription": "BUILDRITE CARBON FIBER PLATE is characterized by high tensile modulus and high tensile strength.  These epoxy-carbon composite strips are designed to strengthen existing concrete structures by bonding them to the substrate using an epoxy adhesive. ",
+    "customerBenefits": "\u2022 Corrosion Resistant \n\u2022 Cost-effective \n\u2022 Easy to transport and install \n\u2022 High-strength and stiffness-to-weight ratio \n\u2022 Low overall thickness\n\u2022 Outstanding fatigue resistant ",
+    "title_fld": "Confix Carbon Fiber Plate Epoxy",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=L7v8sNe8XjA",
+    "_publishDate": {
+      "$date": "2025-12-04T09:14:02.272Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_b053188459d5408b8b876aae4c623a1a~mv2.jpg/Buildrite%20Confix%20Concrete%20Epoxy%20HV.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 To bond old concrete to freshly poured concrete topping, thus eliminating \u201ccold joints\u201d between old and new concrete. \n\u2022 To replace cement in bonding pre-cast, concrete structural units such as concrete decors under damp or dry conditions. \n\u2022 To bond wood or metal to concrete surfaces such as anchoring machinery to a concrete floor. \n\u2022 To anchor and grout concrete or ceramic floor tiles over cement, wood, or steel. \n\u2022 To patch spalled and damaged areas in concrete structures. ",
+    "_id": "4020b300-2d8e-48c4-8efe-e9d99a872fd6",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-04T09:26:29.314Z"
+    },
+    "description_fld": "Non-sag High Viscosity Epoxy Bonding Agent for Old to New Concrete ",
+    "safetyDataSheet": "https://drive.google.com/file/d/1dfZiD5ncE0DclVB6lgPwz4dDeJrh5L6L/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2025-12-04T09:26:29.314Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1tsiVEdzjMhUSMVuEN9e55QbhwpBAHniv/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/confix-concrete-epoxy-hv",
+    "productDescription": "CONFIX CONCRETE EPOXY HV is a high-viscous epoxy adhesive designed for vertical application between old to new concrete, which sets permanently upon curing. ",
+    "customerBenefits": "\u2022 Cures even in damp or dry conditions. \n\u2022 Does not slump when applied on vertical or sloping surfaces, up to 1/8\u201d thick films. \n\u2022 When cured, it exhibits a tough, hard, durable bond between concrete and wood, metal, masonry, or asbestos. ",
+    "title_fld": "Confix Concrete Epoxy HV",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=bpYOViHXJnw&t=7s",
+    "_publishDate": {
+      "$date": "2025-12-04T09:07:41.215Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_b3fbfc73e75d4f3b86d46bd962c50089~mv2.jpg/Buildrite%20Confix%20Concrete%20Epoxy%20LV.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Suitable for large areas of application of old to new concrete\n\u2022 Elevating floorings and patching damaged or degraded concrete structures",
+    "_id": "b65d7d2e-c9fd-420e-a5fc-65feb88144bb",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-04T09:11:33.795Z"
+    },
+    "description_fld": "Low Viscosity Epoxy Bonding Agent for Old to New Concrete ",
+    "safetyDataSheet": "https://drive.google.com/file/d/1ex9RAGpWkiAzcnAuGV7CQdhuHpZpNX2v/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2025-12-04T09:11:33.795Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1Qn6jI0OwFcCLN7ljs4_gxw6EwuBDexb4/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/confix-concrete-epoxy-lv",
+    "productDescription": "CONFIX CONCRETE EPOXY LV is designed to have a low-viscosity property. This consistency, pourable and self-leveling, makes it suitable for large areas of application of old to new concrete i.e., elevating floorings and patching damaged or degraded concrete structures. The user may add inert fillers or aggregates to meet the desired consistency and extend its coverage. Cured CONFIX CONCRETE EPOXY LV exhibits durable, tough, shock or impact-resistant qualities. It is also water and chemical-resistant. ",
+    "customerBenefits": "\u2022 To anchor and grout a concrete or ceramic floor, tiles over wood, steel, or concrete surfaces. \n\u2022 To seal concrete surfaces against water and salt intrusions. \n\u2022 To repair spalled or scaled areas, broken slabs, and cracks in concrete structures. ",
+    "title_fld": "Confix Concrete Epoxy LV",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=Q3hq4iRHpvI",
+    "_publishDate": {
+      "$date": "2025-12-04T07:59:18.681Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_dab2f3a86a3341ab8fc7cb9d391b12c2~mv2.jpg/Buildrite%20Confix%20Grout%2040.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Machinery with high dynamic loads and vibration \n\u2022 Machinery base plates and crane rails where tensile strength greater than cementitious grout systems is required. \n\u2022 In conditions prone to chemical spillage \n\u2022 Manufacturing line equipment that must resume operations with minimum downtime.  ",
+    "_id": "4f2a5f2b-b172-4a6a-bfbc-af9c9c997de4",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-04T08:42:39.089Z"
+    },
+    "description_fld": "High-Strength Epoxy-Based Grout for Grouting Machine Base Plates",
+    "safetyDataSheet": "https://drive.google.com/file/d/1o0zueZlaffOHgOQNT-4VK84gQtd4FFB_/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2025-12-04T08:42:39.089Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1hrubMYdrtikHtVH8l6g97fTCgbXqrsSO/view?usp=sharing",
+    "link-concrete-title_fld": "/concrete/confix-grout-40",
+    "productDescription": "CONFIX GROUT 40 is a high-strength grout, based on modified epoxy resin. It is used as heavy-duty grout where heavy dynamic, mechanical properties, and chemical resistance of the hardened grout are required. \n\nCONFIX GROUT 40 is designed for grouting gaps ranging from 10mm to 40mm.  The product is supplied as a 3-component system consisting of base resin, liquid hardener, and specially-graded fine aggregates.  The components are supplied in the correct mix proportions for simple site mixing. ",
+    "customerBenefits": "\u2022 Non-shrink \u2013 epoxy resin adheres to contact surfaces with no loss of bond. \n\u2022 Dynamic load resistant \u2013 high flexural strength and adhesion to substrate ensure excellent performance under dynamic operating conditions. \n\u2022 Chemical resistance \u2013 withstands a range of chemicals, acids, alkalis, oils, fats, fuels, and salt solutions. \n\u2022 Rapid installation \u2013 pre-measured components, and easy mixing ensures speed of application. \n\u2022 High strength \u2013 high compressive, tensile, and flexural strengths ",
+    "title_fld": "Confix Grout 40",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=QZ2r8VDd5k8",
+    "_publishDate": {
+      "$date": "2025-12-04T07:59:18.681Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_6bcbb9a6691d49faa51a2fb28fb967a6~mv2.jpg/Buildrite%20Confix%20Anchor.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 High bonding strength, good flexible performance similar to embedded \n\u2022 Ageing resistance, good heat tolerance and does not creep at ambient temperature \n\u2022 Low sensitivity in moist conditions with long-term load stability \n\u2022 Acid-resistant, good shock resistance, stress-free fixed \n\u2022 Good thixotropic, particularly applicable to the sides or top surface anchoring \n\u2022 Two-cylinder direct-mix package, with a dedicated glue gun without manual mixing  ",
+    "_id": "79a57b59-8908-4d4c-96f2-c7ea6065a042",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-04T08:27:15.760Z"
+    },
+    "description_fld": "Injection Anchoring Adhesive ",
+    "safetyDataSheet": "https://drive.google.com/file/d/1eh53i7YVCKaPeBldEpYgaUoRk5pctSNZ/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2025-12-04T08:27:15.760Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1JRX-gPmf-UIML8h6x1OtIT5WvBCqgtqO/view?usp=sharing",
+    "link-concrete-title_fld": "/concrete/confix-anchor",
+    "productDescription": "CONFIX ANCHOR is a two-part styrene-free, high-strength, fast-curing anchoring adhesive for fastening any grade of rebars, pipe hangars, threaded rods, and anchor bolts. ",
+    "customerBenefits": "\u2022 All concrete buildings without embedded steel bar \n\u2022 Reinforcement and reconstruction of buildings with concrete \n\u2022 Reinforcement and reconstruction of railway, road, bridge, water resources, tunnel, etc. \n\u2022 Reinforcement for equipment, pipeline installation, and supports of curtain walls.   ",
+    "title_fld": "Confix Anchor",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=bpYOViHXJnw&t=1s",
+    "_publishDate": {
+      "$date": "2025-12-04T07:25:59.447Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_bfc87336755e45eea9821bbe92369804~mv2.jpg/Buildrite%20Confix%20IJ.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Structural repair of cracked concrete by injection      \n\u2022 Repair and filling of small hairline cracks in reinforced concrete structures      \n\u2022 Primer for solvent-free coating and topping systems \n\u2022 Sealer for cement-based surface ",
+    "_id": "7d5a1cde-157f-452a-bdab-befdcce62a85",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-04T07:58:52.276Z"
+    },
+    "description_fld": "Low Viscosity Structural Epoxy Resin for Crack Injection Repairs ",
+    "safetyDataSheet": "https://drive.google.com/file/d/1n0CC4sBDp0qToAE4JWaHlki531F9Ke1v/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2025-12-04T07:58:52.276Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1F-f9C0zOtxF_wwznOpbJtm5bgdvlfxup/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/confix-ij",
+    "productDescription": "CONFIX IJ is a two-component, low-viscous epoxy injection resin ideal for the repair of structural cracks and eliminates cold joints in concrete. ",
+    "customerBenefits": "\u2022 Low-viscosity \n\u2022 Economical\n\u2022 Resistant to a wide range of chemicals \n\u2022 Virtually impermeable therefore protecting the concrete against carbonation \n\u2022 High-compressive and tensile strength     \n\u2022 High-slant shear bond strength ",
+    "title_fld": "Confix IJ",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=wunZ8XNAZS0",
+    "_publishDate": {
+      "$date": "2025-12-03T08:57:48.050Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_88dde3a4407e469cb0bd77ffc8e22fff~mv2.jpg/Buildrite%20Cure%20Form%20300s.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "Application to all types of formworks including metal, wood, polyester, or plywood where good surface finish and optimum release is required. ",
+    "_id": "83f74378-e943-4085-afab-0660a1bd1c93",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-03T09:23:21.441Z"
+    },
+    "description_fld": "Chemical Release Agent for Formworks ",
+    "safetyDataSheet": "https://drive.google.com/file/d/1qBNiRmUdBrtnwiHeedzeGUlzHPhGgw0C/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2025-12-03T09:23:21.441Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1H8n3EMUuH_R-B9OkQLWbp34vppBipiEn/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/cure-form-300s",
+    "productDescription": "CURE FORM 300S is a low-viscosity release agent for all types of concrete formwork. It is a specially formulated blend of mineral oils to give an easy and complete release of concrete when applied to most forms. It is used for quick, clean, and easy stripping molds for high-quality, fair faces, and stain-free concrete. ",
+    "customerBenefits": "\u2022 Improve concrete off-form finish and ensure optimum release \n\u2022 Promotes easy and efficient stripping of forms \n\u2022 Non-staining and economical \n\u2022 Minimizes cleaning of shutter before re-use \n\u2022 Easy and inexpensive to apply for spray \n\u2022 Improves surface quality \n\u2022 Can be used on all types of formworks ",
+    "title_fld": "Cure Form 300s",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=OmGqjxcmkZM",
+    "_publishDate": {
+      "$date": "2025-12-03T08:09:52.025Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_97242ef9104e439fbcf3e03a83a64761~mv2.jpg/Buildrite%20Cure%20Sil%20EB.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Runways  \n\u2022 Pavements \n\u2022 Bridgeworks \n\u2022 Motorways ",
+    "_id": "fd2429f5-484e-49ea-9872-81d58dda9378",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-12-03T08:15:10.854Z"
+    },
+    "description_fld": "Curing Compound Emulsion Base ",
+    "safetyDataSheet": "https://drive.google.com/file/d/1TyIXJOprudvGy7K_XBfOYex5udxt6QDD/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2025-12-03T08:21:59.433Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1jQ-ElNX0BYb5Zcb6Q9qLnCj-_eEeQQo8/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/cure-sil-eb",
+    "productDescription": "CURE SIL EB is a polymeric emulsion, which has been formulated to act as a highly efficient curing membrane on freshly placed concrete to ensure maximum strength development and assist in the retention of water during hydration.",
+    "customerBenefits": "\u2022 Reduces surface shrinkage and crazing in concrete \n\u2022 Ease of application hence reducing labor cost \n\u2022 Enables cement to hydrate to give maximum strength development \n\u2022 Cost-effective with excellent curing efficiency \n\u2022 Eliminates the need for messy damp hessian or polyethylene sheets \n\u2022 Contains water-based non-hazardous material and is supplied ready for immediate use \n\u2022 Forms a non-staining continuous clear film on clean stain-free concrete on ambient temperature \n\u2022 Prevents rapid evaporation of water \n\u2022 Effective under any temperature and humidity conditions \n\u2022 Single coat application by low water sprayer ",
+    "title_fld": "Cure Sil EB",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=pINmXW1DlaU&t=362s",
+    "_publishDate": {
+      "$date": "2025-11-28T01:53:07.050Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_96785043563c429f89bae266468c777b~mv2.jpg/Buildrite%20Cure%20Sil%20WB.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Runways  \n\u2022 Pavements \n\u2022 Bridgeworks \n\u2022 Motorways ",
+    "_id": "5f5f1db8-1889-4f5f-80a6-783d647498b3",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-11-28T01:53:55.978Z"
+    },
+    "description_fld": "Curing Compound Wax Base ",
+    "safetyDataSheet": "https://drive.google.com/file/d/1qqGHuJBC2R5Rria6yEVJYCGEcwBxtSTj/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2025-12-03T08:09:36.889Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1-wLi7WZ3S4sTe79GwIwkp6U6vh9s_d0b/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/cure-sil-wb",
+    "productDescription": "CURE SIL WB is a ready-to-use liquid curing compound based on selected grades of paraffin wax which when applied to surfaces of newly placed concrete, assists in the retention of water during hydration.",
+    "customerBenefits": "\u2022 Ease of application \n\u2022 Protects concrete surfaces against sun, wind, and rain. \n\u2022 Retains moisture in fresh concrete \n\u2022 Assists in the development of strength and durability of concrete and reduces the likelihood of cracking or dusting of concrete surfaces \n\u2022 Prevents rapid evaporation of water \n\u2022 Effective under any temperature and humidity conditions \n\u2022 Single coat application by low water sprayer ",
+    "title_fld": "Cure Sil WB",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=vF_H5uurH0o",
+    "_publishDate": {
+      "$date": "2025-11-28T01:53:07.050Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_2996e100dae64eff8bad46f824b5303a~mv2.jpg/Cement%20Remover.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 Removal of mortar and plaster runs, droppings, and stains from concrete surfaces\n\u2022 Removal of hardened concrete from tools, machinery, and equipment or rust and mill scale from a steel tank.",
+    "_id": "105465a4-d00e-4d38-972c-69e7351493b0",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-11-28T01:53:30.146Z"
+    },
+    "description_fld": "Non-Corrosive Cement Remover",
+    "safetyDataSheet": "https://drive.google.com/file/d/1qFGh6FXS79WZ8b9kXIcR6Coz0tQKk0Wf/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2025-12-05T00:33:18.167Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1pvhfGTeutfehIpkWBINvLbZOXsaODtn7/view?usp=sharing",
+    "link-concrete-title_fld": "/concrete/cement-remover",
+    "productDescription": "CEMENT REMOVER is an effective acid-based liquid mixture specifically for the removal of mortar and plaster runs, droppings, and stains from concrete surfaces. Also, for the removal of hardened concrete from tools, machinery, and equipment or rust and mill scale from a steel tank.",
+    "customerBenefits": "\u2022 Removes mortar and plaster runs\n\u2022 Cleans droppings and stains from brickwork and concrete surfaces\n\u2022 Removes and cleans hardened concrete from tools, machinery, and equipment\n\u2022 Rapid concrete etching action\n\u2022 No corrosive action with glass, plastic, rubber, and base metals",
+    "title_fld": "Cement Remover",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=D2i5uM6dBEk",
+    "_publishDate": {
+      "$date": "2025-11-28T01:50:12.081Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_16a1d70e14d344248b50f9c838c1fc7a~mv2.jpg/Cement%20Eraser.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "Formulated to dissolve and remove hardened cement, concrete, mortar, and grout residues from construction equipment, tools, and surfaces.",
+    "_id": "e1c1256d-2ceb-4fb1-9569-f9348457bb99",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-11-28T01:51:23.594Z"
+    },
+    "description_fld": "Non \u2013 Corrosive Cement Remover ",
+    "_updatedDate": {
+      "$date": "2025-12-03T07:31:52.597Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1pa6bP8nThFPTqwAnFeGcflJBaYN3tNnJ/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/cement-eraser",
+    "productDescription": "CEMENT ERASER is a high-performance cleaner formulated to dissolve and remove hardened cement, concrete, mortar, and grout residues from construction equipment, tools, and surfaces. It is a safe, noncorrosive alternative to traditional acid cleaners. ",
+    "customerBenefits": "\u2022 Non-corrosive and non-fuming formula \n\u2022 Safe for use on metals, paint, rubber, and plastics \n\u2022 Softens cementitious residues for easy removal \n\u2022 Reduces equipment damage \n\u2022 Uses a pH-sensitive dye as a visual marker for the completion of its reactive cleaning action \n\u2022 Easy to apply ",
+    "title_fld": "Cement Eraser",
+    "_publishStatus": "PUBLISHED"
+  },
+  {
+    "youTube": "https://www.youtube.com/watch?v=L7v8sNe8XjA",
+    "_publishDate": {
+      "$date": "2025-11-27T13:39:28.335Z"
+    },
+    "image_fld": "wix:image://v1/ad56db_397f963cf43f4877bd4a0f1eab5a6935~mv2.jpg/Surfix%20Cement%20Grip.jpg#originWidth=900&originHeight=900",
+    "recommendedFor": "\u2022 For bonding cementitious floor toppings, renders, and repair mortars \n\u2022 Bonding agent for concrete \n\u2022 Resurfacing, renovation, and surface restoration     \n\u2022 Additive for the tile adhesive to enhance adhesion property \n\u2022 Repair cracks and holes in cementitious structures ",
+    "_id": "d8bd9ff8-4001-49c5-98dd-d4fdf8edf38b",
+    "_draftDate": null,
+    "_owner": "ad56db3b-a421-436a-a32c-ce37118e44c4",
+    "_createdDate": {
+      "$date": "2025-11-27T13:42:00.099Z"
+    },
+    "description_fld": "Multipurpose Bonding Agent and Adhesion Enhancer for Mortar ",
+    "safetyDataSheet": "https://drive.google.com/file/d/17tZen5zpzQWUEFXBsJAJKcFm-1vNTEaV/view?usp=drive_link",
+    "_updatedDate": {
+      "$date": "2025-12-03T07:10:52.203Z"
+    },
+    "technicalDataSheet": "https://drive.google.com/file/d/1ObcxFbrujtfrl4jWTh8GN1cpTlCdS1ll/view?usp=drive_link",
+    "link-concrete-title_fld": "/concrete/surfix-cement-grip",
+    "productDescription": "CEMENT GRIP is a multi-purpose bonding agent used for bonding new to old concrete, and tile-to-tile bonding applications. It is water-based, milky white, non-toxic with medium viscosity, and dries into a transparent film. It can also be used as a tile adhesive enhancer and concrete repair mortar for patching works and concrete repair works. ",
+    "customerBenefits": "\u2022 Easy-to-use \u2013 can be applied by brush, roller, or spray \n\u2022 Multi-purpose adhesive \n\u2022 Bonds to most common construction materials except polythene, PVC, rubber, and similar materials \n\u2022 Non-toxic \n\u2022 Improved flexibility ",
+    "title_fld": "Surfix Cement Grip",
+    "_publishStatus": "PUBLISHED"
+  }
+]
