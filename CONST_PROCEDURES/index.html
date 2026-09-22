@@ -7368,16 +7368,302 @@
       background: #10b981;
       color: #ffffff;
       box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
+      border-radius: 4px;
+    }
+
+    /* Body rows */
+    .boq-data-row:nth-child(even) {
+      background: #f8fafc;
+    }
+    .boq-data-row:hover {
+      background: #f0fdf4 !important;
+    }
+    .boq-td-item {
+      text-align: center;
+      font-weight: 800;
+      color: var(--slate-600);
+      background: #f8fafc;
+    }
+    .boq-td-desc {
+      text-align: left;
+    }
+    .boq-desc-title {
+      font-weight: 700;
+      color: var(--slate-900);
+      line-height: 1.25;
+      margin-bottom: 0.2rem;
+    }
+    .boq-role-tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      background: #e2e8f0;
+      color: var(--slate-700);
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+    }
+    .boq-td-unit,
+    .boq-td-area {
+      text-align: center;
+      color: var(--slate-600);
+      font-weight: 600;
+    }
+    .boq-td-prod {
+      min-width: 200px;
+    }
+    .boq-prod-name {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--slate-900);
+      line-height: 1.3;
+    }
+    .boq-prod-role {
+      font-size: 0.66rem;
+      color: var(--slate-500);
+      margin-top: 0.15rem;
+    }
+    .boq-td-pkg {
+      font-size: 0.74rem;
+      color: var(--slate-600);
+      white-space: nowrap;
+    }
+    .boq-td-num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .boq-unit {
+      color: var(--slate-400);
+      font-size: 0.7rem;
+    }
+    .boq-td-po {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .boq-td-po strong {
+      color: var(--emerald-800);
+    }
+    .boq-theor {
+      color: var(--slate-500);
+      display: block;
+      font-size: 0.68rem;
+    }
+    .boq-td-currency {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .boq-subtotal-cell {
+      background: #fafafa;
+    }
+    .boq-subtotal-cell.boq-line-lowest {
+      background: #ecfdf5;
+      color: #065f46;
+    }
+    .boq-cell-rate {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--slate-500);
+    }
+    .boq-cell-na {
+      text-align: center;
+      background: #f8fafc;
+      color: var(--slate-400);
+      font-size: 0.75rem;
+      font-style: italic;
+    }
+    .boq-td-var {
+      text-align: center;
+      white-space: nowrap;
+    }
+    .boq-min-tag {
+      font-size: 0.68rem;
+      font-weight: 800;
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+    }
+
+    /* Footer Rows */
+    .boq-foot-row td {
+      border-top: 2px solid var(--slate-600);
+      font-weight: 800;
+    }
+    .boq-foot-label {
+      background: #f1f5f9;
+      color: var(--slate-800);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .boq-row-pkgs td {
+      background: #f8fafc;
+    }
+    .boq-foot-pkgs {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--slate-800);
+    }
+    .boq-foot-sub {
+      display: block;
+      font-size: 0.68rem;
+      color: var(--slate-500);
+      font-weight: 600;
+    }
+    .boq-row-grand td {
+      background: #ffffff;
+    }
+    .boq-foot-cost {
+      text-align: center;
+    }
+    .boq-big-currency {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: var(--slate-900);
+    }
+    .boq-row-rate td {
+      background: #ecfdf5;
+    }
+    .boq-foot-rate {
+      text-align: center;
+    }
+    .boq-big-rate {
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: #047857;
+    }
+    .boq-foot-best {
+      background: #d1fae5 !important;
+    }
+    .boq-row-award td {
+      background: #f8fafc;
+      text-align: center;
+    }
+    .boq-foot-award {
+      text-align: center;
+    }
+    .boq-award-pill {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 0.25rem 0.7rem;
+      border-radius: 9999px;
+      letter-spacing: 0.02em;
+    }
+    .boq-award-pill.best {
+      background: #10b981;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
     }
     .boq-award-pill.delta {
       background: #fef2f2;
       border: 1px solid #fecaca;
       color: #dc2626;
     }
+    .edit-modal-footer {
+      padding: 0.85rem 1.25rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.6rem;
+      background: #f8fafc;
+    }
+
+    /* Batch Import Dropzone & Preview Styles */
+    .import-dropzone {
+      border: 2px dashed #94a3b8;
+      border-radius: 12px;
+      padding: 1.75rem 1.25rem;
+      background: #f8fafc;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+    .import-dropzone:hover, .import-dropzone.drag-over {
+      border-color: #4338ca;
+      background: #eef2ff;
+      box-shadow: 0 0 0 4px rgba(67, 56, 202, 0.12);
+    }
+    .import-dropzone.has-file {
+      border-color: #10b981;
+      background: #f0fdf4;
+    }
+    .dropzone-icon-wrap {
+      color: #6366f1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.25rem;
+    }
+    .import-dropzone.has-file .dropzone-icon-wrap {
+      color: #10b981;
+    }
+    .dropzone-text-main {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--slate-800);
+    }
+    .dropzone-text-sub {
+      font-size: 0.75rem;
+      color: var(--slate-500);
+    }
+    .preview-stat-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      font-size: 0.72rem;
+      letter-spacing: 0.02em;
+    }
+    .preview-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .preview-badge.badge-new {
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+    }
+    .preview-badge.badge-update {
+      background: #fef3c7;
+      color: #b45309;
+      border: 1px solid #fde68a;
+    }
+    .excel-btn-import {
+      background: #4338ca;
+      color: #ffffff;
+      border-color: #3730a3;
+    }
+    .excel-btn-import:hover {
+      background: #3730a3;
+      color: #ffffff;
+    }
 
     /* ==========================================================================
-       SPECIFIC WORK / APPLICATION SYSTEMS EXCEL TABLE & TABS STYLES
+       VIEW 6: PRODUCT & SYSTEM COST COMPARISON MATRIX STYLES
        ========================================================================== */
+    .comparison-view-header {
+    }
     .comparison-nav-tabs {
       display: flex;
       align-items: center;
@@ -26966,6 +27252,10 @@ Pre-batched unit</span>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 Add Product
               </button>
+              <button class="excel-btn excel-btn-import" id="btnPricelistImport" title="Batch import price list from Excel CSV / TSV" onclick="supplierPriceList.openImportModal()" style="background:#4338ca; color:#ffffff; border-color:#3730a3;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Import Excel / CSV
+              </button>
               <button class="excel-btn excel-btn-export" id="btnPricelistExport" title="Export this price list to Excel / CSV">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 Export to Excel
@@ -27174,6 +27464,10 @@ Pre-batched unit</span>
             </p>
           </div>
           <div class="comparison-header-actions">
+            <button class="excel-btn excel-btn-import" onclick="supplierPriceList.openImportModal()" title="Batch import products and rates from Excel CSV / TSV" style="background:#4338ca; color:#ffffff; border-color:#3730a3;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Import (Excel/CSV)
+            </button>
             <button class="excel-btn excel-btn-boq" onclick="productComparison.exportBoqExcel()" title="Export comparison as Bill of Quantities (BOQ) Excel spreadsheet" style="background:#065f46; color:#ffffff; border-color:#047857;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
               Export BOQ (Excel)
@@ -27672,12 +27966,109 @@ Pre-batched unit</span>
   </div>
 </div>
 
+<!-- BATCH IMPORT PRICELIST & PRODUCTS MODAL -->
+<div class="edit-supplier-modal" id="modalImportPricelist" style="display:none;" onclick="if(event.target===this)supplierPriceList.closeImportModal();">
+  <div class="edit-supplier-dialog" style="max-width: 860px;">
+    <div class="edit-modal-header">
+      <div style="display:flex; align-items:center; gap:0.75rem;">
+        <div style="width:38px; height:38px; border-radius:8px; background:rgba(67, 56, 202, 0.12); color:#4338ca; display:flex; align-items:center; justify-content:center; font-weight:800;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <div>
+          <h3 style="margin:0; font-size:1.15rem; font-weight:800; color:var(--slate-900);">Batch Import Price List &amp; Product Catalog</h3>
+          <p style="margin:0.2rem 0 0; font-size:0.75rem; color:var(--slate-500);">Upload spreadsheet (.csv / .tsv). Auto-detects columns, updates supplier rates, and merges new products into Comparison Matrix.</p>
+        </div>
+      </div>
+      <button class="icon-tool-btn" id="btnCloseImportModal" title="Close modal">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="edit-modal-body" style="gap:1rem; padding:1.25rem;">
+      <!-- Top configuration row: Target Brand & Template Download -->
+      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; background:#f8fafc; padding:0.85rem 1rem; border-radius:8px; border:1px solid var(--border-color);">
+        <div style="display:flex; align-items:center; gap:0.6rem;">
+          <label for="importTargetBrandSelect" style="font-size:0.78rem; font-weight:700; color:var(--slate-700); text-transform:uppercase; letter-spacing:0.03em;">
+            Target Brand Catalog:
+          </label>
+          <select id="importTargetBrandSelect" class="form-input-control" style="font-weight:600; padding:0.4rem 0.65rem; min-width:210px;">
+            <option value="buildrite">Buildrite Chemicals</option>
+            <option value="bostik">Bostik Philippines</option>
+            <option value="davies">Davies Paints Philippines</option>
+            <option value="boysen">Pacific Paint (Boysen)</option>
+            <option value="sika">Sika Philippines</option>
+          </select>
+        </div>
+        <button type="button" class="excel-btn excel-btn-export" id="btnDownloadImportTemplate" style="background:#ffffff; color:#334155; border-color:#cbd5e1; font-size:0.78rem; padding:0.45rem 0.75rem;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Sample Template (.csv)
+        </button>
+      </div>
+
+      <!-- Drag & Drop Zone -->
+      <div class="import-dropzone" id="importDropzone">
+        <input type="file" id="importPricelistFileInput" accept=".csv,.tsv,.txt" style="display:none;">
+        <div class="dropzone-icon-wrap">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/><line x1="14" y1="13" x2="17" y2="16"/><line x1="17" y1="13" x2="14" y2="16"/></svg>
+        </div>
+        <div class="dropzone-text-main" id="importDropzoneFilename">Drag &amp; drop your Excel CSV / TSV file here, or click to browse</div>
+        <div class="dropzone-text-sub">Supports Microsoft Excel (.csv UTF-8), Tab-delimited (.tsv), or exported supplier pricelists</div>
+      </div>
+
+      <!-- Live Preview Container -->
+      <div id="importPreviewContainer" style="display:none;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem; flex-wrap:wrap; gap:0.5rem;">
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <span class="preview-stat-pill" id="importBadgeTotal" style="background:#e0e7ff; color:#3730a3; font-weight:700;">0 rows ready</span>
+            <span class="preview-stat-pill" id="importBadgeNew" style="background:#dcfce7; color:#15803d; font-weight:700;">0 new items</span>
+            <span class="preview-stat-pill" id="importBadgeUpdate" style="background:#fef3c7; color:#b45309; font-weight:700;">0 updates</span>
+          </div>
+          <span style="font-size:0.72rem; color:var(--slate-500);">
+            Auto-detected columns &bull; Ready for review
+          </span>
+        </div>
+
+        <div class="import-preview-table-wrap" style="max-height:260px; overflow-y:auto; border:1px solid var(--border-color); border-radius:8px;">
+          <table class="excel-table" style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr style="background:#f1f5f9; position:sticky; top:0; z-index:2;">
+                <th style="width:40px; text-align:center;">#</th>
+                <th style="width:110px;">Item Code</th>
+                <th>Product Name &amp; Description</th>
+                <th style="width:140px;">Category</th>
+                <th style="width:100px;">Packaging</th>
+                <th style="width:110px; text-align:right;">Unit SRP</th>
+                <th style="width:130px; text-align:center;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="importPreviewTableBody">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="edit-modal-footer" style="padding:0.9rem 1.25rem; background:#f8fafc; border-top:1px solid var(--border-color); display:flex; justify-content:flex-end; gap:0.75rem;">
+      <button type="button" class="excel-btn excel-btn-reset" id="btnCancelPricelistImport">
+        Cancel
+      </button>
+      <button type="button" class="excel-btn excel-btn-add" id="btnConfirmPricelistImport" disabled style="background:#4338ca; color:#ffffff; border-color:#3730a3; font-weight:700; padding:0.5rem 1.25rem;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Confirm &amp; Import Data
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast Notification Container -->
 <div class="toast-container" id="toastContainer"></div>
 
 <!-- External scripts with safe fallbacks -->
 <script src="../shared/js/procedures-data.js"></script>
 <script src="../shared/js/qaqc-bridge.js"></script>
+<script src="vendor/exceljs.min.js"></script>
+<script src="templates_loader.js"></script>
 <script src="suppliers_pricelist_data.js"></script>
 <script src="suppliers_info_data.js"></script>
 <script src="product_comparison_data.js"></script>
@@ -28114,8 +28505,9 @@ Pre-batched unit</span>
           let system = null;
           let addCol = null;
           let openModal = null;
+          let params = null;
           if (parts[1]) {
-            const params = new URLSearchParams(parts[1]);
+            params = new URLSearchParams(parts[1]);
             brand = params.get('brand');
             category = params.get('category');
             viewMode = params.get('view') || params.get('tab');
@@ -28136,6 +28528,15 @@ Pre-batched unit</span>
             setTimeout(() => window.productComparison.openAddColumnModal(), 150);
           } else if ((openModal === 'create' || openModal === 'createSystem') && window.productComparison) {
             setTimeout(() => window.productComparison.openCreateSystemModal(), 150);
+          } else if (openModal === 'import' && window.supplierPriceList) {
+            const previewParam = params ? params.get('preview') : null;
+            setTimeout(() => {
+              window.supplierPriceList.openImportModal(brand);
+              if (previewParam) {
+                const sample = `Item Code,Product Name,Category,Packaging,Case Pack,Unit SRP,Coverage,Coats,Remarks\r\nB-1705,BOYSEN® Acrytex™ Primer B-1705,Primer,4 Liters (Gallon),1,890.00,25.0,1,Price adjustment Aug 2026\r\nBY-NEW-01,BOYSEN® Cool Shades™ Heat Reflective White,Topcoat / Finish,4 Liters (Gallon),4,920.00,25.0,2,Summer 2026 Promo\r\nBY-NEW-02,BOYSEN® Epoxy Primer White w/ Curing Agent,Primer,4 Liters (Gallon),1,1150.00,20.0,1,Heavy duty industrial floor\r\nBY-NEW-03,BOYSEN® Matte Shield Acrylic Sealer,Surface Prep,16 Liters (Pail),1,2980.00,80.0,1,Exterior masonry sealer`;
+                window.supplierPriceList.processImportText(sample, 'Boysen_Supplier_Catalog_Update_2026.csv');
+              }
+            }, 150);
           }
           if (viewId === 'view-product-comparison' && window.productComparison && viewMode) {
             window.productComparison.setViewMode(viewMode);

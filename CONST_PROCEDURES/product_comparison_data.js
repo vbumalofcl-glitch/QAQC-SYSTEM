@@ -1656,17 +1656,123 @@
       this.isInitialized = false;
       this.STORAGE_KEY = 'fcl_product_comparison_state_v2';
       this.SYSTEMS_STORAGE_KEY = 'fcldc_custom_comparison_systems_v1';
+      this.CUSTOM_PRODUCTS_STORAGE_KEY = 'fcl_imported_comparison_products_v1';
       this.activeSystemToEditId = 'system-exterior-textured-wall';
       this.activeCatalogColIdx = 0;
     }
 
     init() {
       if (this.isInitialized) return;
+      this.loadCustomProducts();
       this.loadState();
       this.populateSystemSelect();
       this.bindEvents();
       this.render();
       this.isInitialized = true;
+    }
+
+    loadCustomProducts() {
+      try {
+        if (typeof localStorage === 'undefined') return;
+        const saved = localStorage.getItem(this.CUSTOM_PRODUCTS_STORAGE_KEY);
+        if (saved) {
+          const customList = JSON.parse(saved);
+          if (Array.isArray(customList)) {
+            customList.forEach(item => {
+              if (!item || !item.id) return;
+              const existingIdx = PRODUCT_LOOKUP_REGISTRY.findIndex(p => p.id === item.id || (p.code && item.code && p.code.toLowerCase() === item.code.toLowerCase() && p.brandKey === item.brandKey));
+              if (existingIdx !== -1) {
+                PRODUCT_LOOKUP_REGISTRY[existingIdx] = Object.assign({}, PRODUCT_LOOKUP_REGISTRY[existingIdx], item);
+              } else {
+                PRODUCT_LOOKUP_REGISTRY.push(item);
+              }
+            });
+          }
+        }
+      } catch (e) {
+        console.warn('Could not load custom imported products:', e);
+      }
+    }
+
+    registerImportedProducts(items) {
+      if (!Array.isArray(items) || items.length === 0) return 0;
+      
+      let custom = [];
+      try {
+        if (typeof localStorage !== 'undefined') {
+          const saved = localStorage.getItem(this.CUSTOM_PRODUCTS_STORAGE_KEY);
+          if (saved) custom = JSON.parse(saved);
+        }
+      } catch (e) {}
+      if (!Array.isArray(custom)) custom = [];
+
+      let count = 0;
+      items.forEach(raw => {
+        if (!raw.name && !raw.code) return;
+        const brandKey = (raw.brandKey || 'custom').toLowerCase();
+        const code = raw.code || `IMP-${Date.now().toString().slice(-4)}`;
+        const id = raw.id || `${brandKey}-${code.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+
+        const pkgStr = (raw.packaging || raw.pack || 'Unit').toString();
+        let pkgUnit = raw.packagingUnit || 'Gallon';
+        if (!raw.packagingUnit) {
+          const lower = pkgStr.toLowerCase();
+          if (lower.includes('pail')) pkgUnit = 'Pail';
+          else if (lower.includes('bag') || lower.includes('sack')) pkgUnit = 'Bag';
+          else if (lower.includes('drum')) pkgUnit = 'Drum';
+          else if (lower.includes('can') || lower.includes('tin')) pkgUnit = 'Can';
+          else if (lower.includes('set') || lower.includes('kit')) pkgUnit = 'Kit';
+          else if (lower.includes('tube') || lower.includes('sausage')) pkgUnit = 'Tube';
+          else if (lower.includes('liter') || lower.includes('litre')) pkgUnit = 'Liter';
+          else if (lower.includes('gal')) pkgUnit = 'Gallon';
+        }
+
+        const prodObj = {
+          id: id,
+          brandKey: brandKey,
+          code: code,
+          name: raw.name || raw.desc || 'Custom Product',
+          category: raw.category || 'General Products',
+          packaging: pkgStr,
+          packagingUnit: pkgUnit,
+          coveragePerUnit: parseFloat(raw.coveragePerUnit || raw.coverage) || 20.0,
+          defaultCoats: parseInt(raw.defaultCoats || raw.coats, 10) || 1,
+          srp: raw.srp !== null && raw.srp !== undefined && raw.srp !== '' ? parseFloat(raw.srp) : null,
+          notes: raw.notes || raw.remarks || raw.desc || 'Imported product specification'
+        };
+
+        const regIdx = PRODUCT_LOOKUP_REGISTRY.findIndex(p => p.id === prodObj.id || (p.code && p.code.toLowerCase() === prodObj.code.toLowerCase() && p.brandKey === prodObj.brandKey));
+        if (regIdx !== -1) {
+          PRODUCT_LOOKUP_REGISTRY[regIdx] = Object.assign({}, PRODUCT_LOOKUP_REGISTRY[regIdx], prodObj);
+        } else {
+          PRODUCT_LOOKUP_REGISTRY.push(prodObj);
+        }
+
+        const custIdx = custom.findIndex(c => c.id === prodObj.id || (c.code && c.code.toLowerCase() === prodObj.code.toLowerCase() && c.brandKey === prodObj.brandKey));
+        if (custIdx !== -1) {
+          custom[custIdx] = prodObj;
+        } else {
+          custom.push(prodObj);
+        }
+        count++;
+      });
+
+      try {
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem(this.CUSTOM_PRODUCTS_STORAGE_KEY, JSON.stringify(custom));
+        }
+      } catch (e) {
+        console.warn('Could not save custom products to localStorage:', e);
+      }
+
+      if (this.isInitialized) {
+        this.render();
+        if (this.activeModuleTab === 'systems') {
+          this.renderWorkSystemsTab();
+        }
+      }
+
+      return count;
     }
 
     loadState() {
@@ -2914,10 +3020,471 @@
       }
     }
 
-    exportBoqExcel() {
+    async exportBoqExcel() {
       const comparison = SystemEstimatorEngine.compareColumns(this.columns, this.areaSqM);
       const tpl = COMPARISON_SYSTEM_TEMPLATES.find(t => t.id === this.currentSystemId) || { name: 'Work System Comparison' };
-      
+      const safeSystemId = (this.currentSystemId || 'system').replace(/[^a-z0-9_-]/gi, '_');
+      const filename = `FCLDC_BOQ_Matrix_${safeSystemId}_${Math.round(this.areaSqM)}sqm.xlsx`;
+
+      // Attempt Template-Based ExcelJS Export using FCL_BOQ_Template.xlsx
+      try {
+        const getTemplateBuf = typeof window !== 'undefined' && window.getFclTemplateArrayBuffer
+          ? window.getFclTemplateArrayBuffer
+          : (typeof getFclTemplateArrayBuffer === 'function' ? getFclTemplateArrayBuffer : null);
+
+        const ExcelJSEngine = typeof window !== 'undefined' && window.ExcelJS
+          ? window.ExcelJS
+          : (typeof ExcelJS !== 'undefined' ? ExcelJS : null);
+
+        if (getTemplateBuf && ExcelJSEngine) {
+          const buf = await getTemplateBuf();
+          if (buf && buf.byteLength > 0) {
+            const wb = new ExcelJSEngine.Workbook();
+            await wb.xlsx.load(buf);
+
+            const boqHeaders = [
+              'Item #',
+              'Process Step',
+              'Trade Scope',
+              'Assigned Product & Specification',
+              'Packaging',
+              'Spread (m²/unit)',
+              'Coats',
+              'Qty to Order (PO)',
+              'Unit Rate (PHP Vat-In)',
+              'Total Amount (PHP Vat-In)'
+            ];
+
+            const colWidths = [
+              { width: 12 }, // Item
+              { width: 26 }, // Step
+              { width: 22 }, // Scope
+              { width: 36 }, // Product
+              { width: 16 }, // Packaging
+              { width: 18 }, // Spread
+              { width: 10 }, // Coats
+              { width: 18 }, // PO Qty
+              { width: 22 }, // Unit Rate
+              { width: 24 }  // Total Amount
+            ];
+
+            const logoBuffer = wb.media && wb.media.length > 0 ? wb.media[0].buffer : null;
+            const logoExt = wb.media && wb.media.length > 0 ? (wb.media[0].extension || 'jpeg') : 'jpeg';
+
+            // Helper to populate an individual BOQ Schedule worksheet
+            const populateBoqScheduleSheet = (sh, colData, sheetTitle, pageStr) => {
+              colWidths.forEach((w, i) => {
+                sh.getColumn(i + 1).width = w.width;
+              });
+
+              // Title & ISO Header block
+              try { sh.mergeCells('D1:G4'); } catch (e) { /* already merged */ }
+              const titleCell = sh.getCell('D1');
+              titleCell.value = sheetTitle;
+              titleCell.font = { name: 'Segoe UI', size: 14, bold: true, color: { argb: 'FF0F172A' } };
+              titleCell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+              // ISO Control block
+              sh.getCell('H1').value = 'Doc. Code   :      ';
+              sh.getCell('I1').value = 'FM-OPN-02-15 Rev. No.';
+              sh.getCell('H2').value = 'Rev. No.     :   ';
+              sh.getCell('I2').value = 1;
+              sh.getCell('H3').value = 'Eff. Date     :    ';
+              sh.getCell('I3').value = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+              sh.getCell('H4').value = 'Page           :    ';
+              sh.getCell('I4').value = pageStr || '1 of 1';
+
+              // Project metadata in rows 5-8
+              const metaLabels = [
+                ['A5', 'PROJECT / SPECIFICATION:', 'C5', tpl.name],
+                ['A6', 'PROJECT SURFACE AREA:', 'C6', `${this.areaSqM.toFixed(2)} SQ.M`],
+                ['A7', 'DATE OF ESTIMATE:', 'C7', new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })],
+                ['A8', 'ENGINEERING DIVISION:', 'C8', 'FCLaranang Development Corporation - QA/QC Department']
+              ];
+
+              metaLabels.forEach(([lblCell, lblVal, valCell, dataVal]) => {
+                const cL = sh.getCell(lblCell);
+                cL.value = lblVal;
+                cL.font = { name: 'Segoe UI', size: 9, bold: true, color: { argb: 'FF475569' } };
+                const cV = sh.getCell(valCell);
+                cV.value = dataVal;
+                cV.font = { name: 'Segoe UI', size: 9, bold: true, color: { argb: 'FF0F172A' } };
+              });
+
+              // Header Row 11
+              const hRow = sh.getRow(11);
+              hRow.height = 28;
+              boqHeaders.forEach((hName, idx) => {
+                const cell = hRow.getCell(idx + 1);
+                cell.value = hName;
+                cell.font = { name: 'Segoe UI', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
+                cell.fill = {
+                  type: 'pattern',
+                  pattern: 'solid',
+                  fgColor: { argb: 'FF1E293B' }
+                };
+                cell.alignment = { vertical: 'middle', horizontal: idx >= 4 ? 'right' : 'left', wrapText: true };
+                cell.border = {
+                  top: { style: 'thin', color: { argb: 'FF94A3B8' } },
+                  left: { style: 'thin', color: { argb: 'FF94A3B8' } },
+                  bottom: { style: 'medium', color: { argb: 'FF0F172A' } },
+                  right: { style: 'thin', color: { argb: 'FF94A3B8' } }
+                };
+              });
+              hRow.commit();
+
+              // Update Table1 column names if Table1 exists on this worksheet
+              if (sh.tables && sh.tables.Table1 && sh.tables.Table1.table) {
+                boqHeaders.forEach((hName, idx) => {
+                  if (sh.tables.Table1.table.columns[idx]) {
+                    sh.tables.Table1.table.columns[idx].name = hName;
+                  }
+                });
+              }
+
+              // Data Rows 12 onwards
+              const stages = colData.computedStages || [];
+              stages.forEach((st, idx) => {
+                const r = 12 + idx;
+                const row = sh.getRow(r);
+                row.height = 24;
+
+                row.getCell(1).value = `Step ${idx + 1}.0`;
+                row.getCell(2).value = st.stageName;
+                row.getCell(3).value = st.stageRole;
+                row.getCell(4).value = `${st.product.code ? `[${st.product.code}] ` : ''}${st.product.name}`;
+                row.getCell(5).value = st.packaging;
+                row.getCell(6).value = st.coveragePerUnit;
+                row.getCell(7).value = st.coats;
+                row.getCell(8).value = st.calc.roundedUnits;
+                row.getCell(9).value = st.unitCost;
+                row.getCell(10).value = { formula: `H${r}*I${r}`, result: st.calc.totalCost };
+
+                // Alignments & borders
+                for (let c = 1; c <= 10; c++) {
+                  const cell = row.getCell(c);
+                  cell.font = { name: 'Segoe UI', size: 9 };
+                  cell.border = {
+                    top: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+                    left: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+                    bottom: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+                    right: { style: 'thin', color: { argb: 'FFE2E8F0' } }
+                  };
+                  if (c >= 6) {
+                    cell.alignment = { vertical: 'middle', horizontal: 'right' };
+                  } else {
+                    cell.alignment = { vertical: 'middle', horizontal: 'left' };
+                  }
+                }
+
+                row.getCell(9).numFmt = '₱#,##0.00';
+                row.getCell(10).numFmt = '₱#,##0.00';
+                row.commit();
+              });
+
+              const lastDataRow = 11 + stages.length;
+
+              // Row: Grand Total
+              const grandRow = sh.getRow(lastDataRow + 1);
+              grandRow.height = 26;
+              grandRow.getCell(2).value = 'GRAND TOTAL ESTIMATED COST (PHP)';
+              grandRow.getCell(8).value = colData.totalPackages;
+              grandRow.getCell(10).value = { formula: `SUM(J12:J${lastDataRow})`, result: colData.grandTotalCost };
+              for (let c = 1; c <= 10; c++) {
+                const cell = grandRow.getCell(c);
+                cell.font = { name: 'Segoe UI', size: 10, bold: true, color: { argb: 'FF0F172A' } };
+                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF1F5F9' } };
+                cell.border = {
+                  top: { style: 'medium', color: { argb: 'FF0F172A' } },
+                  bottom: { style: 'medium', color: { argb: 'FF0F172A' } }
+                };
+              }
+              grandRow.getCell(10).numFmt = '₱#,##0.00';
+              grandRow.getCell(10).alignment = { vertical: 'middle', horizontal: 'right' };
+              grandRow.getCell(8).alignment = { vertical: 'middle', horizontal: 'right' };
+              grandRow.commit();
+
+              // Row: Final Rate per sq.m
+              const rateRow = sh.getRow(lastDataRow + 2);
+              rateRow.height = 24;
+              rateRow.getCell(2).value = 'FINAL RATE PER SQ.M (PHP / M²)';
+              rateRow.getCell(10).value = { formula: `J${lastDataRow + 1}/${this.areaSqM}`, result: colData.grandCostPerSqM };
+              rateRow.getCell(10).numFmt = '₱#,##0.00';
+              rateRow.getCell(10).alignment = { vertical: 'middle', horizontal: 'right' };
+              for (let c = 1; c <= 10; c++) {
+                const cell = rateRow.getCell(c);
+                cell.font = { name: 'Segoe UI', size: 10, bold: true, color: { argb: 'FF1E3A8A' } };
+              }
+              rateRow.commit();
+
+              // Row: Value Engineering Status
+              const statusRow = sh.getRow(lastDataRow + 3);
+              statusRow.height = 24;
+              statusRow.getCell(2).value = 'VALUE ENGINEERING & AWARD STATUS:';
+              statusRow.getCell(4).value = colData.isLowestCost
+                ? '★ BEST VALUE (LOWEST ESTIMATED COST)'
+                : `+PHP ${colData.diffFromLowest.toFixed(2)}/sq.m (+${colData.percentDiffFromLowest.toFixed(1)}% vs Best Value)`;
+              for (let c = 1; c <= 10; c++) {
+                const cell = statusRow.getCell(c);
+                cell.font = {
+                  name: 'Segoe UI',
+                  size: 9,
+                  bold: true,
+                  color: colData.isLowestCost ? { argb: 'FF047857' } : { argb: 'FFB45309' }
+                };
+              }
+              statusRow.commit();
+
+              // Clear excess template rows beyond this table
+              const oldRowCount = sh.rowCount;
+              if (oldRowCount > lastDataRow + 4) {
+                for (let r = lastDataRow + 4; r <= oldRowCount; r++) {
+                  sh.getRow(r).values = [];
+                }
+              }
+
+              // Adjust Table1 bounds if present
+              if (sh.tables && sh.tables.Table1 && sh.tables.Table1.table) {
+                sh.tables.Table1.table.tableRef = `A11:J${lastDataRow}`;
+                sh.tables.Table1.table.autoFilterRef = `A11:J${lastDataRow}`;
+              }
+            };
+
+            const cols = comparison.columns || [];
+            const totalPages = cols.length > 1 ? cols.length + 1 : 1;
+
+            if (cols.length <= 1) {
+              // Single Option BOQ
+              const col0 = cols[0] || { title: 'Standard System', computedStages: [] };
+              const sh1 = wb.getWorksheet(1);
+              sh1.name = 'BOQ_Estimate';
+              populateBoqScheduleSheet(sh1, col0, 'BILL OF QUANTITIES (BOQ) - ESTIMATE', '1 of 1');
+            } else {
+              // Multi-Catalog Comparison
+              // 1. First Sheet: Comparative Summary Matrix
+              const shMatrix = wb.addWorksheet('Comparative Matrix');
+              if (logoBuffer) {
+                const imgId = wb.addImage({ buffer: logoBuffer, extension: logoExt });
+                shMatrix.addImage(imgId, { tl: { col: 0.1, row: 0.1 }, br: { col: 1.9, row: 3.9 } });
+              }
+
+              // Format Header in Comparative Matrix
+              shMatrix.mergeCells('D1:N4');
+              const matTitle = shMatrix.getCell('D1');
+              matTitle.value = 'BILL OF QUANTITIES (BOQ) - COMPARATIVE ESTIMATE MATRIX';
+              matTitle.font = { name: 'Segoe UI', size: 14, bold: true, color: { argb: 'FF0F172A' } };
+              matTitle.alignment = { vertical: 'middle', horizontal: 'center' };
+
+              shMatrix.getCell('O1').value = 'Doc. Code: FM-OPN-02-15';
+              shMatrix.getCell('O2').value = 'Rev. No.: 1';
+              shMatrix.getCell('O3').value = `Eff. Date: ${new Date().toLocaleDateString('en-US')}`;
+              shMatrix.getCell('O4').value = `Page 1 of ${totalPages}`;
+
+              // Project metadata
+              shMatrix.getCell('A5').value = 'PROJECT / SYSTEM:';
+              shMatrix.getCell('C5').value = tpl.name;
+              shMatrix.getCell('A6').value = 'SURFACE AREA:';
+              shMatrix.getCell('C6').value = `${this.areaSqM.toFixed(2)} SQ.M`;
+              shMatrix.getCell('A7').value = 'DATE GENERATED:';
+              shMatrix.getCell('C7').value = new Date().toLocaleString();
+              shMatrix.getCell('A8').value = 'ENGINEERING DIVISION:';
+              shMatrix.getCell('C8').value = 'FCLaranang Development Corporation - QA/QC Department';
+
+              for (let r = 5; r <= 8; r++) {
+                shMatrix.getCell(`A${r}`).font = { bold: true, size: 9, color: { argb: 'FF475569' } };
+                shMatrix.getCell(`C${r}`).font = { bold: true, size: 9, color: { argb: 'FF0F172A' } };
+              }
+
+              // Build Super-Header Row 11 & Sub-Header Row 12
+              const superRow = shMatrix.getRow(11);
+              const subRow = shMatrix.getRow(12);
+              superRow.height = 26;
+              subRow.height = 24;
+
+              shMatrix.getColumn(1).width = 10; // Item
+              shMatrix.getColumn(2).width = 28; // Description
+              shMatrix.getColumn(3).width = 8;  // Unit
+              shMatrix.getColumn(4).width = 12; // Area
+
+              superRow.getCell(1).value = 'ITEM';
+              superRow.getCell(2).value = 'WORK & APPLICATION DESCRIPTION';
+              superRow.getCell(3).value = 'UNIT';
+              superRow.getCell(4).value = 'AREA (M2)';
+
+              let currColIdx = 5;
+              cols.forEach((col) => {
+                const brand = COMPARISON_BRANDS[col.brandKey] || COMPARISON_BRANDS.custom;
+                const startC = currColIdx;
+                const endC = currColIdx + 6;
+                shMatrix.mergeCells(11, startC, 11, endC);
+                const colTitleCell = superRow.getCell(startC);
+                colTitleCell.value = `${col.title.toUpperCase()} [${brand.name}]`;
+                colTitleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+                colTitleCell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+                colTitleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E293B' } };
+
+                const subTitles = ['PRODUCT SPECIFICATION', 'PACKAGING', 'SPREAD (M2/UNIT)', 'COATS', 'PO ORDER', 'UNIT RATE (PHP)', 'TOTAL AMOUNT (PHP)'];
+                subTitles.forEach((stTitle, sIdx) => {
+                  const sCell = subRow.getCell(startC + sIdx);
+                  sCell.value = stTitle;
+                  sCell.font = { bold: true, size: 8, color: { argb: 'FFFFFFFF' } };
+                  sCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF334155' } };
+                  sCell.alignment = { vertical: 'middle', horizontal: sIdx >= 4 ? 'right' : 'left' };
+                  shMatrix.getColumn(startC + sIdx).width = sIdx === 0 ? 30 : 16;
+                });
+                currColIdx += 7;
+              });
+
+              // Variance Analysis Column
+              const varColIdx = currColIdx;
+              shMatrix.getColumn(varColIdx).width = 24;
+              superRow.getCell(varColIdx).value = 'VARIANCE ANALYSIS';
+              subRow.getCell(varColIdx).value = 'DIFFERENCE VS LOWEST';
+              superRow.getCell(varColIdx).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+              superRow.getCell(varColIdx).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF065F46' } };
+              subRow.getCell(varColIdx).font = { bold: true, size: 8, color: { argb: 'FFFFFFFF' } };
+              subRow.getCell(varColIdx).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF047857' } };
+
+              superRow.commit();
+              subRow.commit();
+
+              // Comparative Data Rows (13 onwards)
+              const maxStages = Math.max(...cols.map(c => c.computedStages.length), 1);
+              for (let i = 0; i < maxStages; i++) {
+                const r = 13 + i;
+                const dRow = shMatrix.getRow(r);
+                dRow.height = 22;
+
+                const sampleStage = cols.find(c => c.computedStages[i])?.computedStages[i];
+                const desc = sampleStage ? `${sampleStage.stageName} (${sampleStage.stageRole})` : `Process Step ${i + 1}`;
+
+                dRow.getCell(1).value = `Step ${i + 1}.0`;
+                dRow.getCell(2).value = desc;
+                dRow.getCell(3).value = 'sq.m';
+                dRow.getCell(4).value = this.areaSqM;
+
+                let cIdx = 5;
+                let lowestLineCost = Infinity;
+
+                cols.forEach((col) => {
+                  const st = col.computedStages[i];
+                  if (st) {
+                    dRow.getCell(cIdx).value = `${st.product.code ? `[${st.product.code}] ` : ''}${st.product.name}`;
+                    dRow.getCell(cIdx + 1).value = st.packaging;
+                    dRow.getCell(cIdx + 2).value = st.coveragePerUnit;
+                    dRow.getCell(cIdx + 3).value = st.coats;
+                    dRow.getCell(cIdx + 4).value = st.calc.roundedUnits;
+                    dRow.getCell(cIdx + 5).value = st.unitCost;
+                    dRow.getCell(cIdx + 6).value = st.calc.totalCost;
+
+                    dRow.getCell(cIdx + 5).numFmt = '₱#,##0.00';
+                    dRow.getCell(cIdx + 6).numFmt = '₱#,##0.00';
+
+                    if (st.calc.costPerSqM < lowestLineCost) lowestLineCost = st.calc.costPerSqM;
+                  } else {
+                    dRow.getCell(cIdx).value = '— (Step not required) —';
+                    dRow.getCell(cIdx + 1).value = '—';
+                    dRow.getCell(cIdx + 2).value = '—';
+                    dRow.getCell(cIdx + 3).value = '—';
+                    dRow.getCell(cIdx + 4).value = 0;
+                    dRow.getCell(cIdx + 5).value = 0;
+                    dRow.getCell(cIdx + 6).value = 0;
+                  }
+                  cIdx += 7;
+                });
+
+                dRow.getCell(varColIdx).value = lowestLineCost !== Infinity
+                  ? `Lowest: PHP ${lowestLineCost.toFixed(2)}/m²`
+                  : '—';
+                dRow.getCell(varColIdx).font = { italic: true, size: 9, color: { argb: 'FF065F46' } };
+
+                for (let c = 1; c <= varColIdx; c++) {
+                  const cell = dRow.getCell(c);
+                  cell.border = {
+                    top: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+                    bottom: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+                    left: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+                    right: { style: 'thin', color: { argb: 'FFE2E8F0' } }
+                  };
+                }
+                dRow.commit();
+              }
+
+              // Summary Totals in Matrix
+              const matLastRow = 12 + maxStages;
+              const pkgRow = shMatrix.getRow(matLastRow + 2);
+              const totRow = shMatrix.getRow(matLastRow + 3);
+              const rateRow = shMatrix.getRow(matLastRow + 4);
+              const statusRow = shMatrix.getRow(matLastRow + 5);
+
+              pkgRow.getCell(2).value = 'TOTAL ORDER PACKAGES (PO)';
+              totRow.getCell(2).value = 'GRAND TOTAL ESTIMATED COST (PHP)';
+              rateRow.getCell(2).value = 'FINAL RATE PER SQ.M (PHP / M²)';
+              statusRow.getCell(2).value = 'VALUE ENGINEERING & AWARD STATUS';
+
+              let sumCIdx = 5;
+              cols.forEach((col) => {
+                pkgRow.getCell(sumCIdx + 4).value = `${col.totalPackages} pkgs`;
+                totRow.getCell(sumCIdx + 6).value = col.grandTotalCost;
+                totRow.getCell(sumCIdx + 6).numFmt = '₱#,##0.00';
+                rateRow.getCell(sumCIdx + 6).value = col.grandCostPerSqM;
+                rateRow.getCell(sumCIdx + 6).numFmt = '₱#,##0.00';
+
+                const delta = col.isLowestCost
+                  ? '★ BEST VALUE (LOWEST COST)'
+                  : `+PHP ${col.diffFromLowest.toFixed(2)}/m² (+${col.percentDiffFromLowest.toFixed(1)}%)`;
+                statusRow.getCell(sumCIdx).value = delta;
+                statusRow.getCell(sumCIdx).font = { bold: true, color: col.isLowestCost ? { argb: 'FF047857' } : { argb: 'FFB45309' } };
+                sumCIdx += 7;
+              });
+
+              [pkgRow, totRow, rateRow, statusRow].forEach(r => {
+                r.height = 24;
+                r.getCell(2).font = { bold: true, color: { argb: 'FF0F172A' } };
+                r.commit();
+              });
+
+              // 2. Individual BOQ Schedule Sheets for each Brand
+              const sh1 = wb.getWorksheet(1);
+              sh1.name = `BOQ - Option 1`;
+              populateBoqScheduleSheet(sh1, cols[0], `BILL OF QUANTITIES - ${cols[0].title.toUpperCase()}`, `2 of ${totalPages}`);
+
+              for (let c = 1; c < cols.length; c++) {
+                const shNext = wb.addWorksheet(`BOQ - Option ${c + 1}`);
+                if (logoBuffer) {
+                  const imgId = wb.addImage({ buffer: logoBuffer, extension: logoExt });
+                  shNext.addImage(imgId, { tl: { col: 0.1, row: 0.1 }, br: { col: 1.9, row: 3.9 } });
+                }
+                populateBoqScheduleSheet(shNext, cols[c], `BILL OF QUANTITIES - ${cols[c].title.toUpperCase()}`, `${c + 2} of ${totalPages}`);
+              }
+
+              // Set Comparative Matrix as FIRST tab
+              wb._worksheets = [undefined, shMatrix, sh1, ...wb.worksheets.slice(2)];
+              shMatrix.orderNo = 0;
+              sh1.orderNo = 1;
+            }
+
+            const outBuf = await wb.xlsx.writeBuffer();
+            const blob = new Blob([outBuf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            if (typeof window !== 'undefined' && window.QAQCBridge && window.QAQCBridge.showToast) {
+              window.QAQCBridge.showToast('BOQ spreadsheet exported to FCL Excel Template (.xlsx) successfully.', 'success');
+            }
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('ExcelJS BOQ template export failed, falling back to CSV:', err);
+      }
+
       const rows = [
         ['BILL OF QUANTITIES (BOQ) - COMPARATIVE ESTIMATE SPREADSHEET'],
         ['PROJECT / SYSTEM SPECIFICATION:', tpl.name],
@@ -3016,7 +3583,7 @@
       link.click();
       document.body.removeChild(link);
 
-      if (window.QAQCBridge && window.QAQCBridge.showToast) {
+      if (typeof window !== 'undefined' && window.QAQCBridge && window.QAQCBridge.showToast) {
         window.QAQCBridge.showToast('BOQ spreadsheet exported to Excel successfully.', 'success');
       }
     }
@@ -3590,12 +4157,14 @@
   }
 
   const Controller = new ComparisonController();
+  Controller.loadCustomProducts();
 
   return {
     BRANDS: COMPARISON_BRANDS,
     PRODUCTS: PRODUCT_LOOKUP_REGISTRY,
     TEMPLATES: COMPARISON_SYSTEM_TEMPLATES,
     Engine: SystemEstimatorEngine,
-    Controller: Controller
+    Controller: Controller,
+    registerImportedProducts: (items) => Controller.registerImportedProducts(items)
   };
 }));

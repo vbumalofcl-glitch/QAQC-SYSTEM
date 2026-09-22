@@ -6932,6 +6932,9 @@ class SupplierPriceListManager {
   }
 
   loadData() {
+    if (typeof localStorage === 'undefined') {
+      return JSON.parse(JSON.stringify(MASTER_SUPPLIER_CATALOGS));
+    }
     try {
       const stored = localStorage.getItem(this.STORAGE_KEY);
       if (stored) {
@@ -6956,6 +6959,7 @@ class SupplierPriceListManager {
   }
 
   saveData() {
+    if (typeof localStorage === 'undefined') return;
     try {
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.data));
       this.showToast('All changes auto-saved to storage', 'success');
@@ -7111,10 +7115,100 @@ class SupplierPriceListManager {
     }
   }
 
-  exportToExcel(brandKey = this.activeBrand) {
+  async exportToExcel(brandKey = this.activeBrand) {
     const brand = this.data[brandKey];
     if (!brand) return;
 
+    // Attempt Template-Based ExcelJS Export using FCL_BOQ_Template.xlsx
+    try {
+      const getTemplateBuf = typeof window !== 'undefined' && window.getFclTemplateArrayBuffer
+        ? window.getFclTemplateArrayBuffer
+        : (typeof getFclTemplateArrayBuffer === 'function' ? getFclTemplateArrayBuffer : null);
+
+      const ExcelJSEngine = typeof window !== 'undefined' && window.ExcelJS
+        ? window.ExcelJS
+        : (typeof ExcelJS !== 'undefined' ? ExcelJS : null);
+
+      if (getTemplateBuf && ExcelJSEngine) {
+        const buf = await getTemplateBuf();
+        if (buf && buf.byteLength > 0) {
+          const wb = new ExcelJSEngine.Workbook();
+          await wb.xlsx.load(buf);
+          const sh = wb.getWorksheet(1);
+          if (sh) {
+            const cleanSheetName = (brand.brandName || 'PriceList')
+              .replace(/[\\/?*:[\]]/g, '_')
+              .substring(0, 30);
+            sh.name = cleanSheetName;
+
+            // Header Title and Control Metadata
+            sh.getCell('D1').value = `PRICE LIST - ${(brand.brandName || '').toUpperCase()}`;
+            sh.getCell('I3').value = brand.effectiveDate || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            const items = brand.items || [];
+            const oldRowCount = sh.rowCount;
+
+            items.forEach((it, idx) => {
+              const r = 12 + idx;
+              const row = sh.getRow(r);
+              row.getCell(1).value = it.code || '';
+              row.getCell(2).value = it.name || '';
+              row.getCell(3).value = it.category || '';
+              row.getCell(4).value = it.desc || '';
+              row.getCell(5).value = it.packaging || '';
+              row.getCell(6).value = it.casePack !== undefined && it.casePack !== '' ? (parseFloat(it.casePack) || 1) : 1;
+
+              const srpVal = it.srp !== null && it.srp !== undefined && it.srp !== '' ? parseFloat(it.srp) : null;
+              row.getCell(7).value = srpVal;
+              if (srpVal !== null) row.getCell(7).numFmt = '₱#,##0.00';
+
+              const caseVal = it.casePrice !== null && it.casePrice !== undefined && it.casePrice !== '' ? parseFloat(it.casePrice) : null;
+              row.getCell(8).value = caseVal;
+              if (caseVal !== null) row.getCell(8).numFmt = '₱#,##0.00';
+
+              row.getCell(9).value = it.moq || '';
+              row.getCell(10).value = it.remarks || '';
+              row.commit();
+            });
+
+            const newLastRow = Math.max(12, 11 + items.length);
+
+            // Blank out remaining rows from original template if items < original rowCount
+            if (oldRowCount > newLastRow) {
+              for (let r = newLastRow + 1; r <= oldRowCount; r++) {
+                const row = sh.getRow(r);
+                row.values = [];
+              }
+            }
+
+            // Adjust Table1 range if present
+            if (sh.tables && sh.tables.Table1 && sh.tables.Table1.table) {
+              sh.tables.Table1.table.tableRef = `A11:J${newLastRow}`;
+              sh.tables.Table1.table.autoFilterRef = `A11:J${newLastRow}`;
+            }
+
+            const outBuf = await wb.xlsx.writeBuffer();
+            const blob = new Blob([outBuf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const safeBrand = brand.brandName.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            a.href = url;
+            a.download = `${safeBrand}_pricelist_2026.xlsx`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            this.showToast(`Exported ${brand.brandName} price list to FCL Excel Template (.xlsx)`, 'success');
+            return;
+          }
+        }
+      }
+    } catch (err) {
+      console.warn('ExcelJS template export failed, falling back to CSV:', err);
+    }
+
+    // Graceful CSV Fallback
     const headers = [
       'Item Code',
       'Product Name',
@@ -7128,7 +7222,7 @@ class SupplierPriceListManager {
       'Remarks / Status'
     ];
 
-    const rows = brand.items.map(it => [
+    const rows = (brand.items || []).map(it => [
       it.code || '',
       it.name || '',
       it.category || '',
@@ -7158,14 +7252,514 @@ class SupplierPriceListManager {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
-    this.showToast(`Exported ${brand.brandName} price list to Excel CSV`, 'success');
+    this.showToast(`Exported ${brand.brandName} price list to Excel CSV`, 'info');
   }
 
   printCatalog(brandKey = this.activeBrand) {
-    window.print();
+    if (typeof window !== 'undefined') window.print();
+  }
+
+  // --- EXCEL / CSV BATCH IMPORT TOOL ENGINE ---
+
+  downloadSampleTemplate() {
+    const headers = [
+      'Item Code',
+      'Product Name',
+      'Category',
+      'Description',
+      'Packaging / Unit',
+      'Case Pack',
+      'Unit SRP (PHP Vat-In)',
+      'Case Price (PHP Vat-In)',
+      'Coverage (sq.m/unit)',
+      'Default Coats',
+      'MOQ',
+      'Remarks'
+    ];
+
+    const sampleRows = [
+      ['BY-NEW-01', 'BOYSEN® Cool Shades™ Heat Reflective Paint', 'Topcoat / Finish', 'Heat-reflecting water-based roof coating', '4 Liters (Gallon)', '4', '895.00', '3580.00', '25.0', '2', '1 Gallon', 'New Summer 2026 Promo'],
+      ['BR-NEW-02', 'Buildrite Sapal 2K Flexible Slurry', 'Waterproofing Systems', 'Two-component cementitious waterproofing slurry', '20kg Kit', '1', '1650.00', '1650.00', '18.0', '2', '1 Kit', 'For Roof Deck & Balcony'],
+      ['DV-NEW-03', 'Davies Sun & Rain Elastomeric Topcoat', 'Topcoat / Finish', '100% acrylic elastomeric paint', '16 Liters (Pail)', '1', '3250.00', '3250.00', '80.0', '2', '1 Pail', 'Self-Priming Exterior'],
+      ['SK-NEW-04', 'Sika MonoTop-612 High Performance Mortar', 'Structural Repair', 'Fiber-reinforced structural repair mortar', '25kg Bag', '1', '1280.00', '1280.00', '15.0', '1', '1 Bag', 'R4 Class Structural'],
+      ['BK-NEW-05', 'Bostik Seal N Flex 1 Polyurethane', 'Joint Sealants', 'Low modulus PU architectural sealant', '600ml Sausage', '20', '385.00', '7700.00', '12.0', '1', '1 Sausage', 'Expansion Joints']
+    ];
+
+    const csvContent = [
+      headers.map(h => `"${h.replace(/"/g, '""')}"`).join(','),
+      ...sampleRows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(','))
+    ].join('\r\n');
+
+    if (typeof Blob !== 'undefined' && typeof document !== 'undefined') {
+      const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'VKBConstPro_Pricelist_Template.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      this.showToast('Downloaded sample CSV template', 'info');
+    }
+    return csvContent;
+  }
+
+  parseCsvContent(text) {
+    if (!text || typeof text !== 'string') return [];
+    // Strip UTF-8 BOM
+    let clean = text.replace(/^\uFEFF/, '').trim();
+    if (!clean) return [];
+
+    // Detect delimiter from first non-empty line
+    const firstLine = clean.split(/\r\n|\r|\n/)[0] || '';
+    let delimiter = ',';
+    const tabCount = (firstLine.match(/\t/g) || []).length;
+    const semiCount = (firstLine.match(/;/g) || []).length;
+    const commaCount = (firstLine.match(/,/g) || []).length;
+    if (tabCount > commaCount && tabCount > semiCount) delimiter = '\t';
+    else if (semiCount > commaCount && semiCount > tabCount) delimiter = ';';
+
+    const rows = [];
+    let currentRow = [];
+    let currentCell = '';
+    let inQuotes = false;
+    let i = 0;
+    const len = clean.length;
+
+    while (i < len) {
+      const char = clean[i];
+      const nextChar = clean[i + 1];
+
+      if (char === '"') {
+        if (inQuotes && nextChar === '"') {
+          // Escaped quote
+          currentCell += '"';
+          i += 2;
+          continue;
+        } else {
+          // Toggle quote mode
+          inQuotes = !inQuotes;
+          i++;
+          continue;
+        }
+      }
+
+      if (!inQuotes && char === delimiter) {
+        currentRow.push(currentCell.trim());
+        currentCell = '';
+        i++;
+        continue;
+      }
+
+      if (!inQuotes && (char === '\r' || char === '\n')) {
+        currentRow.push(currentCell.trim());
+        if (currentRow.some(cell => cell.length > 0)) {
+          rows.push(currentRow);
+        }
+        currentRow = [];
+        currentCell = '';
+        if (char === '\r' && nextChar === '\n') {
+          i += 2;
+        } else {
+          i++;
+        }
+        continue;
+      }
+
+      currentCell += char;
+      i++;
+    }
+
+    if (currentCell.length > 0 || currentRow.length > 0) {
+      currentRow.push(currentCell.trim());
+      if (currentRow.some(cell => cell.length > 0)) {
+        rows.push(currentRow);
+      }
+    }
+
+    return rows;
+  }
+
+  detectColumnMapping(headerCells) {
+    if (!Array.isArray(headerCells)) return {};
+    const mapping = {};
+    const norm = headerCells.map(h => (h || '').toString().toLowerCase().trim().replace(/[^a-z0-9]/g, ''));
+
+    norm.forEach((h, idx) => {
+      if (mapping.code === undefined && (h === 'code' || h === 'itemcode' || h === 'sku' || h === 'partno' || h === 'id' || h === 'itemno')) {
+        mapping.code = idx;
+      } else if (mapping.name === undefined && (h === 'productname' || h === 'name' || h === 'product' || h === 'itemname' || h === 'title')) {
+        mapping.name = idx;
+      } else if (mapping.category === undefined && (h === 'category' || h === 'cat' || h === 'classification' || h === 'group' || h === 'scope' || h === 'type' || h === 'helper')) {
+        mapping.category = idx;
+      } else if (mapping.desc === undefined && (h === 'desc' || h === 'description' || h === 'specs' || h === 'details' || h === 'specification')) {
+        mapping.desc = idx;
+      } else if (mapping.packaging === undefined && (h === 'packaging' || h === 'package' || h === 'unit' || h === 'packagingunit' || h === 'pack' || h === 'size')) {
+        mapping.packaging = idx;
+      } else if (mapping.casePack === undefined && (h === 'casepack' || h === 'packsize' || h === 'caseqty' || h === 'qtypercase' || h === 'pcsperbox')) {
+        mapping.casePack = idx;
+      } else if (mapping.srp === undefined && (h === 'unitsrp' || h === 'srp' || h === 'unitprice' || h === 'price' || h === 'retail' || h === 'unitcost' || h === 'vatin')) {
+        mapping.srp = idx;
+      } else if (mapping.casePrice === undefined && (h === 'caseprice' || h === 'boxprice' || h === 'casesrp')) {
+        mapping.casePrice = idx;
+      } else if (mapping.coverage === undefined && (h === 'coverage' || h === 'spread' || h === 'coverageperunit' || h === 'yield' || h === 'sqmunit')) {
+        mapping.coverage = idx;
+      } else if (mapping.coats === undefined && (h === 'coats' || h === 'defaultcoats' || h === 'coat' || h === 'noofcoats')) {
+        mapping.coats = idx;
+      } else if (mapping.moq === undefined && (h === 'moq' || h === 'minorder' || h === 'minimumorder')) {
+        mapping.moq = idx;
+      } else if (mapping.remarks === undefined && (h === 'remarks' || h === 'notes' || h === 'status' || h === 'comment')) {
+        mapping.remarks = idx;
+      } else if (mapping.brand === undefined && (h === 'brand' || h === 'brandname' || h === 'manufacturer')) {
+        mapping.brand = idx;
+      }
+    });
+
+    // Fallbacks if headers didn't match standard names
+    if (mapping.code === undefined) {
+      if (norm[0] && norm[0].includes('code')) mapping.code = 0;
+    }
+    if (mapping.name === undefined) {
+      if (headerCells[1]) mapping.name = 1;
+    }
+    if (mapping.srp === undefined) {
+      const pIdx = norm.findIndex(n => n.includes('srp') || n.includes('price') || n.includes('cost'));
+      if (pIdx !== -1) mapping.srp = pIdx;
+    }
+
+    return mapping;
+  }
+
+  openImportModal(defaultBrand = this.activeBrand) {
+    if (typeof document === 'undefined') return;
+    const modal = document.getElementById('modalImportPricelist');
+    if (!modal) return;
+
+    this.pendingImport = null;
+    const brandSelect = document.getElementById('importTargetBrandSelect');
+    if (brandSelect) {
+      brandSelect.value = defaultBrand || this.activeBrand || 'buildrite';
+    }
+
+    const previewWrap = document.getElementById('importPreviewContainer');
+    if (previewWrap) previewWrap.style.display = 'none';
+
+    const btnConfirm = document.getElementById('btnConfirmPricelistImport');
+    if (btnConfirm) {
+      btnConfirm.disabled = true;
+      btnConfirm.textContent = 'Confirm & Import Data';
+    }
+
+    const fileInput = document.getElementById('importPricelistFileInput');
+    if (fileInput) fileInput.value = '';
+
+    const dropzone = document.getElementById('importDropzone');
+    if (dropzone) {
+      dropzone.classList.remove('has-file');
+      const filenameLabel = document.getElementById('importDropzoneFilename');
+      if (filenameLabel) filenameLabel.textContent = 'Drag & drop your Excel CSV / TSV file here, or click to browse';
+    }
+
+    modal.style.display = 'flex';
+    modal.classList.add('active');
+  }
+
+  closeImportModal() {
+    if (typeof document === 'undefined') return;
+    const modal = document.getElementById('modalImportPricelist');
+    if (!modal) return;
+    modal.style.display = 'none';
+    modal.classList.remove('active');
+    this.pendingImport = null;
+  }
+
+  handleFileSelect(file) {
+    if (!file) return;
+    const dropzone = document.getElementById('importDropzone');
+    const filenameLabel = document.getElementById('importDropzoneFilename');
+    if (dropzone) dropzone.classList.add('has-file');
+    if (filenameLabel) filenameLabel.textContent = `Selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const text = e.target.result;
+        this.processImportText(text, file.name);
+      } catch (err) {
+        console.error('File reading error:', err);
+        this.showToast('Failed to parse file: ' + err.message, 'error');
+      }
+    };
+    reader.onerror = () => {
+      this.showToast('Error reading uploaded file.', 'error');
+    };
+    reader.readAsText(file);
+  }
+
+  processImportText(text, fileName = 'Imported_Data.csv') {
+    const rows = this.parseCsvContent(text);
+    if (!rows || rows.length < 2) {
+      this.showToast('File must contain a header row and at least 1 data row.', 'error');
+      return null;
+    }
+
+    const headerRow = rows[0];
+    const mapping = this.detectColumnMapping(headerRow);
+    const dataRows = rows.slice(1);
+
+    const brandSelect = typeof document !== 'undefined' ? document.getElementById('importTargetBrandSelect') : null;
+    let targetBrand = brandSelect ? brandSelect.value : (this.activeBrand || 'buildrite');
+
+    const currentCatalog = this.data[targetBrand] ? this.data[targetBrand].items : [];
+
+    const parsedItems = [];
+    let updatedCount = 0;
+    let newCount = 0;
+
+    dataRows.forEach((row, rowIdx) => {
+      if (!row.some(c => c && c.trim().length > 0)) return;
+
+      const codeRaw = mapping.code !== undefined ? row[mapping.code] : '';
+      const nameRaw = mapping.name !== undefined ? row[mapping.name] : '';
+      const catRaw = mapping.category !== undefined ? row[mapping.category] : '';
+      const descRaw = mapping.desc !== undefined ? row[mapping.desc] : '';
+      const pkgRaw = mapping.packaging !== undefined ? row[mapping.packaging] : '';
+      const packRaw = mapping.casePack !== undefined ? row[mapping.casePack] : '1';
+      const srpRaw = mapping.srp !== undefined ? row[mapping.srp] : '';
+      const casePriceRaw = mapping.casePrice !== undefined ? row[mapping.casePrice] : '';
+      const covRaw = mapping.coverage !== undefined ? row[mapping.coverage] : '';
+      const coatRaw = mapping.coats !== undefined ? row[mapping.coats] : '1';
+      const moqRaw = mapping.moq !== undefined ? row[mapping.moq] : '';
+      const remarksRaw = mapping.remarks !== undefined ? row[mapping.remarks] : '';
+
+      if (!nameRaw && !codeRaw) return;
+
+      // Clean SRP
+      let srp = null;
+      if (srpRaw !== '' && srpRaw !== null && srpRaw !== undefined) {
+        const num = parseFloat(String(srpRaw).replace(/[^0-9.-]+/g, ''));
+        srp = isNaN(num) ? null : Math.round(num * 100) / 100;
+      }
+
+      // Clean Case Price
+      let casePrice = null;
+      if (casePriceRaw !== '' && casePriceRaw !== null && casePriceRaw !== undefined) {
+        const num = parseFloat(String(casePriceRaw).replace(/[^0-9.-]+/g, ''));
+        casePrice = isNaN(num) ? null : Math.round(num * 100) / 100;
+      }
+
+      // Auto-calculate case price if missing
+      const packNum = parseFloat(packRaw) || 1;
+      if (srp !== null && packNum > 1 && (casePrice === null || casePrice === 0)) {
+        casePrice = Math.round(srp * packNum * 100) / 100;
+      }
+
+      const itemCode = (codeRaw || '').trim();
+      const itemName = (nameRaw || '').trim();
+
+      // Check if SKU exists in current target brand catalog
+      const existing = itemCode
+        ? currentCatalog.find(i => i.code && i.code.toLowerCase() === itemCode.toLowerCase())
+        : currentCatalog.find(i => i.name && i.name.toLowerCase() === itemName.toLowerCase());
+
+      const status = existing ? 'update' : 'new';
+      if (status === 'update') updatedCount++; else newCount++;
+
+      const brandPrefixes = { buildrite: 'BR', bostik: 'BK', davies: 'DV', boysen: 'BY', sika: 'SK' };
+      const prefix = brandPrefixes[targetBrand] || 'PR';
+      const fallbackId = `${prefix}-${Date.now().toString().slice(-4)}-${rowIdx + 1}`;
+
+      parsedItems.push({
+        id: existing ? existing.id : fallbackId,
+        code: itemCode || (existing ? existing.code : `NEW-${rowIdx + 1}`),
+        name: itemName || (existing ? existing.name : 'Unnamed Product'),
+        desc: descRaw || (existing ? existing.desc : ''),
+        category: catRaw || (existing ? existing.category : 'General Products'),
+        packaging: pkgRaw || (existing ? existing.packaging : 'Unit'),
+        casePack: packRaw || (existing ? existing.casePack : '1'),
+        srp: srp !== null ? srp : (existing ? existing.srp : null),
+        casePrice: casePrice !== null ? casePrice : (existing ? existing.casePrice : null),
+        coverage: covRaw ? parseFloat(covRaw) : (existing && existing.coverage ? existing.coverage : 25.0),
+        coats: coatRaw ? parseInt(coatRaw, 10) : (existing && existing.coats ? existing.coats : 1),
+        moq: moqRaw || (existing ? existing.moq : ''),
+        remarks: remarksRaw || (status === 'new' ? 'Imported from Excel' : (existing ? existing.remarks : '')),
+        status: status
+      });
+    });
+
+    this.pendingImport = {
+      brandKey: targetBrand,
+      fileName: fileName,
+      items: parsedItems,
+      totalCount: parsedItems.length,
+      newCount: newCount,
+      updatedCount: updatedCount,
+      mapping: mapping
+    };
+
+    if (typeof document !== 'undefined') {
+      this.renderImportPreview();
+    }
+
+    return this.pendingImport;
+  }
+
+  renderImportPreview() {
+    if (!this.pendingImport || typeof document === 'undefined') return;
+    const { items, totalCount, newCount, updatedCount, brandKey } = this.pendingImport;
+
+    const previewContainer = document.getElementById('importPreviewContainer');
+    const badgeTotal = document.getElementById('importBadgeTotal');
+    const badgeNew = document.getElementById('importBadgeNew');
+    const badgeUpdate = document.getElementById('importBadgeUpdate');
+    const tableBody = document.getElementById('importPreviewTableBody');
+    const btnConfirm = document.getElementById('btnConfirmPricelistImport');
+
+    if (previewContainer) previewContainer.style.display = 'block';
+    if (badgeTotal) badgeTotal.textContent = `${totalCount} rows ready`;
+    if (badgeNew) badgeNew.textContent = `${newCount} new items`;
+    if (badgeUpdate) badgeUpdate.textContent = `${updatedCount} updates`;
+
+    if (btnConfirm) {
+      btnConfirm.disabled = totalCount === 0;
+      const bName = this.data[brandKey]?.brandName || brandKey;
+      btnConfirm.textContent = `Confirm & Import ${totalCount} Items into ${bName}`;
+    }
+
+    if (tableBody) {
+      const previewRows = items.slice(0, 15);
+      tableBody.innerHTML = previewRows.map((it, idx) => {
+        const isUpdate = it.status === 'update';
+        const statusBadge = isUpdate
+          ? `<span class="preview-badge badge-update">UPDATE (SKU ${escapeHtml(it.code)})</span>`
+          : `<span class="preview-badge badge-new">+ NEW ITEM</span>`;
+
+        const srpText = it.srp !== null && it.srp !== undefined
+          ? `₱${parseFloat(it.srp).toLocaleString('en-US', { minimumFractionDigits: 2 })}`
+          : '<span style="color:#94a3b8;">Pending</span>';
+
+        return `
+          <tr>
+            <td style="text-align:center; font-size:0.75rem; color:#64748b;">${idx + 1}</td>
+            <td style="font-family:monospace; font-weight:700; font-size:0.78rem; color:#0f172a;">${escapeHtml(it.code || '—')}</td>
+            <td style="font-weight:600; font-size:0.8rem; color:#1e293b;">
+              ${escapeHtml(it.name)}
+              ${it.desc ? `<div style="font-size:0.7rem; color:#64748b; font-weight:normal;">${escapeHtml(it.desc)}</div>` : ''}
+            </td>
+            <td><span class="cat-pill-cell" style="font-size:0.7rem;">${escapeHtml(it.category)}</span></td>
+            <td style="font-size:0.78rem;">${escapeHtml(it.packaging)}</td>
+            <td style="text-align:right; font-weight:700; font-size:0.8rem; color:#059669;">${srpText}</td>
+            <td style="text-align:center;">${statusBadge}</td>
+          </tr>
+        `;
+      }).join('');
+
+      if (items.length > 15) {
+        tableBody.innerHTML += `
+          <tr>
+            <td colspan="7" style="text-align:center; padding:0.6rem; font-size:0.75rem; color:#64748b; background:#f8fafc;">
+              ... and ${items.length - 15} more rows will be imported
+            </td>
+          </tr>
+        `;
+      }
+    }
+  }
+
+  confirmImport() {
+    if (!this.pendingImport || !this.pendingImport.items || this.pendingImport.items.length === 0) {
+      this.showToast('No items to import.', 'error');
+      return;
+    }
+
+    const { brandKey, items, totalCount, newCount, updatedCount } = this.pendingImport;
+    const brand = this.data[brandKey];
+    if (!brand) {
+      this.showToast(`Catalog ${brandKey} not found.`, 'error');
+      return;
+    }
+
+    const comparisonItemsToRegister = [];
+
+    items.forEach(it => {
+      // Check existing in catalog
+      const existingIdx = brand.items.findIndex(i => 
+        (it.code && i.code && i.code.toLowerCase() === it.code.toLowerCase()) ||
+        (i.name && i.name.toLowerCase() === it.name.toLowerCase())
+      );
+
+      if (existingIdx !== -1) {
+        // Update existing
+        const target = brand.items[existingIdx];
+        if (it.name) target.name = it.name;
+        if (it.desc) target.desc = it.desc;
+        if (it.category) target.category = it.category;
+        if (it.packaging) target.packaging = it.packaging;
+        if (it.casePack) target.casePack = it.casePack;
+        if (it.srp !== null) target.srp = it.srp;
+        if (it.casePrice !== null) target.casePrice = it.casePrice;
+        if (it.moq) target.moq = it.moq;
+        if (it.remarks) target.remarks = it.remarks;
+        it.id = target.id;
+      } else {
+        // Add new
+        brand.items.unshift({
+          id: it.id,
+          code: it.code,
+          name: it.name,
+          desc: it.desc,
+          category: it.category,
+          packaging: it.packaging,
+          casePack: it.casePack,
+          srp: it.srp,
+          casePrice: it.casePrice,
+          moq: it.moq,
+          remarks: it.remarks
+        });
+      }
+
+      // Collect for comparison registry sync
+      comparisonItemsToRegister.push({
+        id: `${brandKey}-${(it.code || it.name).toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+        brandKey: brandKey,
+        code: it.code,
+        name: it.name,
+        category: it.category,
+        packaging: it.packaging,
+        coveragePerUnit: it.coverage || 20.0,
+        defaultCoats: it.coats || 1,
+        srp: it.srp,
+        notes: it.desc || it.remarks || ''
+      });
+    });
+
+    // Save to supplier pricelist storage
+    this.saveData();
+
+    // Sync to product comparison registry
+    if (typeof window !== 'undefined') {
+      if (window.ProductComparisonData && window.ProductComparisonData.registerImportedProducts) {
+        window.ProductComparisonData.registerImportedProducts(comparisonItemsToRegister);
+      } else if (window.productComparison && window.productComparison.registerImportedProducts) {
+        window.productComparison.registerImportedProducts(comparisonItemsToRegister);
+      }
+    } else if (typeof ProductComparisonData !== 'undefined' && ProductComparisonData.registerImportedProducts) {
+      ProductComparisonData.registerImportedProducts(comparisonItemsToRegister);
+    }
+
+    this.activeBrand = brandKey;
+    if (typeof document !== 'undefined') {
+      this.render();
+      this.closeImportModal();
+    }
+
+    this.showToast(`Imported ${totalCount} products into ${brand.brandName} (${newCount} new, ${updatedCount} updated)!`, 'success');
+    return totalCount;
   }
 
   showToast(msg, type = 'info') {
+    if (typeof document === 'undefined' || !document.getElementById) return;
     let container = document.getElementById('appToastContainer');
     if (!container) {
       container = document.createElement('div');
@@ -7181,8 +7775,8 @@ class SupplierPriceListManager {
     toast.innerHTML = `${iconSvg}<span>${msg}</span>`;
     container.appendChild(toast);
     setTimeout(() => {
-      toast.classList.add('fade-out');
-      setTimeout(() => toast.remove(), 300);
+      if (toast.classList) toast.classList.add('fade-out');
+      setTimeout(() => { if (toast.remove) toast.remove(); }, 300);
     }, 2800);
   }
 
@@ -7627,10 +8221,15 @@ function initSupplierPriceList() {
   }
 
   // Setup toolbar buttons
-  const btnAdd = document.getElementById('btnPricelistAddItem');
   if (btnAdd && (!btnAdd.dataset || !btnAdd.dataset.initialized)) {
     if (btnAdd.dataset) btnAdd.dataset.initialized = 'true';
     btnAdd.addEventListener('click', () => supplierPriceList.addNewItem());
+  }
+
+  const btnImport = document.getElementById('btnPricelistImport');
+  if (btnImport && (!btnImport.dataset || !btnImport.dataset.initialized)) {
+    if (btnImport.dataset) btnImport.dataset.initialized = 'true';
+    btnImport.addEventListener('click', () => supplierPriceList.openImportModal());
   }
 
   const btnExport = document.getElementById('btnPricelistExport');
@@ -7649,6 +8248,74 @@ function initSupplierPriceList() {
   if (btnReset && (!btnReset.dataset || !btnReset.dataset.initialized)) {
     if (btnReset.dataset) btnReset.dataset.initialized = 'true';
     btnReset.addEventListener('click', () => supplierPriceList.resetBrandToMaster(supplierPriceList.activeBrand));
+  }
+
+  // Setup Batch Import Modal Listeners
+  const btnCloseImport = document.getElementById('btnCloseImportModal');
+  if (btnCloseImport && (!btnCloseImport.dataset || !btnCloseImport.dataset.initialized)) {
+    if (btnCloseImport.dataset) btnCloseImport.dataset.initialized = 'true';
+    btnCloseImport.addEventListener('click', () => supplierPriceList.closeImportModal());
+  }
+
+  const btnCancelImport = document.getElementById('btnCancelPricelistImport');
+  if (btnCancelImport && (!btnCancelImport.dataset || !btnCancelImport.dataset.initialized)) {
+    if (btnCancelImport.dataset) btnCancelImport.dataset.initialized = 'true';
+    btnCancelImport.addEventListener('click', () => supplierPriceList.closeImportModal());
+  }
+
+  const btnDownloadTemplate = document.getElementById('btnDownloadImportTemplate');
+  if (btnDownloadTemplate && (!btnDownloadTemplate.dataset || !btnDownloadTemplate.dataset.initialized)) {
+    if (btnDownloadTemplate.dataset) btnDownloadTemplate.dataset.initialized = 'true';
+    btnDownloadTemplate.addEventListener('click', () => supplierPriceList.downloadSampleTemplate());
+  }
+
+  const btnConfirmImport = document.getElementById('btnConfirmPricelistImport');
+  if (btnConfirmImport && (!btnConfirmImport.dataset || !btnConfirmImport.dataset.initialized)) {
+    if (btnConfirmImport.dataset) btnConfirmImport.dataset.initialized = 'true';
+    btnConfirmImport.addEventListener('click', () => supplierPriceList.confirmImport());
+  }
+
+  const fileInput = document.getElementById('importPricelistFileInput');
+  if (fileInput && (!fileInput.dataset || !fileInput.dataset.initialized)) {
+    if (fileInput.dataset) fileInput.dataset.initialized = 'true';
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        supplierPriceList.handleFileSelect(e.target.files[0]);
+      }
+    });
+  }
+
+  const dropzone = document.getElementById('importDropzone');
+  if (dropzone && (!dropzone.dataset || !dropzone.dataset.initialized)) {
+    if (dropzone.dataset) dropzone.dataset.initialized = 'true';
+    dropzone.addEventListener('click', () => {
+      if (fileInput) fileInput.click();
+    });
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('drag-over');
+    });
+    dropzone.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('drag-over');
+    });
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('drag-over');
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+        supplierPriceList.handleFileSelect(e.dataTransfer.files[0]);
+      }
+    });
+  }
+
+  const targetBrandSelect = document.getElementById('importTargetBrandSelect');
+  if (targetBrandSelect && (!targetBrandSelect.dataset || !targetBrandSelect.dataset.initialized)) {
+    if (targetBrandSelect.dataset) targetBrandSelect.dataset.initialized = 'true';
+    targetBrandSelect.addEventListener('change', () => {
+      if (supplierPriceList.pendingImport && supplierPriceList.pendingImport.items) {
+        supplierPriceList.processImportText(supplierPriceList.pendingImport.rawText || '', supplierPriceList.pendingImport.fileName);
+      }
+    });
   }
 
   // Setup status filter buttons
@@ -7677,8 +8344,17 @@ function initSupplierPriceList() {
   supplierPriceList.render();
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initSupplierPriceList);
-} else {
-  initSupplierPriceList();
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSupplierPriceList);
+  } else {
+    initSupplierPriceList();
+  }
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    SupplierPriceListManager,
+    MASTER_SUPPLIER_CATALOGS
+  };
 }
