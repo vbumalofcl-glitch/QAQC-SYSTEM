@@ -8221,6 +8221,7 @@ function initSupplierPriceList() {
   }
 
   // Setup toolbar buttons
+  const btnAdd = document.getElementById('btnPricelistAddItem');
   if (btnAdd && (!btnAdd.dataset || !btnAdd.dataset.initialized)) {
     if (btnAdd.dataset) btnAdd.dataset.initialized = 'true';
     btnAdd.addEventListener('click', () => supplierPriceList.addNewItem());
